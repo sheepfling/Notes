@@ -1,0 +1,9 @@
+# Recursive factorial. `if` consumes its condition.
+def fact
+    dup 1 <= if
+        drop 1 ret
+    end
+    dup 1 - fact *
+end
+
+5 fact print

@@ -1,0 +1,74 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 25,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "release",
+      "displayName": "Release",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/release",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "INTEGER_SEMANTICS_BUILD_TESTS": "ON",
+        "INTEGER_SEMANTICS_BUILD_UB_LAB": "OFF"
+      }
+    },
+    {
+      "name": "debug",
+      "displayName": "Debug",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/debug",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "INTEGER_SEMANTICS_BUILD_TESTS": "ON",
+        "INTEGER_SEMANTICS_BUILD_UB_LAB": "OFF"
+      }
+    },
+    {
+      "name": "ub-lab",
+      "displayName": "Undefined-behavior specimens",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/ub-lab",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "INTEGER_SEMANTICS_BUILD_TESTS": "OFF",
+        "INTEGER_SEMANTICS_BUILD_UB_LAB": "ON"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "release",
+      "configurePreset": "release"
+    },
+    {
+      "name": "debug",
+      "configurePreset": "debug"
+    },
+    {
+      "name": "ub-lab",
+      "configurePreset": "ub-lab",
+      "targets": ["cpp_integer_ub_lab"]
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "release",
+      "configurePreset": "release",
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "debug",
+      "configurePreset": "debug",
+      "output": {
+        "outputOnFailure": true
+      }
+    }
+  ]
+}

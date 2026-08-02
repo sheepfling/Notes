@@ -1,0 +1,47 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "notes-validation"
+version = "0.1.0"
+description = "Optional validation tooling for the Notes repository"
+requires-python = ">=3.12"
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+    "matplotlib>=3.9",
+    "numpy>=2.0",
+    "pytest>=8.0",
+    "PyYAML>=6.0",
+    "scipy-stubs==1.18.0.1",
+    "scipy>=1.13",
+    "shapely>=2.1",
+    "types-PyYAML>=6.0.12",
+]
+# Keep the original extra name available for existing uv workflows.
+test = [
+    "matplotlib>=3.9",
+    "numpy>=2.0",
+    "pytest>=8.0",
+    "PyYAML>=6.0",
+    "scipy-stubs==1.18.0.1",
+    "scipy>=1.13",
+    "shapely>=2.1",
+    "types-PyYAML>=6.0.12",
+]
+
+[tool.setuptools]
+# This repository contains scripts and Markdown collections, not an importable
+# package. An explicit empty package list prevents flat-layout auto-discovery
+# from treating directories such as inbox/ and notes/ as Python packages.
+packages = []
+
+[tool.pytest.ini_options]
+testpaths = ["tests", "notes/development/mesh-tools"]
+pythonpath = [".", "notes/development/mesh-tools"]
+addopts = ["-ra"]
+
+[tool.uv]
+package = false

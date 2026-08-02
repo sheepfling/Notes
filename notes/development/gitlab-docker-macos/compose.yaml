@@ -1,0 +1,38 @@
+name: gitlab-local
+
+services:
+  gitlab:
+    image: ${GITLAB_IMAGE:?Set GITLAB_IMAGE in .env}
+    container_name: gitlab
+    restart: unless-stopped
+    hostname: gitlab.test
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'http://gitlab.test:7920'
+        gitlab_rails['gitlab_shell_ssh_port'] = 7922
+    ports:
+      - "127.0.0.1:7920:7920"
+      - "127.0.0.1:7922:22"
+    volumes:
+      - "${GITLAB_HOME:?Set GITLAB_HOME in .env}/config:/etc/gitlab"
+      - "${GITLAB_HOME:?Set GITLAB_HOME in .env}/logs:/var/log/gitlab"
+      - "${GITLAB_HOME:?Set GITLAB_HOME in .env}/data:/var/opt/gitlab"
+    shm_size: "256m"
+    networks:
+      - gitlab_local
+
+  runner:
+    image: ${GITLAB_RUNNER_IMAGE:?Set GITLAB_RUNNER_IMAGE in .env}
+    container_name: gitlab-runner
+    restart: unless-stopped
+    depends_on:
+      - gitlab
+    volumes:
+      - "${GITLAB_RUNNER_HOME:?Set GITLAB_RUNNER_HOME in .env}/config:/etc/gitlab-runner"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    networks:
+      - gitlab_local
+
+networks:
+  gitlab_local:
+    name: gitlab-local

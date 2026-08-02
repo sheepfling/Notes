@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GLSL shader gallery</title>
+  <link rel="stylesheet" href="shader-gallery.css">
+</head>
+<body>
+  <header class="site-header">
+    <div>
+      <p class="eyebrow">Notes / Development / Shaders</p>
+      <h1>GLSL shader gallery</h1>
+      <p class="lede">Browse every durable GLSL source file and preview the shaders that have a
+        runnable WebGL adapter.</p>
+    </div>
+    <nav aria-label="Related notes">
+      <a href="../README.md">Shader notes</a>
+      <a href="../../README.md">Development notes</a>
+    </nav>
+  </header>
+
+  <main class="layout">
+    <aside class="shader-index" aria-labelledby="shader-index-title">
+      <div class="section-heading">
+        <h2 id="shader-index-title">Shaders</h2>
+        <span id="shader-count" class="count">Loading…</span>
+      </div>
+      <p id="index-status" class="muted">Starting the local gallery service…</p>
+      <div id="shader-list" class="shader-list" role="listbox" aria-label="GLSL source files"></div>
+    </aside>
+
+    <section class="workspace" aria-live="polite">
+      <div class="workspace-heading">
+        <div>
+          <p class="eyebrow">Selected source</p>
+          <h2 id="shader-title">No shader selected</h2>
+          <p id="shader-path" class="path"></p>
+        </div>
+        <span id="source-status" class="status">Waiting</span>
+      </div>
+
+      <div class="preview-grid">
+        <section class="card preview-card" aria-labelledby="preview-title">
+          <div class="card-heading">
+            <div>
+              <p class="eyebrow">WebGL preview</p>
+              <h3 id="preview-title">Point-scatterer interference</h3>
+            </div>
+            <span id="render-status" class="status">No adapter</span>
+          </div>
+          <canvas id="shader-canvas" width="900" height="560" aria-label="Shader preview"></canvas>
+          <p id="preview-message" class="muted">Select a shader to inspect its source and preview.</p>
+          <div id="controls" class="controls" hidden>
+            <label>
+              <span>Phase sweep</span>
+              <input id="phase" type="range" min="0" max="6.283" step="0.001" value="0">
+            </label>
+            <label class="checkbox-label">
+              <input id="animate" type="checkbox" checked>
+              <span>Animate</span>
+            </label>
+          </div>
+        </section>
+
+        <section class="card source-card" aria-labelledby="source-title">
+          <div class="card-heading">
+            <div>
+              <p class="eyebrow">Repository source</p>
+              <h3 id="source-title">GLSL</h3>
+            </div>
+            <a id="source-link" href="#" target="_blank" rel="noopener">Open source file</a>
+          </div>
+          <pre id="source-code"><code>Select a shader from the list.</code></pre>
+        </section>
+      </div>
+
+      <section class="card explanation">
+        <p class="eyebrow">How to read this page</p>
+        <p>The retained point-scatterer file is a helper library: it defines complex-amplitude
+          functions but has no <code>main()</code> entry point. The preview supplies a small WebGL2
+          adapter that uses those exact helpers to plot phase interference.</p>
+        <p>Future GLSL files appear in the list automatically. A source file without a registered
+          adapter is still browseable here, but the gallery will say so instead of rendering an
+          unrelated approximation.</p>
+        <p class="command">Start locally: <code>uv run python scripts/serve_shader_gallery.py</code></p>
+      </section>
+    </section>
+  </main>
+
+  <script type="module" src="shader-gallery.js"></script>
+</body>
+</html>

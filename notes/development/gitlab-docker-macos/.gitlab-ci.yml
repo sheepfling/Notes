@@ -1,0 +1,7 @@
+default:
+  image: python:3.12-slim
+
+test:
+  script:
+    - python --version
+    - python -c "print('GitLab runner is working')"
