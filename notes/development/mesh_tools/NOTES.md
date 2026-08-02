@@ -27,5 +27,5 @@ From the repository root, the shared validation environment runs its tests with:
 
 ```powershell
 uv sync --extra test
-uv run pytest notes/development/mesh-tools
+uv run pytest notes/development/mesh_tools
 ```

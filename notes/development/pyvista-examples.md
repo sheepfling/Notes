@@ -20,7 +20,7 @@ and in several cases remote example datasets.
 | `pyvista_magnetic.py` and `pyvista_openfoam_cooling.py`                       | Streamlines, clipping, scalar coloring, and volume rendering are complementary views of vector/scalar fields. Dataset downloads make these demos unsuitable for offline CI by default.  |
 | `pyvista_volumetric.py`                                                       | Volume rendering benefits from an explicit opacity transfer function and a cropped region of interest for large data.                                                                   |
 | `pyvista_warp_by_vector_eignenmodes.py`                                       | A modal displacement field can be attached to a structured grid and displayed with `warp_by_vector`; numerical eigenmode computation should be validated independently of the renderer. |
-| `pyvista_scratch.py`                                                          | A mixed mesh/heat-hotspot experiment. Its OBJ/GLSL conversion is now covered by the [mesh-tools collection](mesh-tools/README.md); the GUI-specific viewer was not copied.              |
+| `pyvista_scratch.py`                                                          | A mixed mesh/heat-hotspot experiment. Its OBJ/GLSL conversion is now covered by the [mesh-tools collection](mesh_tools/README.md); the GUI-specific viewer was not copied.              |
 
 ## A small animation contract
 

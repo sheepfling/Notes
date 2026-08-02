@@ -11,7 +11,7 @@ def test_placeholders_are_allowed_but_private_values_are_rejected() -> None:
     machine_path = "C:" + "\\" + "Us" + "ers" + "\\actual-name\\project"
     assert find_forbidden_matches(r"C:\Users\<user>\project") == []
     assert find_forbidden_matches("/Users/REPLACE_ME/project") == []
-    assert find_forbidden_matches("http://" + private_ip + "/service")
+    assert find_forbidden_matches("https://" + private_ip + "/service")
     assert find_forbidden_matches(machine_path)
 
 

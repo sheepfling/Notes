@@ -5,7 +5,7 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from obj_io import load_obj, to_glsl
+from .obj_io import load_obj, to_glsl
 
 
 def main() -> int:

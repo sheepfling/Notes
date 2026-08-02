@@ -139,7 +139,7 @@ def main() -> None:
     ####
 
     # Log file
-    handlers = [logging.FileHandler(search_dir / "git_update.log")]
+    handlers: list[logging.Handler] = [logging.FileHandler(search_dir / "git_update.log")]
     if args.stdout:
         handlers.append(logging.StreamHandler(sys.stdout))
     ####

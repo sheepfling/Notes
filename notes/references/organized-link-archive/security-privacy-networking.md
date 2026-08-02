@@ -25,4 +25,4 @@
 - [En](https://tosdr.org/en)
 - [Tools listing](https://www.kali.org/tools/)
 - [Us customs export control](https://www.bigmessowires.com/2021/05/07/us-customs-export-control)
-- [What3words the algorithm](https://cybergibbons.com/security-2/what3words-the-algorithm)
+- [What3words: the algorithm](https://cybergibbons.com/security-2/what3words-the-algorithm)

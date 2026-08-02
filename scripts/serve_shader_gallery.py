@@ -61,8 +61,8 @@ def handler_for(repository_root: Path):
                 return
             super().do_GET()
 
-        def log_message(self, format: str, *args) -> None:
-            print(f"[shader-gallery] {format % args}")
+        def log_message(self, format_string: str, *args) -> None:
+            print(f"[shader-gallery] {format_string % args}")
 
     return GalleryHandler
 

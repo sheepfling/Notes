@@ -12,7 +12,7 @@ mistaken for a complete physical model.
 
 - [Bank-to-turn: validated attitude and maneuver notes](bank-to-turn-validation.md) — corrected
   conventions, coordinated-turn derivations, and numerical checks.
-- [Shader experiments](../development/shaders/) — retained GLSL source and browser previews, now
+- [Shader experiments](../development/shaders/README.md) — retained GLSL source and browser previews, now
   organized as a general development collection.
 
 The aerospace category stays focused on flight dynamics; shader experiments that support aerospace

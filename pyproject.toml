@@ -33,14 +33,18 @@ test = [
 ]
 
 [tool.setuptools]
-# This repository contains scripts and Markdown collections, not an importable
-# package. An explicit empty package list prevents flat-layout auto-discovery
-# from treating directories such as inbox/ and notes/ as Python packages.
-packages = []
+# The repository is primarily Markdown, but these collections are importable
+# Python packages so tests and tools do not need runtime path injection.
+packages = [
+    "notes",
+    "notes.development",
+    "notes.development.mesh_tools",
+    "notes.development.point_cloud_registration",
+    "notes.development.vector_geometry",
+]
 
 [tool.pytest.ini_options]
-testpaths = ["tests", "notes/development/mesh-tools"]
-pythonpath = [".", "notes/development/mesh-tools"]
+testpaths = ["tests", "notes/development/mesh_tools"]
 addopts = ["-ra"]
 
 [tool.uv]

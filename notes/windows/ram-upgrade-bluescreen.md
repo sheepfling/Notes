@@ -12,7 +12,7 @@ build details are intentionally not retained here.
 ## Initial observation
 
 The instability began after changing the memory configuration. Reliability Monitor recorded
-hardware-related and blue-screen events, including WHEA and kernel bugcheck reports. A debugger
+hardware-related and blue-screen events, including `WHEA` and kernel `bugcheck` reports. A debugger
 trace reached kernel heap-management code, but a kernel location alone does not prove that Windows
 itself is the root cause: bad RAM, an unstable memory controller, timings, firmware, or another
 driver can corrupt memory before the eventual crash.
@@ -43,7 +43,7 @@ not a mathematically conclusive diagnosis.
 
 ### Reliability Monitor and Event Viewer
 
-Use them to establish timing and recurrence, then record the bugcheck code and whether the event
+Use them to establish timing and recurrence, then record the `bugcheck` code and whether the event
 started immediately after the hardware change. They are useful for correlation, not proof of the
 failed component.
 
@@ -58,7 +58,7 @@ lm
 ```
 
 If symbol loading is slow or incomplete, configure the Microsoft symbol path and reload symbols.
-Capture the bugcheck code, probable module, stack, and dump type in a separate incident record,
+Capture the `bugcheck` code, probable module, stack, and dump type in a separate incident record,
 but redact addresses, user paths, hostnames, and other identifying values before putting that
 record in shared notes.
 

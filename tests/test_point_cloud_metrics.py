@@ -1,13 +1,6 @@
-from pathlib import Path
-import sys
-
 import numpy as np
 
-
-REGISTRATION_DIR = Path(__file__).parents[1] / "notes" / "development" / "point-cloud-registration"
-sys.path.insert(0, str(REGISTRATION_DIR))
-
-from metrics import (  # noqa: E402
+from notes.development.point_cloud_registration.metrics import (
     chamfer_distance,
     random_special_orthogonal_matrix,
     rmse,

@@ -39,7 +39,7 @@ from shapely import constrained_delaunay_triangles
 from shapely.geometry import Polygon
 from shapely.validation import explain_validity
 
-from mesh_io import MeshError, TriangularMesh, load_yaml, write_mesh
+from .mesh_io import MeshError, TriangularMesh, load_yaml, write_mesh
 
 FloatArray = NDArray[np.float64]
 Point2D = tuple[float, float]
@@ -253,10 +253,10 @@ def triangulate_polygon(polygon_input: Polygon2D, *, z: float = 0.0) -> Triangul
     ####
 
     faces.sort(
-        key=lambda face: (
-            sum(vertices_2d[index][0] for index in face) / 3.0,
-            sum(vertices_2d[index][1] for index in face) / 3.0,
-            face,
+        key=lambda triangle_face: (
+            sum(vertices_2d[index][0] for index in triangle_face) / 3.0,
+            sum(vertices_2d[index][1] for index in triangle_face) / 3.0,
+            triangle_face,
         )
     )
 

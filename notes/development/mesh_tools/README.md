@@ -20,14 +20,14 @@ documented input schema.
 Both executable scripts include PEP 723 dependency metadata:
 
 ```console
-uv run triangulate_polygon.py examples/example_polygon.yaml examples/example_mesh.yaml
-uv run display_mesh.py examples/example_mesh.yaml --wireframe --vertices
+uv run python -m notes.development.mesh_tools.triangulate_polygon notes/development/mesh_tools/examples/example_polygon.yaml artifacts/example_mesh.yaml
+uv run python -m notes.development.mesh_tools.display_mesh artifacts/example_mesh.yaml --wireframe --vertices
 ```
 
 Render without opening a window:
 
 ```console
-uv run display_mesh.py examples/example_mesh.yaml \
+uv run python -m notes.development.mesh_tools.display_mesh artifacts/example_mesh.yaml \
   --wireframe \
   --save-dir ../../../artifacts/mesh-tools/rendered \
   --no-show

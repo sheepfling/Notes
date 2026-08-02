@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Any
 
 import scripts.validate_notes as notes_validator
 from scripts.validate_notes import Link, check_external, validate
@@ -10,7 +11,7 @@ def test_local_markdown_links_are_valid() -> None:
 
 
 def test_external_connection_errors_are_reported_not_raised(monkeypatch) -> None:
-    def fail(*args: Any, **kwargs: Any) -> None:
+    def fail(*_args: Any, **_kwargs: Any) -> None:
         raise ConnectionResetError("connection reset during test")
 
     monkeypatch.setattr(notes_validator, "urlopen", fail)

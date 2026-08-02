@@ -301,7 +301,7 @@ docker compose exec gitlab bash
 ## Backup
 
 GitLab's application backup is stored beneath `/var/opt/gitlab/backups`,
-which this Compose file persists under `$GITLAB_HOME/data/backups`.
+which this `compose.yaml` file persists under `$GITLAB_HOME/data/backups`.
 
 ```bash
 docker compose exec -T gitlab gitlab-backup create

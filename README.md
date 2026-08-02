@@ -6,10 +6,10 @@ A small, durable note dump for procedures, references, decisions, troubleshootin
 
 Notes live under `notes/`, grouped by subject rather than file type:
 
-- [Aerospace](notes/aerospace/) — flight dynamics and validation
-- [Development](notes/development/) — compilers, SDKs, and build tools
-- [Windows](notes/windows/) — Windows, WSL, and desktop procedures
-- [References](notes/references/) — curated link archives and reading queues
+- [Aerospace](notes/aerospace/README.md) — flight dynamics and validation
+- [Development](notes/development/README.md) — compilers, SDKs, and build tools
+- [Windows](notes/windows/README.md) — Windows, WSL, and desktop procedures
+- [References](notes/references/README.md) — curated link archives and reading queues
 
 Material imported from other note collections should be reviewed and shaped into a durable note
 or collection before it is committed. A local `inbox/` directory may be used as a temporary

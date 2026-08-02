@@ -26,7 +26,7 @@ cmake -S . -B build -DCMAKE_PREFIX_PATH='C:\path\to\dependency\prefix'
 cmake --build build --config Debug --verbose
 ```
 
-Do not mix a Linux build directory with a Visual Studio or MinGW build directory. If a configure
+Do not mix a Linux build directory with a Visual Studio or MinGW build directory. If a configure step
 has cached the wrong compiler or package location, use a new build directory or remove only that
 build directory after confirming it contains no source files.
 

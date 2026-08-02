@@ -58,6 +58,6 @@ The old `altchar.bat` and `untextball.bat` workflows are retained as compatibili
 They operate on line-oriented text and are not general binary tools. In particular, `cmd.exe`
 line expansion has practical length limits, `echo` cannot faithfully represent every whitespace
 line, and the textball format must be treated as trusted input. Prefer the Python implementations
-when they are available, and compare a pre/post-transfer hash for important files.
+when they are available, and compare a pre-/post-transfer hash for important files.
 
 The unfinished `sub_A.bat` experiment is intentionally not promoted as a runnable tool.

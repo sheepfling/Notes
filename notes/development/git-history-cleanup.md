@@ -35,7 +35,7 @@ shown with generic paths and does not include a JAR or a repository copy.
 
 ## Expire unreachable objects
 
-Only after reviewing the rewritten result, expire reflogs and repack the disposable clone:
+Only after reviewing the rewritten result, expire `reflogs` and repack the disposable clone:
 
 ```bash
 cd /path/to/repository.git

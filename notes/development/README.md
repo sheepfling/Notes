@@ -10,14 +10,14 @@ standalone notes explain one procedure or lesson.
 
 ## Collections
 
-- [GitLab Docker on macOS](gitlab-docker-macos/) — local GitLab CE and runner experiment.
-- [Integer semantics lab](integer-semantics-lab/) — matching Odin and C++23 probes.
-- [Jorth](jorth/) — a small Forth-like language experiment in JavaScript and Python.
-- [Mesh tools](mesh-tools/) — YAML/OBJ mesh I/O, triangulation, and tests.
-- [Point-cloud registration](point-cloud-registration/) — registration metrics and experiment notes.
-- [Script collection](scripts/) — Python, batch, and shell tools retained with commentary.
-- [Shader experiments](shaders/) — GLSL source, limitations, and browser previews.
-- [Vector geometry](vector-geometry/) — small geometry helpers and tests.
+- [GitLab Docker on macOS](gitlab-docker-macos/README.md) — local GitLab CE and runner experiment.
+- [Integer semantics lab](integer-semantics-lab/README.md) — matching Odin and C++23 probes.
+- [Jorth](jorth/README.md) — a small Forth-like language experiment in JavaScript and Python.
+- [Mesh tools](mesh_tools/README.md) — YAML/OBJ mesh I/O, triangulation, and tests.
+- [Point-cloud registration](point_cloud_registration/README.md) — registration metrics and experiment notes.
+- [Script collection](scripts/README.md) — Python, batch, and shell tools retained with commentary.
+- [Shader experiments](shaders/README.md) — GLSL source, limitations, and browser previews.
+- [Vector geometry](vector_geometry/README.md) — small geometry helpers and tests.
 
 ## Standalone notes
 

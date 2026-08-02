@@ -22,7 +22,7 @@ from matplotlib.figure import Figure
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 from mpl_toolkits.mplot3d.axes3d import Axes3D
 
-from mesh_io import MeshError, TriangularMesh, load_mesh
+from .mesh_io import MeshError, TriangularMesh, load_mesh
 
 
 def equalize_axes(axis: Axes3D) -> None:

@@ -127,7 +127,7 @@ placeholder such as `http://<local-host>:8188` in documentation; never record a 
 
 ## Long paths and troubleshooting
 
-If extraction or custom-node installation fails because a path is too long, shorten the install
+If extraction or custom-node installation fails because a path is too long, shorten the installation
 root first. Windows also has a `LongPathsEnabled` policy, but applications must opt in before the
 policy helps them. Check the policy with:
 

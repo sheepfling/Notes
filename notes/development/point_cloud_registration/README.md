@@ -6,7 +6,7 @@
 
 The old PyCPD experiment generated synthetic point clouds, applied scale/rotation/translation,
 then compared rigid-registration variants with and without point dropout. Its useful, reusable
-part is now isolated in [metrics.py](metrics.py): nearest-neighbor errors, elementwise RMSE,
+part is now isolated in [`metrics.py`](metrics.py): nearest-neighbor errors, elementwise `RMSE`,
 relative 3-D rotation error, and proper-rotation generation.
 
 ## Metric meanings
@@ -17,7 +17,7 @@ relative 3-D rotation error, and proper-rotation generation.
   clouds with different point counts. Its symmetric form averages both directions before taking
   the square root.
 - `chamfer_distance` returns the sum of the two mean squared nearest-neighbor distances; it is
-  not the same scale as RMSE.
+  not the same scale as `RMSE`.
 - `rotation_angle_degrees` is a 3-D relative-rotation diagnostic. It should not be used on an
   arbitrary affine matrix or on a reflection without checking the input first.
 

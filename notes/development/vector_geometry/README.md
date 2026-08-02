@@ -16,7 +16,7 @@ the projection and normalizing.
 ```python
 import numpy as np
 
-from orthogonal_vector import orthonormal_to
+from notes.development.vector_geometry.orthogonal_vector import orthonormal_to
 
 v = np.array([1.0, 2.0, 3.0])
 w = orthonormal_to(v)

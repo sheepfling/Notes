@@ -61,7 +61,7 @@ should not be copied into configuration.
 
 ## Reverse proxy through a path prefix
 
-An Nginx location can forward a prefix to an upstream service:
+A reverse-proxy location in NGINX can forward a prefix to an upstream service:
 
 ```nginx
 location /app/ {

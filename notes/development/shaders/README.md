@@ -4,7 +4,7 @@
 > Status: historical  
 > Updated: 2026-08-01
 
-The old shader directory mixed personal experiments, copied or adapted Shadertoy examples, and
+The old shader directory mixed personal experiments, copied or adapted `Shadertoy` examples, and
 large scene files. This collection keeps the durable shader source and browser-oriented experiments
 while separating reusable code from copied or attributed material.
 
@@ -33,7 +33,7 @@ case. Do not interpret the display as a calibrated measurement.
 
 ## Browser preview
 
-The [GLSL shader gallery](shader-gallery/) discovers every `.glsl` file under `notes/` and displays
+The [GLSL shader gallery](shader-gallery/index.html) discovers every `.glsl` file under `notes/` and displays
 its source. The retained point-scatterer helper also has a small WebGL2 adapter so its interference
 pattern can be viewed interactively:
 
@@ -48,7 +48,7 @@ it needs an explicit adapter before the gallery will render it.
 
 - The large `duck` / surface-temperature shader pair was a duplicated scene experiment; the
   relevant mesh conversion is now covered by the validated mesh-tools OBJ/GLSL helper.
-- `journey.glsl`, `blobby.glsl`, and `radiometric.glsl` contain attributed or adapted Shadertoy
+- `journey.glsl`, `blobby.glsl`, and `radiometric.glsl` contain attributed or adapted `Shadertoy`
   material. They remain source references rather than copied third-party programs.
 - The remaining ray-marching and lighting helpers were exploratory and had no reproducible test
   harness. They can be revisited as focused snippets if a concrete question emerges.

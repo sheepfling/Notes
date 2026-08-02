@@ -12,7 +12,7 @@ The portable C++ implementation was compiled and tested in three local
 configurations:
 
 | Compiler/configuration | Result |
-|---|---|
+| --- | --- |
 | GCC 14.2, C++23, Release | Build passed; tests passed; 48 type rows emitted; no internal-consistency failures. |
 | Clang 17, C++23, Release | Build passed; tests passed; 48 type rows emitted; no internal-consistency failures. |
 | Clang 17, Debug, ASan + UBSan | Build passed; tests passed; report execution passed; no sanitizer finding. |

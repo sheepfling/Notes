@@ -57,5 +57,5 @@ git status --short
 git fsck --no-reflogs --unreachable
 ```
 
-Unreachable commits may remain recoverable through reflogs for a while, but reflogs are not a
+Unreachable commits may remain recoverable through `reflogs` for a while, but `reflogs` are not a
 backup. Create a tag or a separate branch before deleting anything that may be useful.

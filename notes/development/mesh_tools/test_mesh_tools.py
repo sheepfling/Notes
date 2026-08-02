@@ -12,10 +12,10 @@ import yaml
 
 matplotlib.use("Agg")
 
-from display_mesh import plot_mesh  # noqa: E402
-from mesh_io import MeshError, TriangularMesh, load_mesh, write_mesh  # noqa: E402
-from obj_io import load_obj, to_glsl  # noqa: E402
-from triangulate_polygon import Polygon2D, triangulate_polygon  # noqa: E402
+from .display_mesh import plot_mesh
+from .mesh_io import MeshError, TriangularMesh, load_mesh, write_mesh
+from .obj_io import load_obj, to_glsl
+from .triangulate_polygon import Polygon2D, triangulate_polygon
 
 
 def signed_area(points: np.ndarray) -> float:
@@ -155,7 +155,7 @@ def test_invalid_face_index_is_rejected() -> None:
             vertices=np.asarray(
                 [[0.0, 0.0, 0.0], [1.0, 0.0, 0.0], [0.0, 1.0, 0.0]]
             ),
-            faces=np.asarray([[0, 1, 3]]),
+            faces=np.asarray([[0, 1, 3]], dtype=np.int64),
         )
 
 
@@ -210,6 +210,7 @@ def test_plot_uses_generic_axis_labels() -> None:
 
 def test_both_command_line_scripts_work(tmp_path: Path) -> None:
     source_directory = Path(__file__).resolve().parent
+    repository_root = source_directory.parents[2]
     polygon_path = source_directory / "example_polygon.yaml"
     if not polygon_path.is_file():
         polygon_path = source_directory / "examples" / "example_polygon.yaml"
@@ -220,11 +221,12 @@ def test_both_command_line_scripts_work(tmp_path: Path) -> None:
     triangulate_result = subprocess.run(
         [
             sys.executable,
-            str(source_directory / "triangulate_polygon.py"),
+            "-m",
+            "notes.development.mesh_tools.triangulate_polygon",
             str(polygon_path),
             str(mesh_path),
         ],
-        cwd=source_directory,
+        cwd=repository_root,
         check=False,
         capture_output=True,
         text=True,
@@ -237,7 +239,8 @@ def test_both_command_line_scripts_work(tmp_path: Path) -> None:
     display_result = subprocess.run(
         [
             sys.executable,
-            str(source_directory / "display_mesh.py"),
+            "-m",
+            "notes.development.mesh_tools.display_mesh",
             str(mesh_path),
             "--wireframe",
             "--vertices",
@@ -245,7 +248,7 @@ def test_both_command_line_scripts_work(tmp_path: Path) -> None:
             str(image_directory),
             "--no-show",
         ],
-        cwd=source_directory,
+        cwd=repository_root,
         env=environment,
         check=False,
         capture_output=True,

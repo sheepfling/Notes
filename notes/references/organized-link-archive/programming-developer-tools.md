@@ -43,7 +43,7 @@
 - [The wizard and his shell](https://terminal.click/posts/2025/04/the-wizard-and-his-shell)
 ### Software design & engineering
 
-- [13 things i would have told myself](https://blog.autorouting.com/p/13-things-i-would-have-told-myself)
+- [13 things I would have told myself](https://blog.autorouting.com/p/13-things-i-would-have-told-myself)
 - [20210512](https://blog.eiler.eu/posts/20210512)
 - [acarsdrama.com](https://acarsdrama.com/)
 - [Email](https://www.netmeister.org/blog/email.html)
@@ -56,7 +56,7 @@
 - [animejs.com](https://animejs.com/)
 - [Better typography with text wrap pretty](https://webkit.org/blog/16547/better-typography-with-text-wrap-pretty)
 - [browsercraft.cheerpj.com](https://browsercraft.cheerpj.com/)
-- [Creating non rectangular headers](https://css-tricks.com/creating-non-rectangular-headers)
+- [Creating non-rectangular headers](https://css-tricks.com/creating-non-rectangular-headers)
 - [Css only lqip](https://leanrada.com/notes/css-only-lqip)
 - [polypane.app](https://polypane.app/)
 - [Scaffold](https://blog.littlepolygon.com/posts/scaffold)

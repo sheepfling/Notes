@@ -6,9 +6,9 @@
 
 ## Purpose
 
-Install the officially supported Emscripten SDK (emsdk) on macOS, activate it for a shell, verify the toolchain, and compile a small C++ program for the browser or Node.js.
+Install the officially supported Emscripten SDK (`emsdk`) on macOS, activate it for a shell, verify the toolchain, and compile a small C++ program for the browser or Node.js.
 
-The commands below use $HOME/bin/emsdk as the SDK location. $HOME keeps the instructions independent of the local macOS username.
+The commands below use `$HOME/bin/emsdk` as the SDK location. `$HOME` keeps the instructions independent of the local macOS username.
 
 ## Prerequisites
 
@@ -72,7 +72,7 @@ source ~/.zshrc
 emsdk-activate
 ```
 
-Keep this helper only if the SDK remains at $HOME/bin/emsdk.
+Keep this helper only if the SDK remains at `$HOME/bin/emsdk`.
 
 ## Verify the installation
 
@@ -83,7 +83,7 @@ cd "$HOME/bin/emsdk"
 ./emcc --check
 ```
 
-After the environment is sourced, emcc --check should complete without warnings about missing or mismatched components.
+After the environment is sourced, `emcc --check` should complete without warnings about missing or mismatched components.
 
 Check the compiler version:
 
@@ -162,7 +162,7 @@ Install and activate a specific tagged release:
 source ./emsdk_env.sh
 ```
 
-Replace <version> with the exact target shown by ./emsdk list. latest means the newest tagged release, so it is convenient but not reproducible.
+Replace `<version>` with the exact target shown by `./emsdk list`. `latest` means the newest tagged release, so it is convenient but not reproducible.
 
 ## Reproducible project setup
 
@@ -170,19 +170,19 @@ For a project that must keep using the same toolchain:
 
 1. Record the exact Emscripten version in the project’s build documentation or configuration.
 2. Install and activate that version rather than latest.
-3. Record the emsdk repository revision when the toolchain is established:
+3. Record the `emsdk` repository revision when the toolchain is established:
 
    ```zsh
    git -C "$HOME/bin/emsdk" rev-parse HEAD
    ```
 
-4. Run emcc --version in CI or setup diagnostics and keep the output with the build record.
+4. Run `emcc --version` in CI or setup diagnostics and keep the output with the build record.
 
 The SDK directory itself should generally remain outside the project repository.
 
 ## Troubleshooting
 
-### emcc is not found
+### `emcc` is not found
 
 The current shell has not loaded the SDK environment, or the helper points to the wrong location:
 

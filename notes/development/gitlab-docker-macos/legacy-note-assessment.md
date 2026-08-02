@@ -21,7 +21,7 @@ Those commands should be preserved only in a separate Gitea-specific guide.
 
 ## GitLab portion
 
-The later portion tested:
+The latter portion tested:
 
 - GitLab EE with an unpinned `latest` tag.
 - GitLab CE `17.4.5-ce.0`.

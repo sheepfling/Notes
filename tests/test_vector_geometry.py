@@ -1,13 +1,6 @@
-from pathlib import Path
-import sys
-
 import numpy as np
 
-
-VECTOR_DIR = Path(__file__).parents[1] / "notes" / "development" / "vector-geometry"
-sys.path.insert(0, str(VECTOR_DIR))
-
-from orthogonal_vector import orthonormal_to  # noqa: E402
+from notes.development.vector_geometry.orthogonal_vector import orthonormal_to
 
 
 def test_orthonormal_to_is_perpendicular_and_unit_length() -> None:

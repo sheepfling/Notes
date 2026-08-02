@@ -43,7 +43,7 @@
 - [5 Chickpea Recipes Everyone Should Know — Rainbow Plant Life](https://www.youtube.com/watch?v=wBX4HX0-0-Y)
 - [Sunny Anderson's Tex-Mex Desayuno Potato Bites — Food Network](https://www.youtube.com/watch?v=WurUi0N_4Hk)
 - [Molly Makes Arancini and a Martini Her Way — Molly Baz](https://www.youtube.com/watch?v=a8wAHlzF8eQ)
-- [Next Level Garlic Butter Chicken with Sauteed Veggies — Recipe30](https://www.youtube.com/watch?v=AiSKC7eZwrU)
+- [Next Level Garlic Butter Chicken with Sautéed Veggies — Recipe30](https://www.youtube.com/watch?v=AiSKC7eZwrU)
 - [The Best Mexican Beef Stew — Cooking Con Claudia](https://www.youtube.com/watch?v=BA1n60ugENo)
 - [How to Make Peach Custard Pie — Food Wishes](https://www.youtube.com/watch?v=C__VmKxklAI)
 - [How I Cooked 200 Cloves of Garlic — About To Eat](https://www.youtube.com/watch?v=F3RGIBExjfE)

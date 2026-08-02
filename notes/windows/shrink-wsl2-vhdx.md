@@ -6,9 +6,9 @@
 
 ## Purpose
 
-Reclaim Windows disk space after deleting files inside a WSL2 distribution. WSL2 stores each distribution in a dynamically expanding `ext4.vhdx` file. Removing files reduces Linux usage, but does not necessarily reduce the VHDX file’s physical size on Windows.
+Reclaim Windows disk space after deleting files inside a WSL2 distribution. WSL2 stores each distribution in a dynamically expanding `ext4.vhdx` file. Removing files reduces Linux usage, but does not necessarily reduce the `VHDX` file’s physical size on Windows.
 
-This procedure compacts the existing VHDX in place. It does not reduce the Linux filesystem’s logical capacity.
+This procedure compacts the existing `VHDX` in place. It does not reduce the Linux filesystem’s logical capacity.
 
 ## Safety first
 
@@ -31,13 +31,13 @@ List distributions and their states:
 wsl.exe --list --verbose
 ```
 
-Stop all WSL instances. This is preferable to terminating only one distribution because background WSL processes can keep the VHDX open:
+Stop all WSL instances. This is preferable to terminating only one distribution because background WSL processes can keep the `VHDX` open:
 
 ```powershell
 wsl.exe --shutdown
 ```
 
-If a VHDX is still reported as in use, close any remaining WSL-related applications and repeat the shutdown. A reboot may be necessary if Windows still has an open handle.
+If a `VHDX` is still reported as in use, close any remaining WSL-related applications and repeat the shutdown. A reboot may be necessary if Windows still has an open handle.
 
 ## 2. Locate the distribution’s `ext4.vhdx`
 
@@ -106,10 +106,10 @@ df -h /
 
 ## Notes and troubleshooting
 
-- The amount reclaimed depends on where free blocks exist inside the dynamically expanding VHDX. Compaction may not reduce the file to exactly the amount reported by `df`.
+- The amount reclaimed depends on where free blocks exist inside the dynamically expanding `VHDX`. Compaction may not reduce the file to exactly the amount reported by `df`.
 - `compact vdisk` reclaims unused physical space; it is not the same as shrinking an ext4 partition or changing WSL’s maximum virtual capacity.
 - If the command reports that the virtual disk must be detached or read-only, use the `attach vdisk readonly` / `detach vdisk` sequence above.
-- If the distribution will not start after an unsuccessful operation, stop troubleshooting changes and restore the exported backup rather than repeatedly modifying the original VHDX.
+- If the distribution fails to start after an unsuccessful operation, stop troubleshooting changes and restore the exported backup rather than repeatedly modifying the original `VHDX`.
 
 ## References
 

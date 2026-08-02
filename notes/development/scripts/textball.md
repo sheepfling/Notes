@@ -6,7 +6,7 @@
 
 ## The idea
 
-[textball.py](textball.py) is a small experiment in making a directory portable through text-only channels. It writes a line-oriented tar-like stream containing each path, line count, newline information, byte size, and MD5 checksum. Binary files are Base64-encoded; text can optionally remain readable.
+[`textball.py`](textball.py) is a small experiment in making a directory portable through text-only channels. It writes a line-oriented tar-like stream containing each path, line count, newline information, byte size, and MD5 checksum. Binary files are Base64-encoded; text can optionally remain readable.
 
 This is useful when the transport accepts text but not an ordinary archive. It is not a replacement for a normal tar, ZIP, or authenticated backup.
 

@@ -3,7 +3,7 @@ from argparse import ArgumentParser
 from pathlib import Path
 
 
-def encode_file(input_file: Path, output_file: Path, verbose: int = 0):
+def encode_file(input_file: Path, output_file: Path, verbose: int = 0) -> None:
     with open(input_file, 'rb') as f:
         encoded = base64.b64encode(f.read())
     ####
@@ -54,13 +54,13 @@ if __name__ == "__main__":
     ####
 
     action = args.action
-    input_file = args.input
-    output_file = args.output
+    source_file = args.input
+    destination_file = args.output
 
     if action == 'encode':
-        encode_file(input_file, output_file, verbose=verbose)
+        encode_file(source_file, destination_file, verbose=verbose)
     elif action == 'decode':
-        decode_file(input_file, output_file, verbose=verbose)
+        decode_file(source_file, destination_file, verbose=verbose)
     else:
         raise RuntimeError(f'Invalid action: {args.action}')
     ####

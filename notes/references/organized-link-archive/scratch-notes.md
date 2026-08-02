@@ -20,7 +20,7 @@ esac
 - Essential CSV shell tools
 - unpkg — react-scan
 - babel-react-compiler-plugin
-- million — lint — React slowness checker
+- `Million` — lint — React slowness checker
 - Clerk — auth, WorkOS, OKTA, SAML, OpenAuth
 - PostHog — analytics
 - quickpic

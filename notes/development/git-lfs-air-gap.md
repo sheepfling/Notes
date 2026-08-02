@@ -83,7 +83,7 @@ git lfs install --skip-smudge
 ```
 
 This deliberately leaves pointer files in the working tree. It is not a conversion to ordinary
-Git and it is not suitable for tools that need the actual file contents. The `GIT_LFS_SKIP_SMUDGE`
+Git, and it is not suitable for tools that need the actual file contents. The `GIT_LFS_SKIP_SMUDGE`
 setting has the same narrow purpose; see [Git LFS configuration](https://github.com/git-lfs/git-lfs/blob/main/docs/man/git-lfs-config.adoc).
 
 ## What not to rely on

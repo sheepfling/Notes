@@ -5,7 +5,7 @@ from __future__ import annotations
 import numpy as np
 from pathlib import Path
 
-from mesh_io import MeshError, TriangularMesh
+from .mesh_io import MeshError, TriangularMesh
 
 
 def _vertex_index(token: str, vertex_count: int) -> int:
@@ -93,12 +93,14 @@ def to_glsl(mesh: TriangularMesh) -> str:
     ]
     for index, vertex in enumerate(mesh.vertices):
         suffix = "," if index + 1 < len(mesh.vertices) else ""
+        x, y, z = (float(coordinate) for coordinate in vertex)
         lines.append(
-            f"  vec3({vertex[0]:.7f}, {vertex[1]:.7f}, {vertex[2]:.7f}){suffix}"
+            f"  vec3({x:.7f}, {y:.7f}, {z:.7f}){suffix}"
         )
     lines.extend([");", "", "const ivec3 triangles[NUM_TRIANGLES] = ivec3[]("])
     for index, face in enumerate(mesh.faces):
         suffix = "," if index + 1 < len(mesh.faces) else ""
-        lines.append(f"  ivec3({face[0]}, {face[1]}, {face[2]}){suffix}")
+        first, second, third = (int(vertex_index) for vertex_index in face)
+        lines.append(f"  ivec3({first}, {second}, {third}){suffix}")
     lines.append(");")
     return "\n".join(lines)
