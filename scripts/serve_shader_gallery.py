@@ -23,6 +23,7 @@ def shader_catalog(repository_root: Path) -> list[dict[str, str]]:
         relative = path.relative_to(repository_root)
         if any(part in SKIP_PARTS for part in relative.parts):
             continue
+        ####
         relative_url = "/" + "/".join(quote(part) for part in relative.parts)
         shaders.append(
             {
@@ -31,7 +32,9 @@ def shader_catalog(repository_root: Path) -> list[dict[str, str]]:
                 "name": path.stem,
             }
         )
+    ####
     return shaders
+####
 
 
 def is_blocked_request(request_target: str) -> bool:
@@ -39,12 +42,14 @@ def is_blocked_request(request_target: str) -> bool:
 
     request_path = unquote(urlsplit(request_target).path).lstrip("/")
     return any(part in SKIP_PARTS for part in Path(request_path).parts)
+####
 
 
 def handler_for(repository_root: Path):
     class GalleryHandler(SimpleHTTPRequestHandler):
         def __init__(self, *args, **kwargs):
             super().__init__(*args, directory=str(repository_root), **kwargs)
+        ####
 
         def do_GET(self) -> None:  # noqa: N802 - required by the HTTP handler API
             request_path = urlsplit(self.path).path
@@ -56,15 +61,21 @@ def handler_for(repository_root: Path):
                 self.end_headers()
                 self.wfile.write(payload)
                 return
+            ####
             if is_blocked_request(self.path):
                 self.send_error(404, "Ignored repository content is not served by the gallery.")
                 return
+            ####
             super().do_GET()
+        ####
 
         def log_message(self, format_string: str, *args) -> None:
             print(f"[shader-gallery] {format_string % args}")
+        ####
+    ####
 
     return GalleryHandler
+####
 
 
 def main() -> int:
@@ -78,7 +89,7 @@ def main() -> int:
     )
     print(
         "Shader gallery available at "
-        f"http://{arguments.host}:{arguments.port}/notes/development/shaders/shader-gallery/"
+        f"http://{arguments.host}:{arguments.port}/projects/shaders/shader-gallery/"
     )
     print("Press Ctrl+C to stop the server.")
     try:
@@ -87,8 +98,11 @@ def main() -> int:
         print("\nStopping shader gallery.")
     finally:
         server.server_close()
+    ####
     return 0
+####
 
 
 if __name__ == "__main__":
     raise SystemExit(main())
+####

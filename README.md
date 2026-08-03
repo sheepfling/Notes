@@ -8,6 +8,9 @@ Notes live under `notes/`, grouped by subject rather than file type:
 
 - [Aerospace](notes/aerospace/README.md) — flight dynamics and validation
 - [Development](notes/development/README.md) — compilers, SDKs, and build tools
+- [Projects](projects/README.md) — runnable and preserved source collections
+- [Converging Flow](projects/converging-flow/README.md) — vectorized inert-flow, reactive-Euler,
+  reaction-diffusion, and heterogeneous-wave simulations with reproducible artifacts
 - [Windows](notes/windows/README.md) — Windows, WSL, and desktop procedures
 - [References](notes/references/README.md) — curated link archives and reading queues
 
@@ -68,8 +71,10 @@ uv sync --extra dev
 Run all configured checks:
 
 ```powershell
-uv run pytest
+python -m pytest
 ```
+
+With uv, the equivalent command is `uv run pytest`.
 
 Validate local Markdown links, including repository containment and ignore rules:
 
@@ -106,6 +111,15 @@ When the dependencies are already installed in the active Python environment, th
 ```powershell
 python -m pytest
 ```
+
+Measure Python line and branch coverage, including Python tools launched by the tests as subprocesses:
+
+```powershell
+python -m pytest --cov --cov-report=term-missing
+```
+
+The configured report threshold is an initial 45 percent floor. Batch files are covered by their
+behavioral tests; Python coverage tools do not measure `.bat` source lines.
 
 Add future Python test directories to `testpaths` and keep generated environments and caches out of version control. Generated Python outputs belong under the ignored `artifacts/` directory, not beside the notes or source.
 

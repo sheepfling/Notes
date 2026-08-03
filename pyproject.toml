@@ -5,26 +5,37 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "notes-validation"
 version = "0.1.0"
-description = "Optional validation tooling for the Notes repository"
+description = "Validation tooling and numerical experiments for the Notes repository"
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "matplotlib>=3.9",
+    "numpy>=2.0",
+    "pillow>=10.4",
+    "scipy>=1.13",
+]
+
+[project.scripts]
+converging-flow = "converging_flow.cli:main"
+converging-flow-run = "converging_flow.runner:main"
 
 [project.optional-dependencies]
 dev = [
-    "matplotlib>=3.9",
-    "numpy>=2.0",
+    "coverage>=7.10",
+    "numba>=0.66",
+    "pyright>=1.1.400",
     "pytest>=8.0",
+    "pytest-cov>=6.0",
     "PyYAML>=6.0",
+    "ruff>=0.12",
     "scipy-stubs==1.18.0.1",
-    "scipy>=1.13",
     "shapely>=2.1",
     "types-PyYAML>=6.0.12",
 ]
 # Keep the original extra name available for existing uv workflows.
 test = [
-    "matplotlib>=3.9",
-    "numpy>=2.0",
+    "coverage>=7.10",
     "pytest>=8.0",
+    "pytest-cov>=6.0",
     "PyYAML>=6.0",
     "scipy-stubs==1.18.0.1",
     "scipy>=1.13",
@@ -32,20 +43,50 @@ test = [
     "types-PyYAML>=6.0.12",
 ]
 
+fast = ["numba>=0.66"]
+gpu = ["cupy-cuda13x[ctk]>=14.0"]
+
 [tool.setuptools]
-# The repository is primarily Markdown, but these collections are importable
-# Python packages so tests and tools do not need runtime path injection.
-packages = [
-    "notes",
-    "notes.development",
-    "notes.development.mesh_tools",
-    "notes.development.point_cloud_registration",
-    "notes.development.vector_geometry",
-]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
 
 [tool.pytest.ini_options]
-testpaths = ["tests", "notes/development/mesh_tools"]
+testpaths = ["tests"]
 addopts = ["-ra"]
 
+[tool.coverage.run]
+branch = true
+parallel = true
+source = [
+    "src",
+    "scripts",
+    "projects",
+]
+patch = ["subprocess"]
+omit = [
+    "*/__init__.py",
+    "*/test_*.py",
+    "*/tests/*",
+]
+
+[tool.coverage.report]
+exclude_also = [
+    "if TYPE_CHECKING:",
+    "if __name__ == .__main__.:",
+]
+# Baseline while archival project scripts and legacy helpers remain partially tested.
+fail_under = 45.0
+precision = 1
+show_missing = true
+
+[tool.pyright]
+include = ["src/converging_flow", "tests/converging_flow"]
+exclude = ["build", ".tmp", "artifacts", ".venv*"]
+pythonVersion = "3.12"
+typeCheckingMode = "basic"
+reportMissingTypeStubs = false
+
 [tool.uv]
-package = false
+package = true

@@ -4,20 +4,20 @@
 > Status: current  
 > Updated: 2026-08-01
 
-This is the largest category: build systems, language experiments, container maintenance, Python diagnostics, small
-utilities, and preserved source collections. Collections with runnable code keep their own README and validation record;
-standalone notes explain one procedure or lesson.
+This category contains standalone development procedures, troubleshooting records, and historical notes. Runnable
+source collections now live under the repository-level [Projects](../../projects/README.md) index so this directory
+can remain documentation-first.
 
-## Collections
+## Related projects
 
-- [GitLab Docker on macOS](gitlab-docker-macos/README.md) — local GitLab CE and runner experiment.
-- [Integer semantics lab](integer-semantics-lab/README.md) — matching Odin and C++23 probes.
-- [Jorth](jorth/README.md) — a small Forth-like language experiment in JavaScript and Python.
-- [Mesh tools](mesh_tools/README.md) — YAML/OBJ mesh I/O, triangulation, and tests.
-- [Point-cloud registration](point_cloud_registration/README.md) — registration metrics and experiment notes.
-- [Script collection](scripts/README.md) — Python, batch, and shell tools retained with commentary.
-- [Shader experiments](shaders/README.md) — GLSL source, limitations, and browser previews.
-- [Vector geometry](vector_geometry/README.md) — small geometry helpers and tests.
+- [GitLab Docker on macOS](../../projects/gitlab-docker-macos/README.md) — local GitLab CE and runner experiment.
+- [Integer semantics lab](../../projects/integer-semantics-lab/README.md) — matching Odin and C++23 probes.
+- [Jorth](../../projects/jorth/README.md) — a small Forth-like language experiment in JavaScript and Python.
+- [Mesh tools](../../projects/mesh-tools/README.md) — YAML/OBJ mesh I/O, triangulation, and tests.
+- [Point-cloud registration](../../projects/point-cloud-registration/README.md) — registration metrics and experiment notes.
+- [Script collection](../../projects/scripts/README.md) — Python, batch, and shell tools retained with commentary.
+- [Shader experiments](../../projects/shaders/README.md) — GLSL source, limitations, and browser previews.
+- [Vector geometry](../../projects/vector-geometry/README.md) — small geometry helpers and tests.
 
 ## Standalone notes
 

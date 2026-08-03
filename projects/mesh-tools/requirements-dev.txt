@@ -1,0 +1,4 @@
+# Compatibility requirements for the historical mesh-tools layout.
+# The repository-root pyproject.toml is canonical.
+-r requirements.txt
+pytest>=8.0

@@ -1,0 +1,6 @@
+# Compatibility requirements for the historical mesh-tools layout.
+# The repository-root pyproject.toml is canonical.
+matplotlib>=3.9
+numpy>=2.0
+PyYAML>=6.0
+shapely>=2.1

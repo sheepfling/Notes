@@ -13,6 +13,7 @@ EXCLUDED_DIRECTORIES = {
     ".pytest_cache",
     ".uv-cache",
     ".venv",
+    "build",
     "__pycache__",
     "artifacts",
     "inbox",
@@ -61,9 +62,19 @@ def iter_text_files(root: Path):
     for path in root.rglob("*"):
         if not path.is_file() or path.suffix.lower() not in TEXT_EXTENSIONS:
             continue
-        if any(part in EXCLUDED_DIRECTORIES for part in path.relative_to(root).parts):
+        ####
+        relative_parts = path.relative_to(root).parts
+        if any(
+            part in EXCLUDED_DIRECTORIES
+            or part.startswith(".venv")
+            or part in {"venv", "env", "ENV"}
+            for part in relative_parts
+        ):
             continue
+        ####
         yield path
+    ####
+####
 
 
 def find_forbidden_matches(text: str, forbidden: tuple[str, ...] = ()) -> list[tuple[str, str]]:
@@ -76,11 +87,16 @@ def find_forbidden_matches(text: str, forbidden: tuple[str, ...] = ()) -> list[t
     ):
         if pattern.search(text):
             findings.append((label, pattern.pattern))
+        ####
+    ####
     lowered = text.casefold()
     for value in forbidden:
         if value and value.casefold() in lowered:
             findings.append(("caller-supplied private value", value))
+        ####
+    ####
     return findings
+####
 
 
 def scan(root: Path, forbidden: tuple[str, ...] = ()) -> list[str]:
@@ -90,7 +106,11 @@ def scan(root: Path, forbidden: tuple[str, ...] = ()) -> list[str]:
             findings = find_forbidden_matches(line, forbidden)
             for label, _ in findings:
                 results.append(f"{path.relative_to(root)}:{number}: {label}: {line.strip()}")
+            ####
+        ####
+    ####
     return results
+####
 
 
 def main() -> int:
@@ -108,9 +128,12 @@ def main() -> int:
         print("Scrub validation failed:")
         print("\n".join(f"- {finding}" for finding in findings))
         return 1
+    ####
     print("Scrub validation passed for generic private paths and addresses.")
     return 0
+####
 
 
 if __name__ == "__main__":
     sys.exit(main())
+####

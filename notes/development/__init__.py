@@ -1,1 +1,0 @@
-"""Development-oriented Python collections."""

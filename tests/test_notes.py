@@ -8,11 +8,13 @@ from scripts.validate_notes import Link, check_external, validate
 def test_local_markdown_links_are_valid() -> None:
     repository_root = Path(__file__).resolve().parents[1]
     assert validate(repository_root, check_web=False, timeout=10.0) == []
+####
 
 
 def test_external_connection_errors_are_reported_not_raised(monkeypatch) -> None:
     def fail(*_args: Any, **_kwargs: Any) -> None:
         raise ConnectionResetError("connection reset during test")
+    ####
 
     monkeypatch.setattr(notes_validator, "urlopen", fail)
 
@@ -20,3 +22,4 @@ def test_external_connection_errors_are_reported_not_raised(monkeypatch) -> None
 
     assert error is not None
     assert "could not be checked" in error
+####

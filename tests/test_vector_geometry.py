@@ -1,6 +1,6 @@
 import numpy as np
 
-from notes.development.vector_geometry.orthogonal_vector import orthonormal_to
+from notes_tools.vector_geometry.orthogonal_vector import orthonormal_to
 
 
 def test_orthonormal_to_is_perpendicular_and_unit_length() -> None:
@@ -9,6 +9,7 @@ def test_orthonormal_to_is_perpendicular_and_unit_length() -> None:
 
     assert np.isclose(np.dot(value, result), 0.0)
     assert np.isclose(np.linalg.norm(result), 1.0)
+####
 
 
 def test_orthonormal_to_rejects_invalid_inputs() -> None:
@@ -19,3 +20,6 @@ def test_orthonormal_to_rejects_invalid_inputs() -> None:
             pass
         else:
             raise AssertionError("invalid vector was accepted")
+        ####
+    ####
+####
