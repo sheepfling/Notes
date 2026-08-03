@@ -9,6 +9,7 @@
 - [Apache echarts react](https://tania.dev/apache-echarts-react)
 - [Charts](https://ag-grid.com/charts)
 - [Line](https://chartscss.org/charts/line)
+
 ### Game development & interactive projects
 
 - [Doomcaptcha](https://vivirenremoto.github.io/doomcaptcha)
@@ -20,6 +21,7 @@
 - [GitHub — rururu/sail-pro](https://github.com/rururu/sail-pro)
 - [GitHub — tonypan2/minesweeper-mcp-server](https://github.com/tonypan2/minesweeper-mcp-server?tab=readme-ov-file)
 - [Preparing your game for deterministic netcode](https://yal.cc/preparing-your-game-for-deterministic-netcode)
+
 ### Languages, compilers & type systems
 
 - [C++ scripting alternatives: binding ChaiScript and Wren into a small game](https://itnext.io/c-scripting-alternatives-easy-to-bind-scripting-binding-chaiscript-and-wren-into-a-small-game-174c86b0ecd7)
@@ -31,6 +33,7 @@
 - [Implementing generic types in c](https://btmc.substack.com/p/implementing-generic-types-in-c)
 - [pyre-check.org](https://pyre-check.org/)
 - [Security sins](https://www.cppstories.com/2021/security-sins)
+
 ### Shell, Linux & CLI
 
 - [Failed to download repository information due to missing cdrom](https://askubuntu.com/questions/125111/failed-to-download-repository-information-due-to-missing-cdrom)
@@ -41,6 +44,7 @@
 - [Ncurses intro](https://invisible-island.net/ncurses/ncurses-intro.html)
 - [pico.sh](https://pico.sh/)
 - [The wizard and his shell](https://terminal.click/posts/2025/04/the-wizard-and-his-shell)
+
 ### Software design & engineering
 
 - [13 things I would have told myself](https://blog.autorouting.com/p/13-things-i-would-have-told-myself)
@@ -51,6 +55,7 @@
 - [Introduction](https://modelcontextprotocol.io/introduction)
 - [Need something sorted sleep on it 11fdf8453914](https://kevlinhenney.medium.com/need-something-sorted-sleep-on-it-11fdf8453914)
 - [Salesforce for engineers](https://retool.com/blog/salesforce-for-engineers)
+
 ### Web frontend & UI
 
 - [animejs.com](https://animejs.com/)
@@ -61,6 +66,7 @@
 - [polypane.app](https://polypane.app/)
 - [Scaffold](https://blog.littlepolygon.com/posts/scaffold)
 - [Tabsub](https://simon-frey.com/tabsub)
+
 ### Writing & developer communication
 
 - [Hn popularity](https://refactoringenglish.com/tools/hn-popularity)

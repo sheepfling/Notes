@@ -9,11 +9,10 @@ All three cases use the same conservative Euler equations, ideal-gas EOS, smooth
 velocity shell, Rusanov finite-volume flux, CFL controller, reflected boundaries,
 diagnostics, output schema, and plotting path.
 
-This repository is intentionally **not** a nuclear-weapon model. It contains no explosive
-chemistry, detonation-wave model, fissile or fusion reactions, neutron/gamma transport,
-weapon geometry, material-property database, or calibration against weapons-test data.
-It is suitable for learning, numerical-method development, dimensional consistency tests,
-and inert converging-shock studies.
+The models use normalized variables and illustrative coefficients. They are intended for
+learning, numerical-method development, dimensional-consistency tests, and verification of
+finite-difference, finite-volume, and backend-dispatch code. They do not include an external
+material-property database or calibration against a particular physical system.
 
 ## Why this replaces the earlier scripts
 
@@ -25,7 +24,7 @@ consistent discretization. Their most important problems were:
 - a density was passed where a volume was expected by the proposed solid EOS;
 - integer material IDs were used to index string-keyed dictionaries;
 - per-cell loops left scalar values that were later applied to whole arrays;
-- light-speed particles were placed inside the hydrodynamic CFL estimate;
+- incompatible transport-like state variables were mixed into the hydrodynamic CFL estimate;
 - the “advanced” version contained syntax errors and several invalid NumPy expressions;
 - global material constants were mutated during timestepping;
 - no meaningful verification problem or conservation check existed.
@@ -114,9 +113,19 @@ The CuPy test is skipped with a clear reason when CuPy or a usable CUDA device i
 
 ## Physics diagnostics gallery
 
-The radiant-wave plots now separate material properties, state fields, transfer budgets,
-wave energy, pressure-force diagnostics, and actual Euler pressure-driven motion. The guide
-is in [`examples/physics_diagnostics/PHYSICS_VISUALIZATION_GUIDE.md`](examples/physics_diagnostics/PHYSICS_VISUALIZATION_GUIDE.md).
+The coupled scalar-field plots separate material properties, state fields, transfer budgets,
+wave energy, pressure-like diagnostics, and actual Euler pressure-driven motion. The guide
+is in [`examples/physics_diagnostics/PHYSICS_VISUALIZATION_GUIDE.md`](examples/physics_diagnostics/PHYSICS_VISUALIZATION_GUIDE.md),
+and the terminology and equations are defined in
+[`examples/physics_diagnostics/PHYSICS_MODEL.md`](examples/physics_diagnostics/PHYSICS_MODEL.md).
+The reusable recipe layer—geometry masks, material schedules, and staged field
+couplings—is described in
+[`examples/physics_diagnostics/EXPERIMENT_RECIPES.md`](examples/physics_diagnostics/EXPERIMENT_RECIPES.md).
+The common recipe/runtime/driver structure is described in
+[`examples/physics_diagnostics/EXPERIMENT_ARCHITECTURE.md`](examples/physics_diagnostics/EXPERIMENT_ARCHITECTURE.md).
+The checked-in JSON parameter sets make material properties, geometry, source
+strength, insertion timing, numerical limits, and rendering cadence reproducible
+and adjustable without modifying an example driver.
 
 Generate a small backend-agnostic radiant-wave gallery with captured budgets and animations:
 
@@ -129,8 +138,8 @@ python examples/physics_diagnostics/run_gallery.py \
 ```
 
 Use `--backend numpy` for CPU-only output or `--backend cupy` to require the CUDA GPU.
-The runner generates the 1D radiant study, an asymmetric spherical-shell 3D gallery, the reactive-Euler gallery, and
-the pressure-semantics comparison in one cross-platform command.
+The runner generates the 1D scalar-wave study, an asymmetric spherical-shell 3D gallery,
+the reactive-Euler gallery, and the pressure-semantics comparison in one cross-platform command.
 
 Generate the reactive-Euler pressure/acceleration gallery:
 
@@ -143,32 +152,122 @@ python examples/backend_agnostic/reactive_pressure_demo.py \
   --output artifacts/converging-flow/physics-diagnostics/reactive_pressure
 ```
 
+Generate the finite-source, pressure-wave, and phase-transition demonstration:
+
+```bash
+python examples/backend_agnostic/impulsive_phase_transition_demo.py \
+  --backend auto \
+  --resolution 768 \
+  --final-time 0.18 \
+  --frames 121 \
+  --fps 18 \
+  --output artifacts/converging-flow/impulsive-phase-transition
+```
+
+This separate normalized Euler model starts with a localized finite positive-feedback
+source. Its energy release raises equation-of-state pressure, which drives material motion.
+A smooth temperature-threshold phase fraction consumes latent energy as it transforms. The
+generated profiles, space-time map, energy budget, and GIF distinguish source progress,
+pressure, temperature proxy, material velocity, and phase fraction. It is a generic two-state
+continuum demonstration, not a calibrated phase diagram or material-specific simulation. The
+saved `scenario_validation` records the expected source → pressure → phase milestone order,
+bounded fields, outward motion, and normalized energy closure; the example exits with an error
+if that scenario is not achieved.
+
 The visualization layer moves only requested frames and integrated scalar budgets to CPU for
 plotting; the simulation arrays remain on NumPy or CuPy during integration.
 
 Each captured radiant-wave frame also records a dimensionless `balance_factor`, defined as
 normalized source strength divided by normalized sink strength. It is an observational
-source-to-loss diagnostic for this toy model—not a nuclear criticality metric, conserved
-energy law, or automatic controller. The gallery writes `balance_factor_history.png` and
+source-to-loss diagnostic for this toy model—not a stability threshold, conserved-energy
+law, or automatic controller. The gallery writes `balance_factor_history.png` and
 stores the values in `radiant_wave_state.npz` and `radiant_wave_summary.json`.
 
-To exercise a timed generic absorber insertion and relaxation run:
+To exercise a timed generic loss-material insertion and relaxation run:
 
 ```bash
 python examples/physics_diagnostics/run_absorber_relaxation.py \
   --backend auto \
+  --resolution 48 \
   --final-time 0.06 \
   --insertion-time 0.03 \
-  --frames 61 \
+  --frames 121 \
+  --fps 16 \
   --output artifacts/converging-flow/absorber-relaxation
 ```
 
-The `--frames` value should be an integer (for example `9`). The run starts with an open
-spherical shell, inserts a generic absorbing right-half region at the chosen time, and saves
-`absorber_insertion.png`, `balance_factor_history.png`, the frame-level material masks, and
-the balance history for the relaxation phase. The default source and absorber scales are
-intentionally exaggerated to make the buildup and reflector-versus-absorber contrast visible;
-use `--source-scale` and `--absorber-scale` to tune this generic visualization.
+The `--frames` value should be an integer (for example `81`). The run starts with an open
+spherical shell, inserts a generic loss-material right-half region at the chosen time, and saves
+`absorber_insertion.png`, `balance_factor_history.png`,
+`energy_budget_phase_history.png`,
+`material_insertion_evolution.gif`, the frame-level material masks, and the balance history
+for the relaxation phase. The default source and loss scales are intentionally exaggerated
+to make the buildup and reflector-versus-loss-material contrast visible; use `--source-scale` and
+`--absorber-scale` to tune this generic visualization. Lower `--fps` values make the GIFs last
+longer while preserving the same simulated time span. The richer GPU profile uses a 48³
+grid, 121 captured slices, and 16 FPS playback; use a smaller resolution and frame count
+for CPU-only runs.
+
+To animate a perforated generic reactive block with a 6×4 grid of axial open channels,
+a reflective outer shell, and loss rods moving to 50% channel depth:
+
+```bash
+python examples/physics_diagnostics/run_channel_block_regulation.py \
+  --backend auto \
+  --resolution 56 \
+  --final-time 0.24 \
+  --rod-start 0.05 \
+  --rod-end 0.12 \
+  --rod-fraction 0.50 \
+  --frames 141 \
+  --fps 18 \
+  --output artifacts/converging-flow/channel-block-regulation
+```
+
+This is a normalized heat-producing and damped-wave visualization only. It uses illustrative
+dimensionless coefficients rather than a calibrated material model. It saves
+`channel_block_geometry.png`, a longitudinal material-insertion GIF, and the
+source/sink and thermal-budget histories so the delayed approach to balance is inspectable.
+
+To run that settled channel-block stage followed by a two-dimensional finite impulse,
+pressure-wave, and phase-transition event:
+
+```bash
+python examples/physics_diagnostics/run_channel_block_impulsive_event.py \
+  --backend auto \
+  --resolution 48 \
+  --final-time 0.16 \
+  --frames 101 \
+  --fps 16 \
+  --output artifacts/converging-flow/channel-block-impulsive-event
+```
+
+The precursor's final activity, heat, and channel occupancy form a normalized 2D
+source-permission map. The subsequent Euler simulation independently generates the pressure,
+velocity, and phase-transition response. This is an explicit staged visualization handoff—not
+a claim that the two solvers share calibrated material properties.
+
+To keep the full perforated-block geometry and run the finite event in 3D at a
+chosen side/corner after regulation:
+
+```bash
+python examples/physics_diagnostics/run_perforated_block_3d_event.py \
+  --backend cupy \
+  --resolution 48 \
+  --final-time 0.16 \
+  --event-time 0.035 \
+  --event-center -0.50 0.52 -0.30 \
+  --frames 101 \
+  --fps 16 \
+  --output artifacts/converging-flow/perforated-block-3d-event
+```
+
+This one driver first completes the scheduled 3D material regulation stage,
+then uses the settled activity, heat, scalar-wave-pressure proxy, and active
+material map to gate a localized finite Euler event on the same 3D grid. The
+Euler stage computes thermodynamic pressure, temperature, velocity, and phase
+fields. It is a documented normalized handoff, rather than a calibrated shared
+multiphysics material law.
 
 ## Run one case
 
@@ -210,8 +309,12 @@ The suite also writes cross-dimensional radial-profile comparisons.
 ## Reaction-diffusion and damped-wave experiments
 
 The package also contains a generic autocatalytic concentration, diffusive heat field,
-and damped scalar wave experiment. It is a separate numerical model from the Euler
-solver and does not represent nuclear reactions or weapon physics.
+and damped scalar wave experiment. It is a separate normalized numerical model from the
+Euler solver.
+
+The field definitions, coefficient meanings, wave-energy derivation, interface formulas,
+source/sink balance, channel geometry, and numerical splitting scheme are documented in
+[`examples/physics_diagnostics/PHYSICS_MODEL.md`](examples/physics_diagnostics/PHYSICS_MODEL.md).
 
 Run one case with the portable NumPy backend:
 
@@ -269,7 +372,6 @@ PYTHONPATH=src python benchmarks/benchmark_reaction_backends.py
 
 The committed example timings are machine-specific and exclude one-time Numba compilation.
 
-
 ## Radiant-wave autocatalytic experiment
 
 The `radiant-wave-run` command adds an asymmetric heterogeneous medium without
@@ -306,16 +408,16 @@ The default first-axis material layout is:
 
 - a high-impedance, weakly damped reflector on the negative side;
 - a neutral central slab containing the initial Gaussian activity seed;
-- an impedance-matched, strongly damped absorber on the positive side.
+- an impedance-matched, strongly damped loss insert on the positive side.
 
 Material coefficients enter conservative face fluxes through harmonic means. This
 lets interface reflection emerge from impedance contrast instead of manually bouncing
-neighbor indices. The absorber uses matched impedance plus continuous damping so that
+neighbor indices. The loss insert uses matched impedance plus continuous damping so that
 it removes wave energy without producing a large artificial interface reflection.
 
 The reported `wave_pressure` is a normalized scalar-wave energy-pressure diagnostic.
 It is useful for comparing fields and constructing phenomenological feedback, but it is
-not an electromagnetic radiation-pressure calculation or a fluid momentum equation.
+not a mechanical pressure calculation or a fluid momentum equation.
 The derived `force_magnitude` is `|grad(wave_pressure)|` and is likewise diagnostic.
 
 ### Timestep-independent decay
@@ -324,7 +426,6 @@ The old snippets applied factors such as `0.95` once per step, which changes the
 decay whenever `dt` changes. The coherent model stores decay as a continuous rate, for
 example `-lambda * field`. Over a time interval `dt`, the corresponding exact isolated
 decay factor would be `exp(-lambda * dt)`.
-
 
 ## Reactive Euler pressure coupling
 
@@ -357,8 +458,7 @@ PYTHONPATH=src python examples/backend_agnostic/reactive_pressure_demo.py \
 ```
 
 This demonstration uses a prescribed generic progress-rate profile. It is numerical
-infrastructure for combustion-like source coupling, not a calibrated chemistry,
-detonation, propulsion, or weapons model.
+infrastructure for source coupling, not a calibrated process model.
 
 ## Numerical model
 
@@ -420,6 +520,6 @@ should remain generic and independently testable:
 5. optional viscosity and thermal diffusion with their own timestep constraints;
 6. checkpoint/restart and chunked output for larger 3D runs.
 
-Do not add radiation, phase transitions, or reaction source terms until the underlying
+Do not add unverified phase transitions or reaction source terms until the underlying
 hydrodynamics passes standard verification and convergence tests. Complex source terms do
 not repair an incorrect conservation law.

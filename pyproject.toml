@@ -9,6 +9,7 @@ description = "Validation tooling and numerical experiments for the Notes reposi
 requires-python = ">=3.12"
 dependencies = [
     "matplotlib>=3.9",
+    "mdrepo==0.0.1a0",
     "numpy>=2.0",
     "pillow>=10.4",
     "scipy>=1.13",
@@ -27,6 +28,8 @@ dev = [
     "pytest-cov>=6.0",
     "PyYAML>=6.0",
     "ruff>=0.12",
+    "rumdl>=0.2.49,<0.3",
+    "scope-markers==0.0.1a0",
     "scipy-stubs==1.18.0.1",
     "shapely>=2.1",
     "types-PyYAML>=6.0.12",
@@ -88,5 +91,35 @@ pythonVersion = "3.12"
 typeCheckingMode = "basic"
 reportMissingTypeStubs = false
 
+[tool.ruff.lint.per-file-ignores]
+"tests/test_scrubbed.py" = ["FLY002"]
+
 [tool.uv]
 package = true
+
+[tool.mdrepo]
+include = ["*.md", "**/*.md"]
+exclude = [
+    ".git/**",
+    "inbox/**",
+    ".venv*/**",
+    ".codex_pydeps/**",
+    ".pip-cache/**",
+    ".pre-commit-cache/**",
+    ".pytest_cache/**",
+    ".ruff_cache/**",
+    ".tmp/**",
+    ".uv-cache/**",
+    "**/__pycache__/**",
+    "artifacts/**",
+    "build/**",
+    "dist/**",
+]
+
+[tool.mdrepo.links]
+check-missing-targets = false
+check-case = true
+
+[tool.mdrepo.orphans]
+enabled = false
+roots = ["README.md"]

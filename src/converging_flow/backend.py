@@ -4,16 +4,16 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from importlib import import_module
 from importlib.util import find_spec
-from typing import Any, Literal, TypeAlias, cast
+from typing import Any, Literal, cast
 
 import numpy as np
 
 BackendName = Literal["auto", "numpy", "cupy"]
 ResolvedBackendName = Literal["numpy", "cupy"]
-Array: TypeAlias = Any
-ArrayModule: TypeAlias = Any
-LinearOperatorFactory: TypeAlias = Callable[..., Any]
-IterativeSolver: TypeAlias = Callable[..., tuple[Array, int]]
+type Array = Any
+type ArrayModule = Any
+type LinearOperatorFactory = Callable[..., Any]
+type IterativeSolver = Callable[..., tuple[Array, int]]
 
 
 @dataclass(frozen=True, slots=True)

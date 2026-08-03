@@ -1,11 +1,9 @@
 from __future__ import annotations
 
-from typing import TypeAlias
-
 import numpy as np
 from numpy.typing import NDArray
 
-FloatArray: TypeAlias = NDArray[np.float64]
+type FloatArray = NDArray[np.float64]
 
 
 def primitive_to_conservative(
@@ -78,7 +76,7 @@ def _physical_flux(
     density_floor: float,
     pressure_floor: float,
 ) -> FloatArray:
-    density, velocity, pressure = conservative_to_primitive(
+    _density, velocity, pressure = conservative_to_primitive(
         state,
         gamma,
         density_floor,

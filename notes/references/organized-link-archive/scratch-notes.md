@@ -8,6 +8,7 @@
 - Fix recursive logs — prints other
 - `bat`, `fd`, `hexyl`, `hyperfine`
 - `sharkdp`
+
 ```bash
 # If not running interactively, exit early
 case "$-" in

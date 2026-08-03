@@ -1,8 +1,7 @@
 from __future__ import annotations
 
 import argparse
-import json
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import cast
 
@@ -21,6 +20,7 @@ from converging_flow.backend import (
     BackendName,
     get_array_backend,
 )
+from converging_flow.example_runtime import capture_times, write_summary
 from converging_flow.reactive_euler import (
     ReactiveEulerConfig,
     advance_reactive_euler_split,
@@ -28,6 +28,7 @@ from converging_flow.reactive_euler import (
     reactive_conservative_to_primitive,
     stable_reactive_timestep,
 )
+from converging_flow.recipes import reactive_pressure_config
 
 FloatArray = NDArray[np.float64]
 
@@ -73,7 +74,7 @@ def _save_final_coupling_panel(
     config: ReactiveEulerConfig,
     output_directory: Path,
 ) -> None:
-    temperature_proxy = frame.pressure / frame.density
+    temperature_proxy = frame.pressure / (frame.density * config.gas_constant)
     internal_energy = frame.pressure / (config.gamma - 1.0)
     kinetic_energy = 0.5 * frame.density * frame.velocity * frame.velocity
 
@@ -83,7 +84,7 @@ def _save_final_coupling_panel(
         (frame.pressure, "thermodynamic pressure"),
         (frame.velocity, "fluid velocity"),
         (frame.density, "density"),
-        (temperature_proxy, "temperature proxy p/ρ"),
+        (temperature_proxy, "ideal-gas temperature p/(ρR)"),
         (internal_energy + kinetic_energy, "total energy density"),
     )
     for axes, (values, label) in zip(
@@ -372,14 +373,19 @@ def run_demo(
     final_time: float = 0.08,
     snapshot_count: int = 33,
     fps: int = 12,
+    specific_heat: float = 2.5,
+    gas_constant: float = 1.0,
+    heat_release_per_mass: float = 0.75,
+    source_width: float = 0.10,
 ) -> None:
     if snapshot_count < 2:
         raise ValueError("snapshot_count must be at least two")
     ####
     backend = get_array_backend(requested_backend)
-    config = ReactiveEulerConfig(
-        gamma=1.4,
-        heat_release_per_mass=0.75,
+    config = reactive_pressure_config(
+        specific_heat=specific_heat,
+        gas_constant=gas_constant,
+        heat_release_per_mass=heat_release_per_mass,
     )
     half_extent = 1.0
     spacing = (2.0 * half_extent / resolution,)
@@ -403,11 +409,10 @@ def run_demo(
         backend,
     )
 
-    source_width = 0.10
     source_profile = backend.xp.exp(
         -0.5 * (coordinate / source_width) ** 2
     )
-    target_times = np.linspace(0.0, final_time, snapshot_count)
+    target_times = capture_times(final_time, snapshot_count)
     frames: list[ReactiveFrame] = [
         _capture_frame(
             0.0,
@@ -521,6 +526,7 @@ def run_demo(
         "final_time": time,
         "steps": steps,
         "frames": len(frame_tuple),
+        "thermal_model": asdict(config),
         "maximum_progress": float(np.max(final_frame.progress)),
         "maximum_pressure": float(np.max(final_frame.pressure)),
         "minimum_velocity": float(np.min(final_frame.velocity)),
@@ -531,10 +537,7 @@ def run_demo(
             "body-force term is inserted."
         ),
     }
-    (output_directory / "reactive_pressure_summary.json").write_text(
-        json.dumps(summary, indent=2) + "\n",
-        encoding="utf-8",
-    )
+    write_summary(output_directory / "reactive_pressure_summary.json", summary)
 ####
 
 
@@ -549,6 +552,10 @@ def main() -> int:
     parser.add_argument("--final-time", type=float, default=0.08)
     parser.add_argument("--frames", type=int, default=33)
     parser.add_argument("--fps", type=int, default=12)
+    parser.add_argument("--specific-heat", type=float, default=2.5)
+    parser.add_argument("--gas-constant", type=float, default=1.0)
+    parser.add_argument("--heat-release-per-mass", type=float, default=0.75)
+    parser.add_argument("--source-width", type=float, default=0.10)
     parser.add_argument(
         "--output",
         type=Path,
@@ -562,6 +569,10 @@ def main() -> int:
         final_time=arguments.final_time,
         snapshot_count=arguments.frames,
         fps=arguments.fps,
+        specific_heat=arguments.specific_heat,
+        gas_constant=arguments.gas_constant,
+        heat_release_per_mass=arguments.heat_release_per_mass,
+        source_width=arguments.source_width,
     )
     return 0
 ####

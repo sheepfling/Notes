@@ -6,16 +6,16 @@ import argparse
 import os
 import subprocess
 import sys
+from collections.abc import Sequence
 from pathlib import Path
-from typing import Sequence
 
 from converging_flow.cli import main as cli_main
-from converging_flow.radiant_output import save_radiant_wave_result
-from converging_flow.radiant_plotting import (
-    save_radiant_wave_animations,
-    save_radiant_wave_plots,
+from converging_flow.example_runtime import (
+    ArtifactPlan,
+    configure_backend_cache,
+    run_radiant_artifacts,
 )
-from converging_flow.radiant_wave import RadiantWaveConfig, run_radiant_wave
+from converging_flow.recipes import asymmetric_shell_config
 
 
 def _repository_root() -> Path:
@@ -62,23 +62,20 @@ def _run_spherical_shell(
     frames: int,
     output: Path,
 ) -> None:
-    config = RadiantWaveConfig(
-        dimensions=3,
-        resolution=(resolution,) * 3,
-        final_time=final_time,
+    config = asymmetric_shell_config(
+        resolution,
         backend=backend,  # type: ignore[arg-type]
-        material_layout="spherical-shell",
+        final_time=final_time,
     )
     print(
         f"running asymmetric spherical-shell 3D {config.resolution} "
         f"to t={config.final_time:.4f}; backend={backend}",
         flush=True,
     )
-    result = run_radiant_wave(config, snapshot_count=frames)
-    save_radiant_wave_result(result, output)
-    save_radiant_wave_plots(result, output)
-    if result.frames:
-        save_radiant_wave_animations(result, output, fps=12)
+    result = run_radiant_artifacts(
+        config,
+        ArtifactPlan(output, frames=frames, fps=12),
+    )
     print(
         f"completed in {result.steps} steps on {result.resolved_backend}; "
         f"frames={len(result.frames)}",
@@ -94,8 +91,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     repository_root = _repository_root()
     output_root = arguments.output
     output_root.mkdir(parents=True, exist_ok=True)
-    cache = repository_root / ".tmp" / "cupy-cache"
-    cache.mkdir(parents=True, exist_ok=True)
+    cache = configure_backend_cache(repository_root)
     environment = os.environ.copy()
     environment.setdefault("CUPY_CACHE_DIR", str(cache.resolve()))
 

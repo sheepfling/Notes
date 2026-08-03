@@ -13,7 +13,6 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import unquote, urlsplit
 from urllib.request import Request, urlopen
 
-
 MARKDOWN_LINK = re.compile(r"(?<!!)\[[^\]]*\]\(\s*<?([^)>\s]+)", re.MULTILINE)
 REFERENCE_LINK = re.compile(r"^\s*\[[^\]]+\]:\s*(\S+)", re.MULTILINE)
 HEADING = re.compile(r"^#{1,6}\s+(.+?)\s*#*\s*$", re.MULTILINE)

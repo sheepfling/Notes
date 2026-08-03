@@ -14,6 +14,7 @@ def test_runner_builds_portable_suite_commands(
     def fake_cli_main(arguments: list[str]) -> int:
         calls.append(arguments)
         return 0
+    ####
 
     monkeypatch.setattr(runner, "cli_main", fake_cli_main)
 
@@ -41,3 +42,4 @@ def test_runner_builds_portable_suite_commands(
     assert all("--backend" in call for call in calls)
     assert calls[0][calls[0].index("--backend") + 1] == "cupy"
     assert calls[1][calls[1].index("--backend") + 1] == "numba"
+####

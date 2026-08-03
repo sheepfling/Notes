@@ -3,6 +3,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any
 
+import numpy as np
+
 from converging_flow.backend import Array, ArrayBackend
 
 
@@ -17,6 +19,8 @@ class ReactiveEulerConfig:
     """
 
     gamma: float = 1.4
+    gas_constant: float = 1.0
+    specific_heat: float = 2.5
     heat_release_per_mass: float = 1.0
     density_floor: float = 1.0e-8
     pressure_floor: float = 1.0e-8
@@ -24,6 +28,17 @@ class ReactiveEulerConfig:
     def __post_init__(self) -> None:
         if self.gamma <= 1.0:
             raise ValueError("gamma must be greater than one")
+        ####
+        if self.gas_constant <= 0.0 or self.specific_heat <= 0.0:
+            raise ValueError("gas_constant and specific_heat must be positive")
+        ####
+        if not np.isclose(
+            self.gamma,
+            1.0 + self.gas_constant / self.specific_heat,
+            rtol=1.0e-12,
+            atol=1.0e-12,
+        ):
+            raise ValueError("gamma must equal 1 + gas_constant / specific_heat")
         ####
         if self.heat_release_per_mass < 0.0:
             raise ValueError("heat_release_per_mass cannot be negative")

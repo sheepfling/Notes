@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import TypeAlias
 
 import numpy as np
 from numpy.typing import NDArray
@@ -18,7 +17,7 @@ from converging_flow.euler_backend import (
     stable_timestep_backend,
 )
 
-IntArray: TypeAlias = NDArray[np.int64]
+type IntArray = NDArray[np.int64]
 
 
 @dataclass(frozen=True, slots=True)

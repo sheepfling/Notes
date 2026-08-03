@@ -2,14 +2,14 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from importlib import import_module
-from typing import Any, Literal, Protocol, TypeAlias, cast
+from typing import Any, Literal, Protocol, cast
 
 import numpy as np
 from numpy.typing import NDArray
 
 ReactionDimension = Literal[1, 2, 3]
 ReactionBackend = Literal["numpy", "numba"]
-FloatArray: TypeAlias = NDArray[np.float64]
+type FloatArray = NDArray[np.float64]
 
 
 @dataclass(frozen=True, slots=True)

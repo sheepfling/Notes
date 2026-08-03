@@ -13,9 +13,11 @@
 - [Fresh hell](https://scp-wiki.wikidot.com/fresh-hell)
 - [m.twitch.tv](https://m.twitch.tv/rosegardencat/home)
 - [Sussman reading list](http://aurellem.org/thoughts/html/sussman-reading-list.html)
+
 ### Film & cinematography
 
 - [Michael mann collateral miami vice interview cinematography 1235035511](https://www.indiewire.com/features/interviews/michael-mann-collateral-miami-vice-interview-cinematography-1235035511)
+
 ### Television & streaming
 
 - [GACPlurrvdXLs8](https://tv.garden/et/gACPlurrvdXLs8)

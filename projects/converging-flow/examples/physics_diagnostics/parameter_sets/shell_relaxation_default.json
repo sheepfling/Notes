@@ -1,0 +1,35 @@
+{
+  "resolution": 48,
+  "backend": "auto",
+  "half_extent": 1.0,
+  "shell_radius_fraction": 0.72,
+  "final_time": 0.06,
+  "insertion_time": 0.03,
+  "source_scale": 3.0,
+  "loss_scale": 12.0,
+  "source": {
+    "seed_width": 0.38,
+    "seed_amplitude": 0.85,
+    "heat_source_rate": 1.5,
+    "heat_feedback": 0.25,
+    "wave_source_rate": 0.9,
+    "wave_pressure_feedback": 0.08
+  },
+  "materials": {
+    "reflector": {
+      "wave_density": 4.0,
+      "wave_stiffness": 1.69,
+      "wave_damping": 0.08
+    },
+    "active_medium": {
+      "specific_heat": 1.0,
+      "thermal_conductivity": 0.025
+    },
+    "loss_material": {
+      "specific_heat": 1.4,
+      "loss_rate": 2.8,
+      "heat_loss_rate": 2.2,
+      "wave_damping": 4.5
+    }
+  }
+}

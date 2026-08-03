@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import argparse
 import os
+from collections.abc import Sequence
 from pathlib import Path
-from typing import Sequence
 
 from converging_flow.cli import main as cli_main
 
@@ -43,6 +43,7 @@ def _build_parser() -> argparse.ArgumentParser:
         help="write numerical outputs without images or animations",
     )
     return parser
+####
 
 
 def _run_step(arguments: list[str]) -> None:
@@ -50,6 +51,8 @@ def _run_step(arguments: list[str]) -> None:
     result = cli_main(arguments)
     if result:
         raise SystemExit(result)
+    ####
+####
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -58,11 +61,13 @@ def main(argv: Sequence[str] | None = None) -> int:
         cache = Path(".tmp") / "cupy-cache"
         cache.mkdir(parents=True, exist_ok=True)
         os.environ["CUPY_CACHE_DIR"] = str(cache.resolve())
+    ####
 
     if arguments.full_resolution:
         n1, n2, n3, final_time = 512, 128, 40, 0.18
     else:
         n1, n2, n3, final_time = 64, 24, 12, 0.02
+    ####
 
     output_root = arguments.output_root
     common = [] if not arguments.no_plots else ["--no-plots"]
@@ -120,7 +125,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
     print(f"Artifacts written under {output_root}")
     return 0
+####
 
 
 if __name__ == "__main__":
     raise SystemExit(main())
+####

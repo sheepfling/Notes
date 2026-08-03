@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
-from typing import Literal, TypeAlias, cast
+from dataclasses import dataclass, field, replace
+from typing import Literal, cast
 
 import numpy as np
 from numpy.typing import NDArray
@@ -13,21 +13,33 @@ from converging_flow.backend import (
     ResolvedBackendName,
     get_array_backend,
 )
+from converging_flow.geometry import perforated_block_masks
 from converging_flow.implicit import (
     DiffusionMethod,
     LinearSolverConfig,
     advance_diffusion,
 )
+from converging_flow.material_events import (
+    MaterialEventSchedule,
+    MaterialPropertyRamp,
+)
 from converging_flow.stencils import conservative_flux_divergence as _flux_divergence
 
 RadiantDimension = Literal[1, 2, 3]
-MaterialLayout = Literal["slab", "spherical-shell", "spherical-shell-open"]
-FloatArray: TypeAlias = NDArray[np.float64]
-IntegerArray: TypeAlias = NDArray[np.int8]
+MaterialLayout = Literal[
+    "slab",
+    "spherical-shell",
+    "spherical-shell-open",
+    "channel-block",
+]
+type FloatArray = NDArray[np.float64]
+type IntegerArray = NDArray[np.int8]
+type BoolArray = NDArray[np.bool_]
 
 REFLECTOR_ID = np.int8(0)
 NEUTRAL_ID = np.int8(1)
 ABSORBER_ID = np.int8(2)
+CHANNEL_ID = np.int8(3)
 
 
 @dataclass(frozen=True, slots=True)
@@ -70,10 +82,12 @@ class MaterialProperties:
         ####
     ####
 
+
     @property
     def wave_speed(self) -> float:
         return float(np.sqrt(self.wave_stiffness / self.wave_density))
     ####
+
 
     @property
     def wave_impedance(self) -> float:
@@ -98,6 +112,9 @@ def default_reflector() -> MaterialProperties:
     )
 ####
 
+
+
+
 def default_neutral() -> MaterialProperties:
     """Reference material for the central transition slab."""
     return MaterialProperties(
@@ -112,6 +129,8 @@ def default_neutral() -> MaterialProperties:
         wave_damping=0.20,
     )
 ####
+
+
 
 
 def default_absorber() -> MaterialProperties:
@@ -130,13 +149,33 @@ def default_absorber() -> MaterialProperties:
 ####
 
 
+
+
+def default_channel() -> MaterialProperties:
+    """Low-coupling open channel used by the generic channel-block demo."""
+    return MaterialProperties(
+        activity_diffusivity=0.020,
+        growth_rate=0.0,
+        loss_rate=0.35,
+        thermal_conductivity=0.060,
+        heat_capacity=0.60,
+        heat_loss_rate=0.25,
+        wave_density=1.0,
+        wave_stiffness=0.65**2,
+        wave_damping=0.08,
+    )
+####
+
+
+
+
 @dataclass(frozen=True, slots=True)
 class RadiantWaveConfig:
     """Configuration for a heterogeneous autocatalytic scalar-wave demo.
 
-    All values are normalized. The wave field is a generic scalar wave, not an
-    electromagnetic or radiation-transport solution. ``wave_pressure_feedback``
-    is therefore a phenomenological coupling, not a mechanical pressure law.
+    All values are normalized. The wave field is a generic scalar wave, not a
+    transport equation. ``wave_pressure_feedback`` is therefore a phenomenological
+    coupling, not a mechanical pressure law.
 
     ``backend`` selects NumPy CPU arrays, optional CuPy GPU arrays, or automatic
     device selection. ``diffusion_method`` controls only activity and heat
@@ -148,9 +187,19 @@ class RadiantWaveConfig:
     backend: BackendName = "numpy"
     diffusion_method: DiffusionMethod = "auto"
     material_layout: MaterialLayout = "slab"
+    initial_material_ids: IntegerArray | None = None
+    material_events: MaterialEventSchedule = field(
+        default_factory=MaterialEventSchedule
+    )
+    # Legacy named controls remain supported for existing callers.  New
+    # experiments should use ``initial_material_ids`` and ``material_events``.
     absorber_insertion_time: float | None = None
+    rod_insertion_start_time: float | None = None
+    rod_insertion_end_time: float | None = None
+    rod_final_fraction: float = 0.50
+    rod_thermal_exchange: float = 0.0
     implicit_switch_ratio: float = 0.25
-    linear_solver: LinearSolverConfig = LinearSolverConfig()
+    linear_solver: LinearSolverConfig = field(default_factory=LinearSolverConfig)
     half_extent: float = 1.0
     final_time: float = 1.0
     max_steps: int = 100_000
@@ -163,9 +212,10 @@ class RadiantWaveConfig:
     heat_feedback: float = 0.25
     wave_source_rate: float = 0.90
     wave_pressure_feedback: float = 0.08
-    reflector: MaterialProperties = default_reflector()
-    neutral: MaterialProperties = default_neutral()
-    absorber: MaterialProperties = default_absorber()
+    reflector: MaterialProperties = field(default_factory=default_reflector)
+    neutral: MaterialProperties = field(default_factory=default_neutral)
+    absorber: MaterialProperties = field(default_factory=default_absorber)
+    channel: MaterialProperties = field(default_factory=default_channel)
 
     def __post_init__(self) -> None:
         if self.dimensions not in (1, 2, 3):
@@ -182,29 +232,105 @@ class RadiantWaveConfig:
         ####
         if self.diffusion_method not in ("auto", "explicit", "crank-nicolson"):
             raise ValueError(
-                "diffusion_method must be 'auto', 'explicit', or "
-                "'crank-nicolson'"
+                "diffusion_method must be 'auto', 'explicit', or 'crank-nicolson'"
             )
         ####
         if self.material_layout not in (
             "slab",
             "spherical-shell",
             "spherical-shell-open",
+            "channel-block",
         ):
             raise ValueError(
                 "material_layout must be 'slab', 'spherical-shell', "
-                "or 'spherical-shell-open'"
+                "'spherical-shell-open', or 'channel-block'"
             )
         ####
         if self.material_layout != "slab" and self.dimensions != 3:
             raise ValueError("spherical-shell material layout requires 3D")
         ####
+        if self.initial_material_ids is not None and (
+            self.initial_material_ids.shape != self.resolution
+        ):
+            raise ValueError("initial_material_ids must match resolution")
+        ####
+        if self.initial_material_ids is not None and np.any(
+            (self.initial_material_ids < REFLECTOR_ID)
+            | (self.initial_material_ids > CHANNEL_ID)
+        ):
+            raise ValueError("initial_material_ids must use configured material IDs")
+        ####
+        event_shapes = [
+            event.region.shape for event in self.material_events.replacements
+        ] + [event.region.shape for event in self.material_events.property_ramps]
+        if any(shape != self.resolution for shape in event_shapes):
+            raise ValueError("material event regions must match resolution")
+        ####
+        if any(
+            event.target_material_id
+            not in (
+                int(REFLECTOR_ID),
+                int(NEUTRAL_ID),
+                int(ABSORBER_ID),
+                int(CHANNEL_ID),
+            )
+            for event in self.material_events.replacements
+        ):
+            raise ValueError("material events must use a configured material ID")
+        ####
+        if any(
+            event.ramp.end_time > self.final_time
+            for event in (
+                *self.material_events.replacements,
+                *self.material_events.property_ramps,
+            )
+        ):
+            raise ValueError("material events must end within the run")
+        ####
+        if self.material_events.replacements and (
+            self.absorber_insertion_time is not None
+            or self.rod_insertion_start_time is not None
+        ):
+            raise ValueError(
+                "do not mix material_events with legacy insertion controls"
+            )
+        ####
         if self.absorber_insertion_time is not None and not (
             0.0 < self.absorber_insertion_time < self.final_time
         ):
-            raise ValueError(
-                "absorber_insertion_time must lie strictly inside the run"
-            )
+            raise ValueError("absorber_insertion_time must lie strictly inside the run")
+        ####
+        rod_times = (
+            self.rod_insertion_start_time,
+            self.rod_insertion_end_time,
+        )
+        if any(value is not None for value in rod_times):
+            if self.material_layout != "channel-block":
+                raise ValueError(
+                    "rod insertion is available only for the channel-block layout"
+                )
+            ####
+            if any(value is None for value in rod_times):
+                raise ValueError("rod insertion requires both a start and an end time")
+            ####
+            assert self.rod_insertion_start_time is not None
+            assert self.rod_insertion_end_time is not None
+            if not (
+                0.0
+                <= self.rod_insertion_start_time
+                < self.rod_insertion_end_time
+                <= self.final_time
+            ):
+                raise ValueError(
+                    "rod insertion times must lie inside the run and be ordered"
+                )
+            ####
+        ####
+        if not 0.0 <= self.rod_final_fraction <= 1.0:
+            raise ValueError("rod_final_fraction must lie between zero and one")
+        ####
+        if self.rod_thermal_exchange < 0.0:
+            raise ValueError("rod_thermal_exchange cannot be negative")
         ####
         if not 0.0 < self.implicit_switch_ratio <= 1.0:
             raise ValueError("implicit_switch_ratio must lie in (0, 1]")
@@ -244,11 +370,15 @@ class RadiantWaveConfig:
         ####
     ####
 
+
     @property
     def spacing(self) -> tuple[float, ...]:
         return tuple(2.0 * self.half_extent / size for size in self.resolution)
     ####
 ####
+
+
+
 
 
 @dataclass(frozen=True, slots=True)
@@ -266,6 +396,8 @@ class MaterialFields:
 ####
 
 
+
+
 @dataclass(frozen=True, slots=True)
 class DeviceMaterialFields:
     material_id: Array
@@ -281,6 +413,8 @@ class DeviceMaterialFields:
 ####
 
 
+
+
 @dataclass(frozen=True, slots=True)
 class RadiantWaveDiagnostics:
     time: float
@@ -293,6 +427,8 @@ class RadiantWaveDiagnostics:
     maximum_wave_pressure: float
     maximum_force_magnitude: float
 ####
+
+
 
 
 @dataclass(frozen=True, slots=True)
@@ -313,9 +449,11 @@ class RadiantWaveBudget:
     source_strength: float
     sink_strength: float
     balance_factor: float
-    material_wave_energy: tuple[float, float, float]
-    material_wave_dissipation_power: tuple[float, float, float]
+    material_wave_energy: tuple[float, float, float, float]
+    material_wave_dissipation_power: tuple[float, float, float, float]
 ####
+
+
 
 
 @dataclass(frozen=True, slots=True)
@@ -329,8 +467,12 @@ class RadiantWaveFrame:
     wave_pressure: FloatArray
     material_id: IntegerArray
     absorber_inserted: bool
+    absorber_fraction: float
+    material_event_progress: tuple[float, ...]
     budget: RadiantWaveBudget
 ####
+
+
 
 
 @dataclass(frozen=True, slots=True)
@@ -352,8 +494,13 @@ class RadiantWaveResult:
     initial_diagnostics: RadiantWaveDiagnostics
     final_diagnostics: RadiantWaveDiagnostics
     absorber_inserted: bool = False
+    absorber_fraction: float = 0.0
+    material_event_names: tuple[str, ...] = ()
+    material_event_progress: tuple[float, ...] = ()
     frames: tuple[RadiantWaveFrame, ...] = ()
 ####
+
+
 
 
 def cell_centers(config: RadiantWaveConfig) -> tuple[FloatArray, ...]:
@@ -372,6 +519,8 @@ def cell_centers(config: RadiantWaveConfig) -> tuple[FloatArray, ...]:
 ####
 
 
+
+
 def _radius_field(
     coordinates: tuple[FloatArray, ...],
     shape: tuple[int, ...],
@@ -384,11 +533,34 @@ def _radius_field(
 ####
 
 
+
+
+def _channel_block_masks(
+    coordinates: tuple[FloatArray, ...],
+    config: RadiantWaveConfig,
+) -> tuple[NDArray[np.bool_], NDArray[np.bool_]]:
+    """Return the legacy 6×4 block masks through the reusable geometry API."""
+    boundary, passages, _rank = perforated_block_masks(
+        cast(tuple[FloatArray, FloatArray, FloatArray], coordinates),
+        config.half_extent,
+    )
+    return boundary, passages
+####
+
+
+
+
 def material_ids(
     coordinates: tuple[FloatArray, ...],
     config: RadiantWaveConfig,
 ) -> IntegerArray:
     """Return material IDs for the configured slab or spherical layout."""
+    if config.material_layout == "channel-block":
+        reflector_shell, channels = _channel_block_masks(coordinates, config)
+        ids = np.where(reflector_shell, REFLECTOR_ID, NEUTRAL_ID)
+        return np.where(channels, CHANNEL_ID, ids).astype(np.int8, copy=False)
+    ####
+
     if config.material_layout != "slab":
         radius = _radius_field(coordinates, config.resolution)
         mesh = np.meshgrid(*coordinates, indexing="ij", sparse=True)
@@ -397,28 +569,24 @@ def material_ids(
 
         if config.material_layout == "spherical-shell-open":
             return ids
+        ####
 
         # A broad +x cap makes the shell intentionally asymmetric. Two small
         # absorbing inclusions provide additional generic scattering/loss
         # features inside the active interior.
         x, y, z = mesh
         cap = shell & (x > 0.20 * config.half_extent) & (y > -0.25 * config.half_extent)
-        inclusion_a = (
-            (x - 0.24 * config.half_extent) ** 2
-            + (y + 0.18 * config.half_extent) ** 2
-            + (z - 0.10 * config.half_extent) ** 2
-            < (0.10 * config.half_extent) ** 2
-        )
-        inclusion_b = (
-            (x + 0.22 * config.half_extent) ** 2
-            + (y - 0.20 * config.half_extent) ** 2
-            + (z + 0.16 * config.half_extent) ** 2
-            < (0.08 * config.half_extent) ** 2
-        )
+        inclusion_a = (x - 0.24 * config.half_extent) ** 2 + (
+            y + 0.18 * config.half_extent
+        ) ** 2 + (z - 0.10 * config.half_extent) ** 2 < (0.10 * config.half_extent) ** 2
+        inclusion_b = (x + 0.22 * config.half_extent) ** 2 + (
+            y - 0.20 * config.half_extent
+        ) ** 2 + (z + 0.16 * config.half_extent) ** 2 < (0.08 * config.half_extent) ** 2
         return np.where(cap | inclusion_a | inclusion_b, ABSORBER_ID, ids).astype(
             np.int8,
             copy=False,
         )
+    ####
 
     first_coordinate = coordinates[0]
     shape = (first_coordinate.size,) + (1,) * (config.dimensions - 1)
@@ -433,17 +601,22 @@ def material_ids(
 ####
 
 
+
+
 def _property_field(
     ids: IntegerArray,
     reflector_value: float,
     neutral_value: float,
     absorber_value: float,
+    channel_value: float,
 ) -> FloatArray:
     return np.choose(
         ids,
-        (reflector_value, neutral_value, absorber_value),
+        (reflector_value, neutral_value, absorber_value, channel_value),
     ).astype(np.float64, copy=False)
 ####
+
+
 
 
 def build_material_fields(
@@ -453,6 +626,7 @@ def build_material_fields(
     reflector = config.reflector
     neutral = config.neutral
     absorber = config.absorber
+    channel = config.channel
     return MaterialFields(
         material_id=ids,
         activity_diffusivity=_property_field(
@@ -460,57 +634,68 @@ def build_material_fields(
             reflector.activity_diffusivity,
             neutral.activity_diffusivity,
             absorber.activity_diffusivity,
+            channel.activity_diffusivity,
         ),
         growth_rate=_property_field(
             ids,
             reflector.growth_rate,
             neutral.growth_rate,
             absorber.growth_rate,
+            channel.growth_rate,
         ),
         loss_rate=_property_field(
             ids,
             reflector.loss_rate,
             neutral.loss_rate,
             absorber.loss_rate,
+            channel.loss_rate,
         ),
         thermal_conductivity=_property_field(
             ids,
             reflector.thermal_conductivity,
             neutral.thermal_conductivity,
             absorber.thermal_conductivity,
+            channel.thermal_conductivity,
         ),
         heat_capacity=_property_field(
             ids,
             reflector.heat_capacity,
             neutral.heat_capacity,
             absorber.heat_capacity,
+            channel.heat_capacity,
         ),
         heat_loss_rate=_property_field(
             ids,
             reflector.heat_loss_rate,
             neutral.heat_loss_rate,
             absorber.heat_loss_rate,
+            channel.heat_loss_rate,
         ),
         wave_density=_property_field(
             ids,
             reflector.wave_density,
             neutral.wave_density,
             absorber.wave_density,
+            channel.wave_density,
         ),
         wave_stiffness=_property_field(
             ids,
             reflector.wave_stiffness,
             neutral.wave_stiffness,
             absorber.wave_stiffness,
+            channel.wave_stiffness,
         ),
         wave_damping=_property_field(
             ids,
             reflector.wave_damping,
             neutral.wave_damping,
             absorber.wave_damping,
+            channel.wave_damping,
         ),
     )
 ####
+
+
 
 
 def _device_material_fields(
@@ -532,6 +717,30 @@ def _device_material_fields(
 ####
 
 
+
+
+def _numpy_material_fields(
+    materials: DeviceMaterialFields,
+    backend: ArrayBackend,
+) -> MaterialFields:
+    """Transfer a complete device material field without rebuilding its values."""
+    return MaterialFields(
+        material_id=backend.to_numpy(materials.material_id).astype(np.int8, copy=False),
+        activity_diffusivity=backend.to_numpy(materials.activity_diffusivity),
+        growth_rate=backend.to_numpy(materials.growth_rate),
+        loss_rate=backend.to_numpy(materials.loss_rate),
+        thermal_conductivity=backend.to_numpy(materials.thermal_conductivity),
+        heat_capacity=backend.to_numpy(materials.heat_capacity),
+        heat_loss_rate=backend.to_numpy(materials.heat_loss_rate),
+        wave_density=backend.to_numpy(materials.wave_density),
+        wave_stiffness=backend.to_numpy(materials.wave_stiffness),
+        wave_damping=backend.to_numpy(materials.wave_damping),
+    )
+####
+
+
+
+
 def initialize_fields(
     config: RadiantWaveConfig,
 ) -> tuple[
@@ -544,16 +753,21 @@ def initialize_fields(
 ]:
     coordinates = cell_centers(config)
     radius = _radius_field(coordinates, config.resolution)
-    ids = material_ids(coordinates, config)
-    materials = build_material_fields(ids, config)
-    activity = config.seed_amplitude * np.exp(
-        -0.5 * (radius / config.seed_width) ** 2
+    ids = (
+        np.array(config.initial_material_ids, dtype=np.int8, copy=True)
+        if config.initial_material_ids is not None
+        else material_ids(coordinates, config)
     )
+    materials = build_material_fields(ids, config)
+    activity = config.seed_amplitude * np.exp(-0.5 * (radius / config.seed_width) ** 2)
+    activity = np.where(ids == NEUTRAL_ID, activity, 0.0)
     heat = np.zeros(config.resolution, dtype=np.float64)
     wave = np.zeros(config.resolution, dtype=np.float64)
     wave_velocity = np.zeros(config.resolution, dtype=np.float64)
     return coordinates, materials, activity, heat, wave, wave_velocity
 ####
+
+
 
 
 def conservative_flux_divergence(
@@ -568,6 +782,8 @@ def conservative_flux_divergence(
         _flux_divergence(values, coefficient, spacing, backend),
     )
 ####
+
+
 
 
 def _wave_energy_components_backend(
@@ -585,12 +801,12 @@ def _wave_energy_components_backend(
     for gradient in gradients:
         gradient_squared += gradient * gradient
     ####
-    kinetic = 0.5 * (
-        materials.wave_density * wave_velocity * wave_velocity
-    )
+    kinetic = 0.5 * (materials.wave_density * wave_velocity * wave_velocity)
     strain = 0.5 * materials.wave_stiffness * gradient_squared
     return kinetic, strain
 ####
+
+
 
 
 def _wave_energy_density_backend(
@@ -609,6 +825,8 @@ def _wave_energy_density_backend(
     )
     return kinetic + strain
 ####
+
+
 
 
 def wave_energy_density(
@@ -632,6 +850,8 @@ def wave_energy_density(
 ####
 
 
+
+
 def wave_energy_components(
     wave: FloatArray,
     wave_velocity: FloatArray,
@@ -652,6 +872,8 @@ def wave_energy_components(
 ####
 
 
+
+
 def _pressure_and_force_backend(
     wave_energy: Array,
     spacing: tuple[float, ...],
@@ -670,6 +892,8 @@ def _pressure_and_force_backend(
 ####
 
 
+
+
 def pressure_and_force(
     wave_energy: FloatArray,
     spacing: tuple[float, ...],
@@ -684,6 +908,8 @@ def pressure_and_force(
 ####
 
 
+
+
 def _integral_backend(
     values: Array,
     cell_volume: float,
@@ -691,6 +917,8 @@ def _integral_backend(
 ) -> float:
     return backend.scalar(backend.xp.sum(values)) * cell_volume
 ####
+
+
 
 
 def _budget_backend(
@@ -707,28 +935,26 @@ def _budget_backend(
     saturation = backend.xp.maximum(1.0 - activity, 0.0)
     autocatalytic_rate = materials.growth_rate * activity * saturation
     thermal_feedback_rate = config.heat_feedback * heat * saturation
-    wave_feedback_rate = (
-        config.wave_pressure_feedback * wave_pressure * saturation
-    )
+    wave_feedback_rate = config.wave_pressure_feedback * wave_pressure * saturation
     activity_loss_rate = materials.loss_rate * activity
 
     thermal_energy_density = materials.heat_capacity * heat
     heat_source_density = config.heat_source_rate * activity
     heat_loss_density = materials.heat_loss_rate * heat
 
-    wave_source_power_density = (
-        config.wave_source_rate * activity * wave_velocity
-    )
+    wave_source_power_density = config.wave_source_rate * activity * wave_velocity
     wave_dissipation_density = (
-        materials.wave_density
-        * materials.wave_damping
-        * wave_velocity
-        * wave_velocity
+        materials.wave_density * materials.wave_damping * wave_velocity * wave_velocity
     )
 
     material_wave_energy: list[float] = []
     material_wave_dissipation: list[float] = []
-    for material_identifier in (REFLECTOR_ID, NEUTRAL_ID, ABSORBER_ID):
+    for material_identifier in (
+        REFLECTOR_ID,
+        NEUTRAL_ID,
+        ABSORBER_ID,
+        CHANNEL_ID,
+    ):
         mask = materials.material_id == material_identifier
         material_wave_energy.append(
             _integral_backend(
@@ -804,11 +1030,7 @@ def _budget_backend(
         + heat_source_power
         + max(wave_source_power, 0.0)
     )
-    sink_strength = (
-        activity_loss_rate
-        + heat_loss_power
-        + wave_dissipation_power
-    )
+    sink_strength = activity_loss_rate + heat_loss_power + wave_dissipation_power
     balance_factor = source_strength / max(sink_strength, np.finfo(float).tiny)
 
     return RadiantWaveBudget(
@@ -827,15 +1049,17 @@ def _budget_backend(
         sink_strength=sink_strength,
         balance_factor=balance_factor,
         material_wave_energy=cast(
-            tuple[float, float, float],
+            tuple[float, float, float, float],
             tuple(material_wave_energy),
         ),
         material_wave_dissipation_power=cast(
-            tuple[float, float, float],
+            tuple[float, float, float, float],
             tuple(material_wave_dissipation),
         ),
     )
 ####
+
+
 
 
 def radiant_wave_budget(
@@ -862,6 +1086,8 @@ def radiant_wave_budget(
 ####
 
 
+
+
 def interface_reflection_coefficient(
     left: MaterialProperties,
     right: MaterialProperties,
@@ -869,10 +1095,10 @@ def interface_reflection_coefficient(
     """Normal-incidence scalar-wave amplitude reflection coefficient."""
     left_impedance = left.wave_impedance
     right_impedance = right.wave_impedance
-    return (right_impedance - left_impedance) / (
-        right_impedance + left_impedance
-    )
+    return (right_impedance - left_impedance) / (right_impedance + left_impedance)
 ####
+
+
 
 
 def _local_wave_right_hand_side(
@@ -919,6 +1145,8 @@ def _local_wave_right_hand_side(
     ) / materials.wave_density - materials.wave_damping * wave_velocity
     return activity_rate, heat_rate, wave_rate, wave_velocity_rate
 ####
+
+
 
 
 def _advance_local_wave_midpoint(
@@ -968,6 +1196,8 @@ def _advance_local_wave_midpoint(
         wave_velocity + timestep * second_rate[3],
     )
 ####
+
+
 
 
 def _advance_fields_backend(
@@ -1033,6 +1263,8 @@ def _advance_fields_backend(
 ####
 
 
+
+
 def advance_fields(
     activity: FloatArray,
     heat: FloatArray,
@@ -1061,6 +1293,8 @@ def advance_fields(
 ####
 
 
+
+
 def _timestep_limits(
     config: RadiantWaveConfig,
     materials: MaterialFields,
@@ -1068,9 +1302,7 @@ def _timestep_limits(
     minimum_spacing = min(config.spacing)
     dimensionality = float(config.dimensions)
 
-    maximum_activity_diffusivity = float(
-        np.max(materials.activity_diffusivity)
-    )
+    maximum_activity_diffusivity = float(np.max(materials.activity_diffusivity))
     maximum_thermal_diffusivity = float(
         np.max(materials.thermal_conductivity / materials.heat_capacity)
     )
@@ -1116,6 +1348,8 @@ def _timestep_limits(
 ####
 
 
+
+
 def resolve_diffusion_method(
     config: RadiantWaveConfig,
     materials: MaterialFields,
@@ -1141,6 +1375,8 @@ def resolve_diffusion_method(
     ####
     return "explicit"
 ####
+
+
 
 
 def stable_timestep(
@@ -1170,12 +1406,17 @@ def stable_timestep(
     )
 ####
 
+
+
+
 def _visualization_field(values: FloatArray) -> FloatArray:
     if values.ndim < 3:
         return values.copy()
     ####
     return values[:, :, values.shape[2] // 2].copy()
 ####
+
+
 
 
 def _make_frame_backend(
@@ -1188,6 +1429,8 @@ def _make_frame_backend(
     wave_pressure: Array,
     materials: DeviceMaterialFields,
     absorber_inserted: bool,
+    absorber_fraction: float,
+    material_event_progress: tuple[float, ...],
     budget: RadiantWaveBudget,
     backend: ArrayBackend,
 ) -> RadiantWaveFrame:
@@ -1196,9 +1439,7 @@ def _make_frame_backend(
         activity=_visualization_field(backend.to_numpy(activity)),
         heat=_visualization_field(backend.to_numpy(heat)),
         wave=_visualization_field(backend.to_numpy(wave)),
-        wave_velocity=_visualization_field(
-            backend.to_numpy(wave_velocity)
-        ),
+        wave_velocity=_visualization_field(backend.to_numpy(wave_velocity)),
         wave_energy=_visualization_field(backend.to_numpy(wave_energy)),
         wave_pressure=_visualization_field(backend.to_numpy(wave_pressure)),
         material_id=backend.to_numpy(materials.material_id).astype(
@@ -1206,9 +1447,13 @@ def _make_frame_backend(
             copy=False,
         ),
         absorber_inserted=absorber_inserted,
+        absorber_fraction=absorber_fraction,
+        material_event_progress=material_event_progress,
         budget=budget,
     )
 ####
+
+
 
 
 def _diagnostics_backend(
@@ -1249,53 +1494,185 @@ def _diagnostics_backend(
 ####
 
 
+
+
 def _absorber_insertion_mask(
     coordinates: tuple[FloatArray, ...],
     config: RadiantWaveConfig,
-) -> IntegerArray:
-    """Return a right-side generic absorber insertion region."""
-    x = coordinates[0].reshape((config.resolution[0], 1, 1))
-    mask = x > 0.20 * config.half_extent
+    fraction: float = 1.0,
+) -> BoolArray:
+    """Return the requested generic absorber insertion region."""
+    if config.material_layout == "channel-block":
+        _reflector_shell, channels = _channel_block_masks(coordinates, config)
+        z = coordinates[2].reshape((1, 1, config.resolution[2]))
+        channel_half_length = 0.82 * config.half_extent
+        lower_tip = channel_half_length - 2.0 * channel_half_length * fraction
+        return channels & (z >= lower_tip)
+    ####
+
+    shape = (config.resolution[0],) + (1,) * (config.dimensions - 1)
+    x = coordinates[0].reshape(shape)
+    # Use the geometric right half so the absorber overlaps the active center
+    # enough to demonstrate relaxation while leaving the opposite shell side
+    # reflective.
+    mask = x > 0.0
     return np.broadcast_to(mask, config.resolution).copy()
 ####
 
 
-def _insert_absorber_region(
+
+
+def _rod_insertion_fraction(time: float, config: RadiantWaveConfig) -> float:
+    """Return the prescribed fraction of each channel occupied by a loss rod."""
+    start = config.rod_insertion_start_time
+    end = config.rod_insertion_end_time
+    if start is None or end is None or time <= start:
+        return 0.0
+    ####
+    if time >= end:
+        return config.rod_final_fraction
+    ####
+    return config.rod_final_fraction * (time - start) / (end - start)
+####
+
+
+
+
+def _material_properties_for_id(
+    material_id: int,
+    config: RadiantWaveConfig,
+) -> MaterialProperties:
+    properties = {
+        int(REFLECTOR_ID): config.reflector,
+        int(NEUTRAL_ID): config.neutral,
+        int(ABSORBER_ID): config.absorber,
+        int(CHANNEL_ID): config.channel,
+    }
+    try:
+        return properties[material_id]
+    except KeyError as error:
+        raise ValueError(f"unknown configured material ID: {material_id}") from error
+    ####
+####
+
+
+def _replace_material_region(
     materials: DeviceMaterialFields,
     mask: Array,
+    target_material_id: int,
     config: RadiantWaveConfig,
     backend: ArrayBackend,
 ) -> DeviceMaterialFields:
-    """Replace a region with the configured generic absorber material."""
-    absorber = config.absorber
+    """Replace a region with a configured material chosen by an event."""
+    target = _material_properties_for_id(target_material_id, config)
     xp = backend.xp
 
-    def replace(values: Array, value: float) -> Array:
+    def with_target(values: Array, value: float) -> Array:
         return xp.where(mask, value, values)
     ####
 
+
     return DeviceMaterialFields(
         material_id=backend.asarray(
-            xp.where(mask, ABSORBER_ID, materials.material_id),
+            xp.where(mask, target_material_id, materials.material_id),
             dtype=np.int8,
         ),
-        activity_diffusivity=replace(
+        activity_diffusivity=with_target(
             materials.activity_diffusivity,
-            absorber.activity_diffusivity,
+            target.activity_diffusivity,
         ),
-        growth_rate=replace(materials.growth_rate, absorber.growth_rate),
-        loss_rate=replace(materials.loss_rate, absorber.loss_rate),
-        thermal_conductivity=replace(
+        growth_rate=with_target(materials.growth_rate, target.growth_rate),
+        loss_rate=with_target(materials.loss_rate, target.loss_rate),
+        thermal_conductivity=with_target(
             materials.thermal_conductivity,
-            absorber.thermal_conductivity,
+            target.thermal_conductivity,
         ),
-        heat_capacity=replace(materials.heat_capacity, absorber.heat_capacity),
-        heat_loss_rate=replace(materials.heat_loss_rate, absorber.heat_loss_rate),
-        wave_density=replace(materials.wave_density, absorber.wave_density),
-        wave_stiffness=replace(materials.wave_stiffness, absorber.wave_stiffness),
-        wave_damping=replace(materials.wave_damping, absorber.wave_damping),
+        heat_capacity=with_target(materials.heat_capacity, target.heat_capacity),
+        heat_loss_rate=with_target(materials.heat_loss_rate, target.heat_loss_rate),
+        wave_density=with_target(materials.wave_density, target.wave_density),
+        wave_stiffness=with_target(materials.wave_stiffness, target.wave_stiffness),
+        wave_damping=with_target(materials.wave_damping, target.wave_damping),
     )
 ####
+
+
+
+
+def _apply_material_property_ramps(
+    materials: DeviceMaterialFields,
+    property_ramps: tuple[MaterialPropertyRamp, ...],
+    time: float,
+    backend: ArrayBackend,
+) -> DeviceMaterialFields:
+    """Apply non-compounding property offsets from the generic event schedule."""
+    updated: dict[str, Array] = {
+        name: getattr(materials, name)
+        for name in (
+            "activity_diffusivity",
+            "growth_rate",
+            "loss_rate",
+            "thermal_conductivity",
+            "heat_capacity",
+            "heat_loss_rate",
+            "wave_density",
+            "wave_stiffness",
+            "wave_damping",
+        )
+    }
+    for event in property_ramps:
+        values = updated[event.property_name]
+        mask = backend.asarray(event.region)
+        updated[event.property_name] = backend.xp.where(
+            mask,
+            values + event.offset_at(time),
+            values,
+        )
+    ####
+    return replace(materials, **updated)
+####
+
+
+
+
+def _apply_channel_rod_exchange(
+    materials: DeviceMaterialFields,
+    fraction: float,
+    config: RadiantWaveConfig,
+    backend: ArrayBackend,
+) -> DeviceMaterialFields:
+    """Apply optional distributed, normalized heat exchange from channel rods."""
+    if config.rod_thermal_exchange == 0.0:
+        return materials
+    ####
+    heat_loss_rate = backend.xp.where(
+        materials.material_id == NEUTRAL_ID,
+        config.neutral.heat_loss_rate + fraction * config.rod_thermal_exchange,
+        materials.heat_loss_rate,
+    )
+    return replace(materials, heat_loss_rate=heat_loss_rate)
+####
+
+
+
+
+def _apply_channel_rod_exchange_numpy(
+    materials: MaterialFields,
+    fraction: float,
+    config: RadiantWaveConfig,
+) -> MaterialFields:
+    """Return NumPy material fields consistent with the final rod depth."""
+    if config.rod_thermal_exchange == 0.0:
+        return materials
+    ####
+    heat_loss_rate = np.where(
+        materials.material_id == NEUTRAL_ID,
+        config.neutral.heat_loss_rate + fraction * config.rod_thermal_exchange,
+        materials.heat_loss_rate,
+    )
+    return replace(materials, heat_loss_rate=heat_loss_rate)
+####
+
+
 
 
 def diagnostics(
@@ -1323,6 +1700,8 @@ def diagnostics(
 ####
 
 
+
+
 def run_radiant_wave(
     config: RadiantWaveConfig,
     snapshot_count: int = 0,
@@ -1340,8 +1719,18 @@ def run_radiant_wave(
         wave_velocity_numpy,
     ) = initialize_fields(config)
     backend = get_array_backend(config.backend)
-    device_materials = _device_material_fields(materials, backend)
+    base_device_materials = _device_material_fields(materials, backend)
+    device_materials = _apply_material_property_ramps(
+        base_device_materials,
+        config.material_events.property_ramps,
+        time=0.0,
+        backend=backend,
+    )
     absorber_inserted = False
+    absorber_fraction = 0.0
+    material_event_progress = tuple(
+        0.0 for _event in config.material_events.replacements
+    )
     activity = backend.asarray(activity_numpy)
     heat = backend.asarray(heat_numpy)
     wave = backend.asarray(wave_numpy)
@@ -1399,6 +1788,8 @@ def run_radiant_wave(
                 initial_pressure,
                 device_materials,
                 absorber_inserted,
+                absorber_fraction,
+                material_event_progress,
                 initial_budget,
                 backend,
             )
@@ -1414,14 +1805,16 @@ def run_radiant_wave(
     )
     while time < config.final_time and step < config.max_steps:
         timestep = min(base_timestep, config.final_time - time)
-        if (
-            config.absorber_insertion_time is not None
-            and not absorber_inserted
-        ):
+        if config.absorber_insertion_time is not None and not absorber_inserted:
             timestep = min(
                 timestep,
                 config.absorber_insertion_time - time,
             )
+        ####
+        next_event_boundary = config.material_events.next_boundary_after(time)
+        if next_event_boundary is not None:
+            timestep = min(timestep, next_event_boundary - time)
+        ####
         activity, heat, wave, wave_velocity = _advance_fields_backend(
             activity,
             heat,
@@ -1442,17 +1835,99 @@ def run_radiant_wave(
             and time >= config.absorber_insertion_time - 1.0e-14
         ):
             insertion_mask = _absorber_insertion_mask(coordinates, config)
-            device_materials = _insert_absorber_region(
-                device_materials,
+            base_device_materials = _replace_material_region(
+                base_device_materials,
                 backend.asarray(insertion_mask),
+                int(ABSORBER_ID),
                 config,
                 backend,
             )
+            device_materials = _apply_material_property_ramps(
+                base_device_materials,
+                config.material_events.property_ramps,
+                time,
+                backend,
+            )
             absorber_inserted = True
+        ####
+
+        target_fraction = _rod_insertion_fraction(time, config)
+        if target_fraction > absorber_fraction + 1.0e-14:
+            insertion_mask = _absorber_insertion_mask(
+                coordinates,
+                config,
+                target_fraction,
+            )
+            base_device_materials = _replace_material_region(
+                base_device_materials,
+                backend.asarray(insertion_mask),
+                int(ABSORBER_ID),
+                config,
+                backend,
+            )
+            base_device_materials = _apply_channel_rod_exchange(
+                base_device_materials,
+                target_fraction,
+                config,
+                backend,
+            )
+            device_materials = _apply_material_property_ramps(
+                base_device_materials,
+                config.material_events.property_ramps,
+                time,
+                backend,
+            )
+            absorber_fraction = target_fraction
+            absorber_inserted = True
+        ####
+
+        next_progress = config.material_events.progress_at(time)
+        if any(
+            progress > previous + 1.0e-14
+            for progress, previous in zip(
+                next_progress,
+                material_event_progress,
+                strict=True,
+            )
+        ):
+            for event, progress, previous in zip(
+                config.material_events.replacements,
+                next_progress,
+                material_event_progress,
+                strict=True,
+            ):
+                if progress > previous + 1.0e-14:
+                    base_device_materials = _replace_material_region(
+                        base_device_materials,
+                        backend.asarray(event.mask_at(time)),
+                        event.target_material_id,
+                        config,
+                        backend,
+                    )
+                ####
+            ####
+            material_event_progress = next_progress
+            absorber_inserted = any(progress > 0.0 for progress in next_progress)
+            if next_progress:
+                absorber_fraction = next_progress[0]
+            ####
+            device_materials = _apply_material_property_ramps(
+                base_device_materials,
+                config.material_events.property_ramps,
+                time,
+                backend,
+            )
+        elif config.material_events.property_ramps:
+            device_materials = _apply_material_property_ramps(
+                base_device_materials,
+                config.material_events.property_ramps,
+                time,
+                backend,
+            )
+        ####
 
         while (
-            next_target < snapshot_count
-            and time >= target_times[next_target] - 1.0e-14
+            next_target < snapshot_count and time >= target_times[next_target] - 1.0e-14
         ):
             frame_energy = _wave_energy_density_backend(
                 wave,
@@ -1487,6 +1962,8 @@ def run_radiant_wave(
                     frame_pressure,
                     device_materials,
                     absorber_inserted,
+                    absorber_fraction,
+                    material_event_progress,
                     frame_budget,
                     backend,
                 )
@@ -1526,11 +2003,9 @@ def run_radiant_wave(
         backend,
     )
     backend.synchronize()
-    final_materials = build_material_fields(
-        backend.to_numpy(device_materials.material_id).astype(
-            np.int8,
-            copy=False,
-        ),
+    final_materials = _apply_channel_rod_exchange_numpy(
+        _numpy_material_fields(device_materials, backend),
+        absorber_fraction,
         config,
     )
     return RadiantWaveResult(
@@ -1551,9 +2026,16 @@ def run_radiant_wave(
         initial_diagnostics=initial_diagnostics,
         final_diagnostics=final_diagnostics,
         absorber_inserted=absorber_inserted,
+        absorber_fraction=absorber_fraction,
+        material_event_names=tuple(
+            event.name for event in config.material_events.replacements
+        ),
+        material_event_progress=material_event_progress,
         frames=tuple(frames),
     )
 ####
+
+
 
 
 def radiant_wave_config(

@@ -12,6 +12,7 @@ from converging_flow.radiant_plotting import (
 )
 from converging_flow.radiant_wave import (
     ABSORBER_ID,
+    CHANNEL_ID,
     NEUTRAL_ID,
     REFLECTOR_ID,
     RadiantWaveConfig,
@@ -105,6 +106,7 @@ def test_spherical_shell_layout_requires_three_dimensions() -> None:
             resolution=(16, 16),
             material_layout="spherical-shell",
         )
+    ####
 ####
 
 
@@ -125,6 +127,46 @@ def test_absorber_insertion_changes_materials_and_frame_state() -> None:
         True,
     ]
     assert np.all(result.materials.material_id[7:, :, :] == ABSORBER_ID)
+####
+
+
+def test_channel_block_has_6_by_4_open_channels_and_ramped_loss_rods(
+    tmp_path: Path,
+) -> None:
+    config = RadiantWaveConfig(
+        dimensions=3,
+        resolution=(32, 32, 32),
+        final_time=0.012,
+        material_layout="channel-block",
+        rod_insertion_start_time=0.003,
+        rod_insertion_end_time=0.009,
+        rod_final_fraction=0.50,
+    )
+    _coordinates, initial_materials, *_fields = initialize_fields(config)
+    result = run_radiant_wave(config, snapshot_count=5)
+
+    assert np.count_nonzero(initial_materials.material_id == CHANNEL_ID) > 0
+    assert np.all(initial_materials.material_id[0, :, :] == REFLECTOR_ID)
+    assert result.absorber_fraction == pytest.approx(0.50)
+    assert any(
+        0.0 < frame.absorber_fraction < 0.50 for frame in result.frames
+    )
+    assert np.count_nonzero(result.materials.material_id == ABSORBER_ID) > 0
+    assert np.count_nonzero(result.materials.material_id == CHANNEL_ID) > 0
+    save_radiant_wave_plots(result, tmp_path)
+    assert (tmp_path / "channel_block_geometry.png").is_file()
+####
+
+
+def test_rod_insertion_requires_the_channel_block_layout() -> None:
+    with pytest.raises(ValueError, match="channel-block"):
+        RadiantWaveConfig(
+            dimensions=3,
+            resolution=(16, 16, 16),
+            rod_insertion_start_time=0.002,
+            rod_insertion_end_time=0.004,
+        )
+    ####
 ####
 
 
@@ -175,11 +217,13 @@ def test_radiant_wave_output_and_visualizations(tmp_path: Path) -> None:
         assert payload["material_id"].shape == (24, 24)
         assert payload["frame_wave_pressure"].shape == (3, 24, 24)
         assert payload["frame_balance_factor"].shape == (3,)
+        assert payload["frame_cumulative_net_source_minus_sink"].shape == (3,)
     ####
 
     assert (tmp_path / "radiant_wave_summary.json").is_file()
     assert (tmp_path / "materials.png").is_file()
     assert (tmp_path / "wave_pressure.png").is_file()
     assert (tmp_path / "balance_factor_history.png").is_file()
+    assert (tmp_path / "energy_budget_phase_history.png").is_file()
     assert (tmp_path / "wave_pressure_evolution.gif").is_file()
 ####

@@ -171,15 +171,7 @@ def test_invalid_face_index_is_rejected() -> None:
 def test_obj_loader_handles_slash_negative_indices_and_polygon_fan(tmp_dir: Path) -> None:
     obj_path = tmp_dir / "quad.obj"
     obj_path.write_text(
-        "\n".join(
-            [
-                "v 0 0 0",
-                "v 1 0 0",
-                "v 1 1 0",
-                "v 0 1 0",
-                "f 1/1/1 2/2/1 3/3/1 4/4/1",
-            ]
-        ),
+        "v 0 0 0\nv 1 0 0\nv 1 1 0\nv 0 1 0\nf 1/1/1 2/2/1 3/3/1 4/4/1",
         encoding="utf-8",
     )
 

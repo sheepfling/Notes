@@ -1,0 +1,36 @@
+# Markdown linting for an existing notes repository.
+# Keep structural whitespace checks enabled while allowing established prose
+# and reference-note conventions that are intentionally less prescriptive.
+
+[global]
+exclude = [
+    ".git",
+    ".github",
+    ".venv*",
+    ".tmp",
+    "artifacts",
+    "build",
+    "dist",
+    "inbox",
+]
+respect-gitignore = true
+disable = [
+    "MD001", # Existing reference notes use a compact heading hierarchy.
+    "MD013", # Prose and URLs frequently exceed 80 columns.
+    "MD028", # Existing blockquotes intentionally contain visual separators.
+    "MD033", # Inline HTML is retained where Markdown cannot express the layout.
+    "MD034", # Bare URLs are retained in reference and command notes.
+    "MD041", # Not every note begins with a document title.
+]
+
+[MD003]
+style = "consistent"
+
+[MD004]
+style = "consistent"
+
+[MD049]
+style = "consistent"
+
+[MD050]
+style = "consistent"

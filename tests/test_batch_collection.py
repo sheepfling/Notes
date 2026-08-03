@@ -65,7 +65,6 @@ def test_batch_sources_do_not_contain_known_private_identifiers() -> None:
         assert path.is_file()
         text = path.read_text(encoding="utf-8")
         assert forbidden.search(text) is None
-        ####
     ####
 ####
 

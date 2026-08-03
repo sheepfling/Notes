@@ -1,0 +1,38 @@
+{
+  "resolution": 56,
+  "backend": "auto",
+  "half_extent": 1.0,
+  "final_time": 0.24,
+  "cfl": 0.3,
+  "maximum_timestep": 0.002,
+  "channel_counts": [6, 4],
+  "block_fraction": 0.82,
+  "channel_radius_fraction": 0.065,
+  "insertion_start_time": 0.05,
+  "insertion_end_time": 0.12,
+  "insertion_fraction": 0.5,
+  "thermal_exchange": 12.0,
+  "source_scale": 0.5,
+  "loss_scale": 120.0,
+  "source": {
+    "seed_width": 0.38,
+    "seed_amplitude": 0.85,
+    "heat_source_rate": 1.5,
+    "heat_feedback": 0.25,
+    "wave_source_rate": 0.9,
+    "wave_pressure_feedback": 0.08
+  },
+  "materials": {
+    "active_medium": {
+      "specific_heat": 1.0,
+      "thermal_conductivity": 0.08,
+      "loss_rate": 1.6
+    },
+    "loss_material": {
+      "specific_heat": 1.4,
+      "loss_rate": 2.8,
+      "heat_loss_rate": 2.2,
+      "wave_damping": 4.5
+    }
+  }
+}

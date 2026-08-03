@@ -58,7 +58,7 @@ def plot_mesh(
     figure = plt.figure()
     axis = figure.add_subplot(111, projection="3d")
     if not isinstance(axis, Axes3D):
-        raise RuntimeError("Matplotlib did not create a three-dimensional axis.")
+        raise TypeError("Matplotlib did not create a three-dimensional axis.")
     ####
 
     collection_options: dict[str, Any] = {"alpha": 0.9}

@@ -111,6 +111,7 @@ def test_textball_rejects_unknown_format_and_traversal(tmp_dir: Path) -> None:
 
     with pytest.raises(RuntimeError, match="Unsupported textball format"):
         module.extract_tarball(io.StringIO("not-a-textball\n"), output_dir)
+    ####
     assert not output_dir.exists()
 
     traversal = (
@@ -122,6 +123,7 @@ def test_textball_rejects_unknown_format_and_traversal(tmp_dir: Path) -> None:
     )
     with pytest.raises(RuntimeError, match="Unsafe path"):
         module.extract_tarball(io.StringIO(traversal), output_dir)
+    ####
     assert not output_dir.exists()
 ####
 
@@ -136,6 +138,7 @@ def test_textball_legacy_requires_explicit_opt_in(tmp_dir: Path) -> None:
     )
     with pytest.raises(RuntimeError, match="Unsupported textball format"):
         module.extract_tarball(io.StringIO(legacy), tmp_dir / "rejected")
+    ####
     module.extract_tarball(io.StringIO(legacy), tmp_dir / "accepted", allow_legacy=True)
     assert (tmp_dir / "accepted" / "legacy.txt").read_text(encoding="utf-8") == "legacy\n"
 ####

@@ -6,19 +6,14 @@ from pathlib import Path
 from typing import cast
 
 from converging_flow.config import Dimension, SimulationConfig
+from converging_flow.example_runtime import ArtifactPlan, run_radiant_artifacts
 from converging_flow.experiment import SimulationResult, run_simulation
 from converging_flow.output import save_result
 from converging_flow.plotting import save_animations, save_comparison, save_plots
-from converging_flow.radiant_output import save_radiant_wave_result
-from converging_flow.radiant_plotting import (
-    save_radiant_wave_animations,
-    save_radiant_wave_plots,
-)
 from converging_flow.radiant_wave import (
     RadiantWaveConfig,
     RadiantWaveResult,
     radiant_wave_config,
-    run_radiant_wave,
 )
 from converging_flow.reaction_diffusion import (
     ReactionBackend,
@@ -286,14 +281,11 @@ def _run_radiant_wave_one(
         f"{config.resolution} to t={config.final_time:.4f}; "
         f"backend={config.backend}; diffusion={config.diffusion_method}"
     )
-    result = run_radiant_wave(config, snapshot_count=snapshot_count)
-    save_radiant_wave_result(result, output)
-    if make_plots:
-        save_radiant_wave_plots(result, output)
-        if result.frames:
-            save_radiant_wave_animations(result, output, fps=fps)
-        ####
-    ####
+    result = run_radiant_artifacts(
+        config,
+        ArtifactPlan(output, frames=snapshot_count, fps=fps),
+        include_plots=make_plots,
+    )
     print(
         f"completed in {result.steps} steps on {result.resolved_backend}; "
         f"diffusion={result.resolved_diffusion_method}; "

@@ -7,7 +7,6 @@ import re
 import sys
 from pathlib import Path
 
-
 EXCLUDED_DIRECTORIES = {
     ".git",
     ".pytest_cache",

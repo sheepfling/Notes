@@ -11,6 +11,7 @@ if TYPE_CHECKING:
         FloatArray,
         ReactionDiffusionConfig,
     )
+####
 
 
 @njit(cache=True, fastmath=True)

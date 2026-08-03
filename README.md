@@ -71,8 +71,23 @@ uv sync --extra dev
 Run all configured checks:
 
 ```powershell
-python -m pytest
+python -m scripts.ci
 ```
+
+The local autofix sequence is deliberately ordered: Ruff fixes first,
+scope-markers inserts/regenerates structural markers, and rumdl applies safe
+Markdown fixes. The same checks then run read-only afterward:
+
+```powershell
+python -m scripts.ci --fix
+```
+
+The CI workflow runs the read-only form. Rumdl checks `README.md`, `notes/`,
+and `projects/` using the repository's relaxed-project policy in
+`.rumdl.toml`; generated files and the intentionally scratch `inbox/` are
+excluded. CI then runs `mdrepo check .` for repository-wide Markdown path,
+case, and reachability policy. `mdrepo` leaves orphan detection disabled for
+the historical note dump; link and path checks remain active.
 
 With uv, the equivalent command is `uv run pytest`.
 

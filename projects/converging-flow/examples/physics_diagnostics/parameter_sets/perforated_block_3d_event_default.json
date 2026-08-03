@@ -1,0 +1,57 @@
+{
+  "precursor": {
+    "resolution": 64,
+    "backend": "auto",
+    "half_extent": 1.0,
+    "final_time": 0.48,
+    "channel_counts": [6, 4],
+    "insertion_start_time": 0.10,
+    "insertion_end_time": 0.24,
+    "insertion_fraction": 0.5,
+    "source_scale": 0.8,
+    "loss_scale": 95.0,
+    "thermal_exchange": 16.0
+  },
+  "initial_state": {
+    "density": 1.0,
+    "pressure": 1.0,
+    "activity_seed_fraction": 0.035,
+    "heat_pressure_offset": 0.10
+  },
+  "event": {
+    "center": [-0.5, 0.52, -0.3],
+    "width": 0.26,
+    "activation_time": 0.08,
+    "final_time": 0.50
+  },
+  "coupling": {
+    "activity_weight": 0.35,
+    "heat_weight": 0.25,
+    "wave_pressure_weight": 0.15,
+    "baseline": 0.25
+  },
+  "phase": {
+    "specific_heat": 2.5,
+    "gas_constant": 1.0,
+    "heat_release_per_mass": 24.0,
+    "activity_growth_rate": 220.0,
+    "phase_change_energy_per_mass": 2.0,
+    "transition_temperature": 3.2,
+    "transition_width": 0.08,
+    "phase_relaxation_time": 0.01
+  },
+  "numerics": {
+    "cfl": 0.2,
+    "maximum_timestep": 0.00015
+  },
+  "validation": {
+    "minimum_pressure_rise": 0.1,
+    "minimum_phase_fraction": 0.5,
+    "minimum_speed": 0.05,
+    "require_causal_order": true
+  },
+  "presentation": {
+    "frames": 241,
+    "fps": 24
+  }
+}

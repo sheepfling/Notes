@@ -17,6 +17,9 @@ from converging_flow.radiant_wave import (
     wave_energy_components,
 )
 
+_MATERIAL_LABELS = ("reflector", "reactive medium", "loss rod", "open channel")
+_MATERIAL_COLORS = ("#355c7d", "#f8b195", "#c06c84", "#6c5b7b")
+
 
 def _central_slice(values: FloatArray) -> FloatArray:
     if values.ndim < 3:
@@ -24,6 +27,21 @@ def _central_slice(values: FloatArray) -> FloatArray:
     ####
     return values[:, :, values.shape[2] // 2]
 ####
+
+def _material_visualization_slice(
+    values: FloatArray,
+    result: RadiantWaveResult,
+) -> FloatArray:
+    """Use a channel-aligned longitudinal slice when rods move along z."""
+    if result.config.material_layout == "channel-block" and values.ndim == 3:
+        target_y = 0.14 * result.config.half_extent
+        y_index = int(np.argmin(np.abs(result.coordinates[1] - target_y)))
+        return values[:, y_index, :]
+    ####
+    return _central_slice(values)
+####
+
+
 
 
 def _save_line(
@@ -43,6 +61,8 @@ def _save_line(
     figure.savefig(output_path, dpi=160)
     plt.close(figure)
 ####
+
+
 
 
 def _save_image(
@@ -81,11 +101,13 @@ def _save_image(
 ####
 
 
+
+
 def _save_material_map(
     result: RadiantWaveResult,
     output_directory: Path,
 ) -> None:
-    labels = ("reflector", "neutral", "absorber")
+    labels = _MATERIAL_LABELS
     if result.config.dimensions == 1:
         figure, axes = plt.subplots(figsize=(8, 2.8))
         axes.step(
@@ -93,7 +115,7 @@ def _save_material_map(
             result.materials.material_id,
             where="mid",
         )
-        axes.set_yticks((0, 1, 2), labels=labels)
+        axes.set_yticks(range(len(labels)), labels=labels)
         axes.set_xlabel("position")
         axes.set_title("Material regions")
         axes.grid(True, axis="x", alpha=0.25)
@@ -105,11 +127,10 @@ def _save_material_map(
             result.config.half_extent,
         )
         figure, axes = plt.subplots(figsize=(7, 6))
-        colors = plt.get_cmap("viridis")(np.linspace(0.12, 0.88, 3))
-        colormap = ListedColormap(colors)
-        norm = BoundaryNorm((-0.5, 0.5, 1.5, 2.5), colormap.N)
+        colormap = ListedColormap(_MATERIAL_COLORS)
+        norm = BoundaryNorm((-0.5, 0.5, 1.5, 2.5, 3.5), colormap.N)
         image = axes.imshow(
-            _central_slice(result.materials.material_id).T,
+            _material_visualization_slice(result.materials.material_id, result).T,
             origin="lower",
             extent=extent,
             aspect="equal",
@@ -117,9 +138,11 @@ def _save_material_map(
             norm=norm,
         )
         axes.set_xlabel("x")
-        axes.set_ylabel("y")
+        axes.set_ylabel(
+            "z" if result.config.material_layout == "channel-block" else "y"
+        )
         axes.set_title("Material regions")
-        colorbar = figure.colorbar(image, ax=axes, ticks=(0, 1, 2))
+        colorbar = figure.colorbar(image, ax=axes, ticks=range(len(labels)))
         colorbar.ax.set_yticklabels(labels)
     ####
     figure.tight_layout()
@@ -128,10 +151,93 @@ def _save_material_map(
 ####
 
 
+
+
+def _save_channel_block_geometry(
+    result: RadiantWaveResult,
+    output_directory: Path,
+) -> None:
+    """Show both the 6×4 channel grid and its final axial rod depth."""
+    if result.config.material_layout != "channel-block":
+        return
+    ####
+    material_id = result.materials.material_id
+    coordinates = result.coordinates
+    upper_z = int(np.argmin(np.abs(coordinates[2] - 0.40 * result.config.half_extent)))
+    lower_z = int(np.argmin(np.abs(coordinates[2] + 0.40 * result.config.half_extent)))
+    target_y = 0.14 * result.config.half_extent
+    y_index = int(np.argmin(np.abs(coordinates[1] - target_y)))
+    extent = (
+        -result.config.half_extent,
+        result.config.half_extent,
+        -result.config.half_extent,
+        result.config.half_extent,
+    )
+    colormap = ListedColormap(_MATERIAL_COLORS)
+    norm = BoundaryNorm((-0.5, 0.5, 1.5, 2.5, 3.5), colormap.N)
+    figure, axes_with_colorbar = plt.subplots(
+        1,
+        4,
+        figsize=(16, 5),
+        gridspec_kw={"width_ratios": (1, 1, 1, 0.08), "wspace": 0.35},
+        constrained_layout=True,
+    )
+    axes = axes_with_colorbar[:3]
+    colorbar_axis = axes_with_colorbar[3]
+    panels = (
+        (
+            material_id[:, :, lower_z],
+            "Lower axial cross-section: open channels",
+            "y",
+        ),
+        (
+            material_id[:, :, upper_z],
+            "Upper axial cross-section: inserted loss rods",
+            "y",
+        ),
+        (
+            material_id[:, y_index, :],
+            "Longitudinal channel row: 50% insertion",
+            "z",
+        ),
+    )
+    image = None
+    for axis, (values, title, vertical_label) in zip(axes, panels, strict=True):
+        image = axis.imshow(
+            values.T,
+            origin="lower",
+            extent=extent,
+            aspect="equal",
+            cmap=colormap,
+            norm=norm,
+        )
+        axis.set_xlabel("x")
+        axis.set_ylabel(vertical_label)
+        axis.set_title(title)
+    ####
+    assert image is not None
+    colorbar_axis.set_ylabel("material regime", rotation=270, labelpad=18)
+    colorbar_axis.set_yticks([])
+    colorbar = figure.colorbar(
+        image,
+        cax=colorbar_axis,
+        ticks=range(len(_MATERIAL_LABELS)),
+    )
+    colorbar.ax.set_yticklabels(_MATERIAL_LABELS)
+    figure.suptitle("Generic 6×4 channel block and time-ramped loss rods")
+    figure.savefig(output_directory / "channel_block_geometry.png", dpi=180)
+    plt.close(figure)
+####
+
+
+
+
 def _material_boundaries(result: RadiantWaveResult) -> tuple[float, float]:
     width = result.config.neutral_half_width
     return -width, width
 ####
+
+
 
 
 def _shade_material_regions(
@@ -159,6 +265,7 @@ def _shade_material_regions(
             label="asymmetric absorbing cap",
         )
         return
+    ####
 
     left, right = _material_boundaries(result)
     axes.axvspan(
@@ -172,9 +279,12 @@ def _shade_material_regions(
         right,
         result.config.half_extent,
         alpha=0.12,
-        label="absorber",
+        label="loss insert",
     )
 ####
+
+
+
 
 def _plot_scalar_field(
     axes: plt.Axes,
@@ -185,7 +295,7 @@ def _plot_scalar_field(
     symmetric: bool = False,
 ) -> object:
     if result.config.dimensions == 1:
-        line, = axes.plot(result.coordinates[0], values)
+        (line,) = axes.plot(result.coordinates[0], values)
         _shade_material_regions(axes, result)
         axes.set_xlabel("position")
         axes.set_ylabel(label)
@@ -223,6 +333,8 @@ def _plot_scalar_field(
 ####
 
 
+
+
 def _add_scalar_colorbar(
     figure: plt.Figure,
     axes: plt.Axes,
@@ -237,16 +349,14 @@ def _add_scalar_colorbar(
 ####
 
 
+
+
 def _derived_material_properties(
     result: RadiantWaveResult,
 ) -> tuple[tuple[FloatArray, str], ...]:
     materials = result.materials
-    wave_speed = np.sqrt(
-        materials.wave_stiffness / materials.wave_density
-    )
-    impedance = np.sqrt(
-        materials.wave_density * materials.wave_stiffness
-    )
+    wave_speed = np.sqrt(materials.wave_stiffness / materials.wave_density)
+    impedance = np.sqrt(materials.wave_density * materials.wave_stiffness)
     return (
         (materials.growth_rate, "autocatalytic growth rate"),
         (materials.loss_rate, "activity loss rate"),
@@ -259,6 +369,8 @@ def _derived_material_properties(
         (materials.wave_damping, "wave damping"),
     )
 ####
+
+
 
 
 def _save_material_property_atlas(
@@ -281,9 +393,7 @@ def _save_material_property_atlas(
             result.config.dimensions,
         )
     ####
-    figure.suptitle(
-        "Material-property atlas: reaction, heat, and wave behavior"
-    )
+    figure.suptitle("Material-property atlas: reaction, heat, and wave behavior")
     figure.tight_layout()
     figure.savefig(
         output_directory / "material_property_atlas.png",
@@ -291,6 +401,8 @@ def _save_material_property_atlas(
     )
     plt.close(figure)
 ####
+
+
 
 
 def _save_coupling_chain(
@@ -327,13 +439,13 @@ def _save_coupling_chain(
             result.config.dimensions,
         )
     ####
-    figure.suptitle(
-        "Coupling chain: activity → heat → wave → pressure diagnostic"
-    )
+    figure.suptitle("Coupling chain: activity → heat → wave → pressure diagnostic")
     figure.tight_layout()
     figure.savefig(output_directory / "coupling_chain.png", dpi=180)
     plt.close(figure)
 ####
+
+
 
 
 def _save_wave_energy_partition(
@@ -386,6 +498,8 @@ def _save_wave_energy_partition(
 ####
 
 
+
+
 def _pressure_force_components(
     result: RadiantWaveResult,
 ) -> tuple[FloatArray, ...]:
@@ -399,6 +513,8 @@ def _pressure_force_components(
     ####
     return tuple(-np.asarray(gradient) for gradient in gradients)
 ####
+
+
 
 
 def _save_pressure_force_direction(
@@ -500,12 +616,16 @@ def _save_pressure_force_direction(
 ####
 
 
+
+
 def _centerline(values: FloatArray) -> FloatArray:
     if values.ndim == 1:
         return values
     ####
     return values[:, values.shape[1] // 2]
 ####
+
+
 
 
 def _save_wave_space_time(
@@ -516,9 +636,7 @@ def _save_wave_space_time(
         return
     ####
     times = np.array([frame.time for frame in result.frames])
-    wave_history = np.stack(
-        [_centerline(frame.wave) for frame in result.frames]
-    )
+    wave_history = np.stack([_centerline(frame.wave) for frame in result.frames])
     energy_history = np.stack(
         [_centerline(frame.wave_energy) for frame in result.frames]
     )
@@ -559,26 +677,18 @@ def _save_wave_space_time(
     figure.colorbar(wave_image, ax=axes_grid[0], label="wave displacement")
     figure.colorbar(energy_image, ax=axes_grid[1], label="wave energy")
     left_reflection = (
-        result.config.reflector.wave_impedance
-        - result.config.neutral.wave_impedance
-    ) / (
-        result.config.reflector.wave_impedance
-        + result.config.neutral.wave_impedance
-    )
+        result.config.reflector.wave_impedance - result.config.neutral.wave_impedance
+    ) / (result.config.reflector.wave_impedance + result.config.neutral.wave_impedance)
     right_reflection = (
-        result.config.absorber.wave_impedance
-        - result.config.neutral.wave_impedance
-    ) / (
-        result.config.absorber.wave_impedance
-        + result.config.neutral.wave_impedance
-    )
+        result.config.absorber.wave_impedance - result.config.neutral.wave_impedance
+    ) / (result.config.absorber.wave_impedance + result.config.neutral.wave_impedance)
     figure.suptitle("Wave propagation through heterogeneous material interfaces")
     figure.text(
         0.5,
         0.005,
         "Normal-incidence amplitude coefficients: "
         f"neutral→reflector R={left_reflection:+.2f}; "
-        f"neutral→absorber R={right_reflection:+.2f}. "
+        f"neutral→loss insert R={right_reflection:+.2f}. "
         "Dashed lines mark interfaces.",
         ha="center",
     )
@@ -586,6 +696,8 @@ def _save_wave_space_time(
     figure.savefig(output_directory / "wave_space_time.png", dpi=180)
     plt.close(figure)
 ####
+
+
 
 
 def _cumulative_trapezoid(
@@ -603,6 +715,8 @@ def _cumulative_trapezoid(
 ####
 
 
+
+
 def _save_material_energy_history(
     result: RadiantWaveResult,
     output_directory: Path,
@@ -610,16 +724,11 @@ def _save_material_energy_history(
     if len(result.frames) < 2:
         return
     ####
-    labels = ("reflector", "neutral", "absorber")
+    labels = _MATERIAL_LABELS
     times = np.array([frame.time for frame in result.frames])
-    energy = np.array(
-        [frame.budget.material_wave_energy for frame in result.frames]
-    )
+    energy = np.array([frame.budget.material_wave_energy for frame in result.frames])
     dissipation = np.array(
-        [
-            frame.budget.material_wave_dissipation_power
-            for frame in result.frames
-        ]
+        [frame.budget.material_wave_dissipation_power for frame in result.frames]
     )
     cumulative_dissipation = _cumulative_trapezoid(dissipation, times)
 
@@ -649,6 +758,8 @@ def _save_material_energy_history(
     )
     plt.close(figure)
 ####
+
+
 
 
 def _save_coupling_budget_history(
@@ -748,6 +859,8 @@ def _save_coupling_budget_history(
 ####
 
 
+
+
 def _save_balance_factor_history(
     result: RadiantWaveResult,
     output_directory: Path,
@@ -785,6 +898,142 @@ def _save_balance_factor_history(
 ####
 
 
+
+
+def _save_energy_budget_phase_history(
+    result: RadiantWaveResult,
+    output_directory: Path,
+) -> None:
+    if len(result.frames) < 2:
+        return
+    ####
+    times = np.array([frame.time for frame in result.frames])
+    budgets = [frame.budget for frame in result.frames]
+    activity = np.array([budget.total_activity for budget in budgets])
+    thermal = np.array([budget.thermal_energy for budget in budgets])
+    wave = np.array([budget.total_wave_energy for budget in budgets])
+    source = np.array([budget.source_strength for budget in budgets])
+    sink = np.array([budget.sink_strength for budget in budgets])
+    balance = np.array([budget.balance_factor for budget in budgets])
+    heat_source = np.array([budget.heat_source_power for budget in budgets])
+    heat_loss = np.array([budget.heat_loss_power for budget in budgets])
+    cumulative_source = np.concatenate(
+        ([0.0], np.cumsum(np.diff(times) * (source[:-1] + source[1:]) / 2.0))
+    )
+    cumulative_sink = np.concatenate(
+        ([0.0], np.cumsum(np.diff(times) * (sink[:-1] + sink[1:]) / 2.0))
+    )
+    cumulative_net = cumulative_source - cumulative_sink
+
+    figure, axes_grid = plt.subplots(2, 2, figsize=(13, 9), sharex=True)
+    axes = axes_grid.ravel()
+    scales = (
+        max(float(np.max(activity)), np.finfo(float).tiny),
+        max(float(np.max(thermal)), np.finfo(float).tiny),
+        max(float(np.max(wave)), np.finfo(float).tiny),
+    )
+    axes[0].plot(times, activity / scales[0], label="activity")
+    axes[0].plot(times, thermal / scales[1], label="thermal energy")
+    axes[0].plot(times, wave / scales[2], label="wave energy")
+    axes[0].set_ylabel("relative magnitude")
+    axes[0].set_title("Stored state trend (each series ÷ its own run maximum)")
+    axes[0].legend()
+
+    axes[1].plot(times, thermal, label="thermal energy")
+    axes[1].set_ylabel("thermal energy")
+    axes[1].set_title("Thermal reservoir and heat transfer")
+    heat_axis = axes[1].twinx()
+    heat_axis.plot(
+        times,
+        heat_source,
+        color="tab:orange",
+        linestyle="--",
+        label="heat generation",
+    )
+    heat_axis.plot(
+        times,
+        heat_loss,
+        color="tab:blue",
+        linestyle=":",
+        label="heat loss",
+    )
+    heat_axis.set_ylabel("heat transfer rate")
+    lines, labels = axes[1].get_legend_handles_labels()
+    extra_lines, extra_labels = heat_axis.get_legend_handles_labels()
+    axes[1].legend(lines + extra_lines, labels + extra_labels, loc="upper left")
+
+    axes[2].plot(times, source, label="source rate")
+    axes[2].plot(times, sink, label="sink rate")
+    axes[2].set_ylabel("rate")
+    axes[2].set_title("Instantaneous source, sink, and regulation")
+    balance_axis = axes[2].twinx()
+    balance_axis.plot(
+        times,
+        balance,
+        color="tab:purple",
+        label="balance factor",
+    )
+    balance_axis.axhline(1.0, color="black", linestyle="--", linewidth=0.8)
+    balance_axis.set_ylabel("source / sink")
+    lines, labels = axes[2].get_legend_handles_labels()
+    extra_lines, extra_labels = balance_axis.get_legend_handles_labels()
+    axes[2].legend(lines + extra_lines, labels + extra_labels, loc="upper left")
+
+    axes[3].plot(times, cumulative_source, label="cumulative source")
+    axes[3].plot(times, cumulative_sink, label="cumulative sink")
+    axes[3].plot(
+        times,
+        cumulative_net,
+        color="tab:red",
+        linewidth=2.0,
+        label="cumulative net source − sink",
+    )
+    axes[3].axhline(0.0, color="black", linewidth=0.8)
+    axes[3].set_ylabel("integrated normalized budget")
+    axes[3].set_xlabel("time")
+    axes[3].set_title("Accumulated excess-flow diagnostic")
+    axes[3].legend()
+
+    inserted = [frame.absorber_inserted for frame in result.frames]
+    if any(inserted) and not all(inserted):
+        insertion_time = times[inserted.index(True)]
+        for axis in axes:
+            axis.axvline(
+                insertion_time,
+                color="black",
+                linestyle="--",
+                linewidth=1.0,
+            )
+        ####
+        axes[0].text(
+            insertion_time,
+            0.96,
+            "loss material inserted",
+            transform=axes[0].get_xaxis_transform(),
+            ha="right",
+            va="top",
+            fontsize=9,
+        )
+    ####
+    for axis in axes:
+        axis.grid(True, alpha=0.25)
+    ####
+    figure.suptitle(
+        "Generic initial → source-dominant buildup → loss-material insertion → "
+        "rate regulation trend "
+        "(diagnostic units, not conserved physical energy)"
+    )
+    figure.tight_layout()
+    figure.savefig(
+        output_directory / "energy_budget_phase_history.png",
+        dpi=180,
+    )
+    plt.close(figure)
+####
+
+
+
+
 def _save_absorber_insertion_history(
     result: RadiantWaveResult,
     output_directory: Path,
@@ -795,29 +1044,33 @@ def _save_absorber_insertion_history(
         return
     ####
     before = before_frames[-1].material_id
-    after = inserted_frames[0].material_id
+    after = inserted_frames[-1].material_id
     if before.ndim == 3:
-        before = before[:, :, before.shape[2] // 2]
-        after = after[:, :, after.shape[2] // 2]
+        before = _material_visualization_slice(before, result)
+        after = _material_visualization_slice(after, result)
+    ####
 
-    colors = plt.get_cmap("viridis")(np.linspace(0.12, 0.88, 3))
-    colormap = ListedColormap(colors)
-    norm = BoundaryNorm((-0.5, 0.5, 1.5, 2.5), colormap.N)
+    colormap = ListedColormap(_MATERIAL_COLORS)
+    norm = BoundaryNorm((-0.5, 0.5, 1.5, 2.5, 3.5), colormap.N)
     figure, axes = plt.subplots(1, 2, figsize=(12, 5))
     for axis, values, title in (
         (axes[0], before, "before insertion"),
-        (axes[1], after, "after right-half insertion"),
+        (axes[1], after, "after final insertion depth"),
     ):
         axis.imshow(values.T, origin="lower", cmap=colormap, norm=norm)
         axis.set_title(title)
         axis.set_xlabel("x index")
-        axis.set_ylabel("y index")
+        axis.set_ylabel(
+            "z index" if result.config.material_layout == "channel-block" else "y index"
+        )
     ####
-    figure.suptitle("Dynamic generic absorber insertion")
+    figure.suptitle("Dynamic generic loss-material insertion")
     figure.tight_layout()
     figure.savefig(output_directory / "absorber_insertion.png", dpi=180)
     plt.close(figure)
 ####
+
+
 
 
 def save_radiant_wave_plots(
@@ -866,6 +1119,7 @@ def save_radiant_wave_plots(
     ####
 
     _save_material_map(result, output_directory)
+    _save_channel_block_geometry(result, output_directory)
     _save_material_property_atlas(result, output_directory)
     _save_coupling_chain(result, output_directory)
     _save_wave_energy_partition(result, output_directory)
@@ -874,6 +1128,7 @@ def save_radiant_wave_plots(
     _save_material_energy_history(result, output_directory)
     _save_coupling_budget_history(result, output_directory)
     _save_balance_factor_history(result, output_directory)
+    _save_energy_budget_phase_history(result, output_directory)
     _save_absorber_insertion_history(result, output_directory)
 
     if result.config.dimensions == 3:
@@ -896,6 +1151,8 @@ def save_radiant_wave_plots(
 ####
 
 
+
+
 def _save_animation(
     result: RadiantWaveResult,
     field_name: str,
@@ -916,7 +1173,7 @@ def _save_animation(
 
     if result.config.dimensions == 1:
         figure, axes = plt.subplots(figsize=(8, 5))
-        line, = axes.plot(result.coordinates[0], values[0])
+        (line,) = axes.plot(result.coordinates[0], values[0])
         padding = 0.05 * max(maximum - minimum, 1.0e-12)
         axes.set_xlim(-result.config.half_extent, result.config.half_extent)
         axes.set_ylim(minimum - padding, maximum + padding)
@@ -926,11 +1183,10 @@ def _save_animation(
 
         def update(index: int) -> tuple[object, ...]:
             line.set_ydata(values[index])
-            axes.set_title(
-                f"1D {label}, t = {result.frames[index].time:.3f}"
-            )
+            axes.set_title(f"1D {label}, t = {result.frames[index].time:.3f}")
             return (line,)
         ####
+
     else:
         extent = (
             -result.config.half_extent,
@@ -961,6 +1217,7 @@ def _save_animation(
         ####
     ####
 
+
     animation = FuncAnimation(
         figure,
         update,
@@ -972,6 +1229,98 @@ def _save_animation(
     animation.save(output_path, writer=PillowWriter(fps=fps), dpi=120)
     plt.close(figure)
 ####
+
+
+
+
+def _save_material_animation(
+    result: RadiantWaveResult,
+    output_path: Path,
+    fps: int,
+) -> None:
+    """Animate the material layout so timed insertion is visible in the GIF."""
+    values = [frame.material_id for frame in result.frames]
+    colormap = ListedColormap(_MATERIAL_COLORS)
+    norm = BoundaryNorm((-0.5, 0.5, 1.5, 2.5, 3.5), colormap.N)
+    if result.config.dimensions == 1:
+        slices = values
+        figure, axes = plt.subplots(figsize=(8, 4))
+        image = axes.imshow(
+            np.asarray(slices[0])[None, :],
+            origin="lower",
+            aspect="auto",
+            extent=(-result.config.half_extent, result.config.half_extent, 0, 1),
+            cmap=colormap,
+            norm=norm,
+        )
+        axes.set_yticks([])
+        axes.set_xlabel("position")
+    else:
+        extent = (
+            -result.config.half_extent,
+            result.config.half_extent,
+            -result.config.half_extent,
+            result.config.half_extent,
+        )
+        slices = [_material_visualization_slice(value, result) for value in values]
+        figure, axes = plt.subplots(figsize=(7, 6))
+        image = axes.imshow(
+            slices[0].T,
+            origin="lower",
+            extent=extent,
+            aspect="equal",
+            cmap=colormap,
+            norm=norm,
+        )
+        axes.set_xlabel("x")
+        axes.set_ylabel(
+            "z" if result.config.material_layout == "channel-block" else "y"
+        )
+    ####
+    figure.colorbar(
+        image,
+        ax=axes,
+        ticks=range(len(_MATERIAL_LABELS)),
+        label="material: reflector / reactive medium / loss rod / open channel",
+    )
+
+    def update(index: int) -> tuple[object, ...]:
+        current = np.asarray(slices[index])
+        image.set_data(current[None, :] if result.config.dimensions == 1 else current.T)
+        inserted = "pre-event"
+        progress = result.frames[index].material_event_progress
+        if progress:
+            labels = result.material_event_names
+            inserted = ", ".join(
+                f"{name}: {fraction:.0%}"
+                for name, fraction in zip(labels, progress, strict=True)
+            )
+        elif result.frames[index].absorber_inserted:
+            inserted = (
+                f"loss material: {result.frames[index].absorber_fraction:.0%} "
+                "channel depth"
+            )
+        ####
+        axes.set_title(
+            f"Material layout, t = {result.frames[index].time:.3f} ({inserted})"
+        )
+        return (image,)
+    ####
+
+
+    animation = FuncAnimation(
+        figure,
+        update,
+        frames=len(values),
+        interval=1000 / fps,
+        blit=False,
+    )
+    figure.tight_layout()
+    animation.save(output_path, writer=PillowWriter(fps=fps), dpi=120)
+    plt.close(figure)
+####
+
+
 
 
 def save_radiant_wave_animations(
@@ -1013,6 +1362,11 @@ def save_radiant_wave_animations(
         "wave_pressure",
         "wave-pressure proxy",
         output_directory / "wave_pressure_evolution.gif",
+        fps,
+    )
+    _save_material_animation(
+        result,
+        output_directory / "material_insertion_evolution.gif",
         fps,
     )
 ####

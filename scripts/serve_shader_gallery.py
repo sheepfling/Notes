@@ -9,7 +9,6 @@ from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import quote, unquote, urlsplit
 
-
 REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
 SKIP_PARTS = {".git", ".venv", ".uv-cache", ".pytest_cache", "artifacts", "inbox"}
 
@@ -51,7 +50,7 @@ def handler_for(repository_root: Path):
             super().__init__(*args, directory=str(repository_root), **kwargs)
         ####
 
-        def do_GET(self) -> None:  # noqa: N802 - required by the HTTP handler API
+        def do_GET(self) -> None:
             request_path = urlsplit(self.path).path
             if request_path == "/__shader_gallery__/shaders":
                 payload = json.dumps(shader_catalog(repository_root), indent=2).encode("utf-8")
