@@ -17,13 +17,13 @@ each source character.
 
 Run the self-test:
 
-```powershell
+```
 uv run python projects/scripts/toy-ciphers/otp.py test
 ```
 
 For a file, provide explicit output paths so an experiment cannot silently overwrite the input:
 
-```powershell
+```
 uv run python projects/scripts/toy-ciphers/otp.py encrypt input.txt encrypted.txt key.txt
 uv run python projects/scripts/toy-ciphers/otp.py decrypt encrypted.txt key.txt restored.txt
 ```
@@ -38,7 +38,7 @@ Use a vetted authenticated-encryption library for real data.
 Vigenere-like exercise, not encryption. The cleaned version rejects empty or non-printable
 passphrases and fails clearly instead of silently producing an empty or truncated result.
 
-```powershell
+```
 uv run python projects/scripts/toy-ciphers/pcrypt.py test
 uv run python projects/scripts/toy-ciphers/pcrypt.py encrypt input.txt passphrase transformed.txt
 uv run python projects/scripts/toy-ciphers/pcrypt.py decrypt transformed.txt passphrase restored.txt

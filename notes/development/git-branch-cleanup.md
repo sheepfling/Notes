@@ -12,7 +12,7 @@ removing it.
 
 Run this from the repository whose branches you are reviewing:
 
-```bash
+```
 git fetch --prune
 git branch -vv
 ```
@@ -25,14 +25,14 @@ command.
 
 First check the candidate’s commits and working-tree state:
 
-```bash
+```
 git log --oneline --decorate --graph <branch-name> -n 20
 git status --short
 ```
 
 If the work is no longer needed and Git considers it merged, use the safe delete form:
 
-```bash
+```
 git branch --delete <branch-name>
 ```
 
@@ -42,7 +42,7 @@ That refusal is useful: inspect the commits before deciding whether they are bac
 Only use force deletion when the branch is definitely disposable and its commits are preserved
 somewhere else:
 
-```bash
+```
 git branch --delete --force <branch-name>
 ```
 
@@ -51,7 +51,7 @@ Remote deletion can be intentional, temporary, or unrelated to the local work yo
 
 ## Verify
 
-```bash
+```
 git branch --list
 git status --short
 git fsck --no-reflogs --unreachable

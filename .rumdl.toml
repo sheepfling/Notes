@@ -21,6 +21,7 @@ disable = [
     "MD033", # Inline HTML is retained where Markdown cannot express the layout.
     "MD034", # Bare URLs are retained in reference and command notes.
     "MD041", # Not every note begins with a document title.
+    "MD040", # Unlabeled fences are the console-neutral command style.
 ]
 
 [MD003]

@@ -12,13 +12,13 @@
 
 Encode a file:
 
-```powershell
+```
 python base64_cli.py encode input.bin output.b64
 ```
 
 Decode it again:
 
-```powershell
+```
 python base64_cli.py decode output.b64 restored.bin
 ```
 

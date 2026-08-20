@@ -67,19 +67,19 @@ force would double-count pressure.
 
 CPU:
 
-```bash
+```
 python -m pip install -e .
 ```
 
 NVIDIA CUDA 13.x GPU:
 
-```bash
+```
 python -m pip install -e '.[gpu]'
 ```
 
 Commands:
 
-```bash
+```
 converging-flow run --dim 3 --n 64 --backend auto --no-plots
 
 converging-flow radiant-wave-run \

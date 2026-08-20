@@ -14,7 +14,7 @@ The implementation preserves newline characters, streams input line by line, and
 
 Run the self-check:
 
-```powershell
+```
 Set-Content -LiteralPath one-line.txt -Value 'abcd' -NoNewline
 python altchar.py test one-line.txt --char A
 ```
@@ -23,7 +23,7 @@ The self-check now handles multi-line input: insertion skips newline characters 
 
 Insert a marker, writing the default `.a` output:
 
-```powershell
+```
 python altchar.py insert input.txt --char A
 ```
 

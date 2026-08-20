@@ -18,7 +18,7 @@ This is useful when the transport accepts text but not an ordinary archive. It i
 
 Create a text package:
 
-```powershell
+```
 New-Item package.txt -ItemType File
 python textball.py create input-directory package.txt --encode
 ```
@@ -27,7 +27,7 @@ The current implementation expects the output path to already exist before it cr
 
 The encoded form can optionally insert harmless non-Base64 characters:
 
-```powershell
+```
 python textball.py create input-directory package.txt --encode --obfuscate 5
 ```
 

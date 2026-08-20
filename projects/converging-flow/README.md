@@ -45,26 +45,26 @@ naturally expose symmetry errors that cannot exist in 1D.
 
 ## Install
 
-```bash
+```
 uv venv
 uv pip install -e '.[dev]'
 ```
 
 Or with ordinary pip:
 
-```bash
+```
 python -m pip install -e '.[dev]'
 ```
 
 For the optional compiled reaction-diffusion backend without the full developer toolset:
 
-```bash
+```
 python -m pip install -e '.[fast]'
 ```
 
 For NVIDIA CUDA 13.x GPU execution through CuPy:
 
-```bash
+```
 python -m pip install -e '.[gpu]'
 ```
 
@@ -75,13 +75,13 @@ backend is selected, and `auto` falls back to NumPy when no usable CUDA device e
 
 The portable Python runner generates a small smoke suite on Windows, Linux, or macOS:
 
-```bash
+```
 python -m converging_flow.runner --backend numpy --reaction-backend numba
 ```
 
 After installation, the equivalent console command is:
 
-```bash
+```
 converging-flow-run --backend auto --output-root artifacts/converging-flow/run
 ```
 
@@ -129,12 +129,8 @@ and adjustable without modifying an example driver.
 
 Generate a small backend-agnostic radiant-wave gallery with captured budgets and animations:
 
-```bash
-python examples/physics_diagnostics/run_gallery.py \
-  --backend auto \
-  --final-time 0.04 \
-  --frames 9 \
-  --output artifacts/converging-flow/physics-gallery
+```
+python examples/physics_diagnostics/run_gallery.py --backend auto --final-time 0.04 --frames 9 --output artifacts/converging-flow/physics-gallery
 ```
 
 Use `--backend numpy` for CPU-only output or `--backend cupy` to require the CUDA GPU.
@@ -143,25 +139,14 @@ the reactive-Euler gallery, and the pressure-semantics comparison in one cross-p
 
 Generate the reactive-Euler pressure/acceleration gallery:
 
-```bash
-python examples/backend_agnostic/reactive_pressure_demo.py \
-  --backend auto \
-  --resolution 128 \
-  --final-time 0.04 \
-  --frames 9 \
-  --output artifacts/converging-flow/physics-diagnostics/reactive_pressure
+```
+python examples/backend_agnostic/reactive_pressure_demo.py --backend auto --resolution 128 --final-time 0.04 --frames 9 --output artifacts/converging-flow/physics-diagnostics/reactive_pressure
 ```
 
 Generate the finite-source, pressure-wave, and phase-transition demonstration:
 
-```bash
-python examples/backend_agnostic/impulsive_phase_transition_demo.py \
-  --backend auto \
-  --resolution 768 \
-  --final-time 0.18 \
-  --frames 121 \
-  --fps 18 \
-  --output artifacts/converging-flow/impulsive-phase-transition
+```
+python examples/backend_agnostic/impulsive_phase_transition_demo.py --backend auto --resolution 768 --final-time 0.18 --frames 121 --fps 18 --output artifacts/converging-flow/impulsive-phase-transition
 ```
 
 This separate normalized Euler model starts with a localized finite positive-feedback
@@ -185,15 +170,8 @@ stores the values in `radiant_wave_state.npz` and `radiant_wave_summary.json`.
 
 To exercise a timed generic loss-material insertion and relaxation run:
 
-```bash
-python examples/physics_diagnostics/run_absorber_relaxation.py \
-  --backend auto \
-  --resolution 48 \
-  --final-time 0.06 \
-  --insertion-time 0.03 \
-  --frames 121 \
-  --fps 16 \
-  --output artifacts/converging-flow/absorber-relaxation
+```
+python examples/physics_diagnostics/run_absorber_relaxation.py --backend auto --resolution 48 --final-time 0.06 --insertion-time 0.03 --frames 121 --fps 16 --output artifacts/converging-flow/absorber-relaxation
 ```
 
 The `--frames` value should be an integer (for example `81`). The run starts with an open
@@ -211,17 +189,8 @@ for CPU-only runs.
 To animate a perforated generic reactive block with a 6×4 grid of axial open channels,
 a reflective outer shell, and loss rods moving to 50% channel depth:
 
-```bash
-python examples/physics_diagnostics/run_channel_block_regulation.py \
-  --backend auto \
-  --resolution 56 \
-  --final-time 0.24 \
-  --rod-start 0.05 \
-  --rod-end 0.12 \
-  --rod-fraction 0.50 \
-  --frames 141 \
-  --fps 18 \
-  --output artifacts/converging-flow/channel-block-regulation
+```
+python examples/physics_diagnostics/run_channel_block_regulation.py --backend auto --resolution 56 --final-time 0.24 --rod-start 0.05 --rod-end 0.12 --rod-fraction 0.50 --frames 141 --fps 18 --output artifacts/converging-flow/channel-block-regulation
 ```
 
 This is a normalized heat-producing and damped-wave visualization only. It uses illustrative
@@ -232,14 +201,8 @@ source/sink and thermal-budget histories so the delayed approach to balance is i
 To run that settled channel-block stage followed by a two-dimensional finite impulse,
 pressure-wave, and phase-transition event:
 
-```bash
-python examples/physics_diagnostics/run_channel_block_impulsive_event.py \
-  --backend auto \
-  --resolution 48 \
-  --final-time 0.16 \
-  --frames 101 \
-  --fps 16 \
-  --output artifacts/converging-flow/channel-block-impulsive-event
+```
+python examples/physics_diagnostics/run_channel_block_impulsive_event.py --backend auto --resolution 48 --final-time 0.16 --frames 101 --fps 16 --output artifacts/converging-flow/channel-block-impulsive-event
 ```
 
 The precursor's final activity, heat, and channel occupancy form a normalized 2D
@@ -250,16 +213,8 @@ a claim that the two solvers share calibrated material properties.
 To keep the full perforated-block geometry and run the finite event in 3D at a
 chosen side/corner after regulation:
 
-```bash
-python examples/physics_diagnostics/run_perforated_block_3d_event.py \
-  --backend cupy \
-  --resolution 48 \
-  --final-time 0.16 \
-  --event-time 0.035 \
-  --event-center -0.50 0.52 -0.30 \
-  --frames 101 \
-  --fps 16 \
-  --output artifacts/converging-flow/perforated-block-3d-event
+```
+python examples/physics_diagnostics/run_perforated_block_3d_event.py --backend cupy --resolution 48 --final-time 0.16 --event-time 0.035 --event-center -0.50 0.52 -0.30 --frames 101 --fps 16 --output artifacts/converging-flow/perforated-block-3d-event
 ```
 
 This one driver first completes the scheduled 3D material regulation stage,
@@ -271,30 +226,20 @@ multiphysics material law.
 
 ## Run one case
 
-```bash
-converging-flow run \
-  --dim 2 \
-  --n 192 \
-  --final-time 0.18 \
-  --backend auto \
-  --output artifacts/converging-flow/2d
+```
+converging-flow run --dim 2 --n 192 --final-time 0.18 --backend auto --output artifacts/converging-flow/2d
 ```
 
 ## Run the complete suite
 
-```bash
+```
 converging-flow suite --output artifacts/converging-flow/suite
 ```
 
 For a fast smoke run:
 
-```bash
-converging-flow suite \
-  --n1 256 \
-  --n2 64 \
-  --n3 24 \
-  --final-time 0.12 \
-  --output artifacts/converging-flow/smoke
+```
+converging-flow suite --n1 256 --n2 64 --n3 24 --final-time 0.12 --output artifacts/converging-flow/smoke
 ```
 
 Each case writes:
@@ -318,24 +263,14 @@ source/sink balance, channel geometry, and numerical splitting scheme are docume
 
 Run one case with the portable NumPy backend:
 
-```bash
-converging-flow reaction-run \
-  --dim 3 \
-  --n 48 \
-  --final-time 1.0 \
-  --backend numpy \
-  --output artifacts/converging-flow/reaction-3d
+```
+converging-flow reaction-run --dim 3 --n 48 --final-time 1.0 --backend numpy --output artifacts/converging-flow/reaction-3d
 ```
 
 For repeated or larger runs, select the optional fused Numba backend:
 
-```bash
-converging-flow reaction-run \
-  --dim 3 \
-  --n 96 \
-  --final-time 1.0 \
-  --backend numba \
-  --output artifacts/converging-flow/reaction-3d-fast
+```
+converging-flow reaction-run --dim 3 --n 96 --final-time 1.0 --backend numba --output artifacts/converging-flow/reaction-3d-fast
 ```
 
 The first Numba call compiles one dimensionality-specific kernel. Subsequent steps reuse
@@ -366,7 +301,7 @@ terms, clipping, and both midpoint stages into two compiled grid passes.
 
 Run the included benchmark with:
 
-```bash
+```
 PYTHONPATH=src python benchmarks/benchmark_reaction_backends.py
 ```
 
@@ -378,15 +313,8 @@ The `radiant-wave-run` command adds an asymmetric heterogeneous medium without
 returning to per-cell neighbor kernels. It advances a bounded autocatalytic activity,
 a conservative variable-conductivity heat equation, and a damped scalar wave.
 
-```bash
-converging-flow radiant-wave-run \
-  --dim 3 \
-  --n 48 \
-  --final-time 1.0 \
-  --backend auto \
-  --diffusion auto \
-  --frames 20 \
-  --output artifacts/converging-flow/radiant-wave-3d
+```
+converging-flow radiant-wave-run --dim 3 --n 48 --final-time 1.0 --backend auto --diffusion auto --frames 20 --output artifacts/converging-flow/radiant-wave-3d
 ```
 
 Available array backends are `numpy`, `cupy`, and `auto`. State arrays remain on the
@@ -451,10 +379,8 @@ mechanism; `-grad(p)` must not be added again as a body force.
 
 Run the included normalized demonstration with:
 
-```bash
-PYTHONPATH=src python examples/backend_agnostic/reactive_pressure_demo.py \
-  --backend auto \
-  --output artifacts/converging-flow/reactive-pressure-demo
+```
+PYTHONPATH=src python examples/backend_agnostic/reactive_pressure_demo.py --backend auto --output artifacts/converging-flow/reactive-pressure-demo
 ```
 
 This demonstration uses a prescribed generic progress-rate profile. It is numerical
@@ -485,7 +411,7 @@ one to three coordinate axes and over timesteps.
 
 Run:
 
-```bash
+```
 pytest
 ```
 

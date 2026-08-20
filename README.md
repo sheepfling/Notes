@@ -34,6 +34,11 @@ Prefer Markdown. Start each note with:
 
 Then capture the purpose, prerequisites, procedure or findings, verification, and recovery/rollback details as relevant. Record environment-specific values explicitly, and separate them from reusable instructions. Link related notes instead of duplicating them.
 
+Keep general command examples console-neutral when possible. Use unlabeled,
+one-line fences for commands that work in both Bash-like shells and PowerShell;
+reserve `bash`, `powershell`, and similar labels for shell-specific syntax.
+See [console-neutral command examples](notes/development/markdown-console-conventions.md).
+
 Use `current` for guidance that is intended to remain usable, `historical` for preserved material
 that depends on an older tool or event, `superseded` when another note replaces it, and
 `needs-review` when the material is useful but has not been recently revalidated.
@@ -55,22 +60,31 @@ The repository is primarily Markdown, but source collections can have optional a
 
 Set up a development virtual environment with pip:
 
-```powershell
-py -3.12 -m venv .venv
-.\.venv\Scripts\Activate.ps1
+```
+python -m venv .venv
 python -m pip install --upgrade pip
 python -m pip install -e ".[dev]"
 ```
 
-The equivalent setup with uv is:
+Activate it using the shell-specific command for your environment:
 
 ```powershell
+.\.venv\Scripts\Activate.ps1
+```
+
+```bash
+source .venv/bin/activate
+```
+
+The equivalent setup with uv is:
+
+```
 uv sync --extra dev
 ```
 
 Run all configured checks:
 
-```powershell
+```
 python -m scripts.ci
 ```
 
@@ -78,7 +92,7 @@ The local autofix sequence is deliberately ordered: Ruff fixes first,
 scope-markers inserts/regenerates structural markers, and rumdl applies safe
 Markdown fixes. The same checks then run read-only afterward:
 
-```powershell
+```
 python -m scripts.ci --fix
 ```
 
@@ -93,7 +107,7 @@ With uv, the equivalent command is `uv run pytest`.
 
 Validate local Markdown links, including repository containment and ignore rules:
 
-```powershell
+```
 uv run python scripts/validate_notes.py
 ```
 
@@ -101,13 +115,13 @@ Check for machine-specific absolute paths and private IPv4 addresses. Placeholde
 `C:\Users\<user>` and `/Users/REPLACE_ME` are allowed; pass any known private names or values at
 runtime with `--forbidden` rather than writing them into the repository:
 
-```powershell
+```
 uv run python scripts/check_scrubbed.py
 ```
 
 Check HTTP(S) links for 404/410 responses as a separate network-dependent step:
 
-```powershell
+```
 uv run python scripts/validate_notes.py --external
 ```
 
@@ -123,13 +137,13 @@ at runtime rather than recording those values in the repository.
 
 When the dependencies are already installed in the active Python environment, the direct equivalent is:
 
-```powershell
+```
 python -m pytest
 ```
 
 Measure Python line and branch coverage, including Python tools launched by the tests as subprocesses:
 
-```powershell
+```
 python -m pytest --cov --cov-report=term-missing
 ```
 

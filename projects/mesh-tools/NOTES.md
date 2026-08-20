@@ -28,7 +28,7 @@ optional GUI dependencies and the original package assumptions before relying on
 
 From the repository root, the shared validation environment runs its tests with:
 
-```powershell
+```
 uv sync --extra test
 uv run pytest tests/test_mesh_tools.py
 ```

@@ -247,42 +247,12 @@ than interpolation between only the initial and final fields.
 
 ## Reproducing the gallery
 
-```bash
-converging-flow radiant-wave-run \
-  --dim 3 \
-  --n 32 \
-  --final-time 0.6 \
-  --backend auto \
-  --diffusion auto \
-  --frames 25 \
-  --fps 10 \
-  --output examples/physics_diagnostics/radiant_3d
-
-PYTHONPATH=src python examples/backend_agnostic/reactive_pressure_demo.py \
-  --backend auto \
-  --resolution 512 \
-  --final-time 0.08 \
-  --frames 25 \
-  --fps 10 \
-  --output examples/physics_diagnostics/reactive_pressure
-
-PYTHONPATH=src python examples/backend_agnostic/impulsive_phase_transition_demo.py \
-  --backend auto \
-  --resolution 768 \
-  --final-time 0.18 \
-  --frames 121 \
-  --fps 18 \
-  --output examples/physics_diagnostics/impulsive_phase_transition
-
-PYTHONPATH=src python examples/physics_diagnostics/pressure_semantics_comparison.py
-
-PYTHONPATH=src python examples/physics_diagnostics/run_channel_block_impulsive_event.py \
-  --backend auto \
-  --resolution 48 \
-  --final-time 0.16 \
-  --frames 101 \
-  --fps 16 \
-  --output examples/physics_diagnostics/channel_block_impulsive_event
+```
+converging-flow radiant-wave-run --dim 3 --n 32 --final-time 0.6 --backend auto --diffusion auto --frames 25 --fps 10 --output examples/physics_diagnostics/radiant_3d
+python examples/backend_agnostic/reactive_pressure_demo.py --backend auto --resolution 512 --final-time 0.08 --frames 25 --fps 10 --output examples/physics_diagnostics/reactive_pressure
+python examples/backend_agnostic/impulsive_phase_transition_demo.py --backend auto --resolution 768 --final-time 0.18 --frames 121 --fps 18 --output examples/physics_diagnostics/impulsive_phase_transition
+python examples/physics_diagnostics/pressure_semantics_comparison.py
+python examples/physics_diagnostics/run_channel_block_impulsive_event.py --backend auto --resolution 48 --final-time 0.16 --frames 101 --fps 16 --output examples/physics_diagnostics/channel_block_impulsive_event
 ```
 
 The committed `radiant_1d` interface study uses 512 cells, 61 captured frames, a final time

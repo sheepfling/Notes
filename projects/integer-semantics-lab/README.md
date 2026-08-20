@@ -103,14 +103,13 @@ integer-semantics-lab/
 
 Requirements: CMake 3.25+ and a C++23 compiler. Run these commands from the repository root.
 
-```bash
+```
 cmake -S projects/integer-semantics-lab -B artifacts/integer-semantics-lab/build -G Ninja -DCMAKE_BUILD_TYPE=Release
 cmake --build artifacts/integer-semantics-lab/build
 ctest --test-dir artifacts/integer-semantics-lab/build --output-on-failure
 
 ./artifacts/integer-semantics-lab/build/cpp_integer_semantics --format=text --catalog=core
-./artifacts/integer-semantics-lab/build/cpp_integer_semantics --format=jsonl --catalog=all \
-  > artifacts/integer-semantics-lab/cpp.jsonl
+./artifacts/integer-semantics-lab/build/cpp_integer_semantics --format=jsonl --catalog=all  > artifacts/integer-semantics-lab/cpp.jsonl
 ```
 
 On a multi-configuration generator, the executable may be under
@@ -120,10 +119,8 @@ On a multi-configuration generator, the executable may be under
 
 Build, but do not treat as part of the portable probe:
 
-```bash
-cmake -S projects/integer-semantics-lab -B artifacts/integer-semantics-lab/build-ub \
-  -DINTEGER_SEMANTICS_BUILD_UB_LAB=ON \
-  -DINTEGER_SEMANTICS_BUILD_TESTS=OFF
+```
+cmake -S projects/integer-semantics-lab -B artifacts/integer-semantics-lab/build-ub  -DINTEGER_SEMANTICS_BUILD_UB_LAB=ON  -DINTEGER_SEMANTICS_BUILD_TESTS=OFF
 cmake --build artifacts/integer-semantics-lab/build-ub --target cpp_integer_ub_lab
 ```
 
@@ -135,33 +132,29 @@ with an undefined-behavior sanitizer or trapping configuration.
 Requirements: a current Odin compiler. The CI workflow pins `dev-2026-07a` so
 published reports identify a reproducible compiler release.
 
-```bash
+```
 odin test ./odin -define:ODIN_TEST_THREADS=1
 
 odin run projects/integer-semantics-lab/odin -- --format=text --catalog=core
-odin run projects/integer-semantics-lab/odin -- --format=jsonl --catalog=all \
-  > artifacts/integer-semantics-lab/odin.jsonl
+odin run projects/integer-semantics-lab/odin -- --format=jsonl --catalog=all  > artifacts/integer-semantics-lab/odin.jsonl
 ```
 
 ## Run both and compare
 
-```bash
-python3 projects/integer-semantics-lab/scripts/run_lab.py
+```
+python projects/integer-semantics-lab/scripts/run_lab.py
 ```
 
 On a machine without Odin, validate only C++ with:
 
-```bash
-python3 projects/integer-semantics-lab/scripts/run_lab.py --skip-odin
+```
+python projects/integer-semantics-lab/scripts/run_lab.py --skip-odin
 ```
 
 To compare existing reports:
 
-```bash
-python3 projects/integer-semantics-lab/scripts/compare_reports.py \
-  artifacts/integer-semantics-lab/odin.jsonl \
-  artifacts/integer-semantics-lab/cpp.jsonl \
-  --output artifacts/integer-semantics-lab/comparison.md
+```
+python projects/integer-semantics-lab/scripts/compare_reports.py  artifacts/integer-semantics-lab/odin.jsonl  artifacts/integer-semantics-lab/cpp.jsonl  --output artifacts/integer-semantics-lab/comparison.md
 ```
 
 The comparison intentionally matches only semantically corresponding fixed-width

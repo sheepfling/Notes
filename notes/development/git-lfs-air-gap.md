@@ -17,7 +17,7 @@ contain files while actually containing pointer text.
 
 On a machine with access to the LFS objects:
 
-```bash
+```
 git lfs fetch --all
 git lfs checkout
 ```
@@ -34,7 +34,7 @@ files: [Git LFS FAQ](https://github.com/git-lfs/git-lfs/blob/main/docs/man/git-l
 Use `git lfs migrate export` in a disposable clone or a deliberately coordinated branch. It
 rewrites history, changes commit IDs, and must be treated like any other history rewrite:
 
-```bash
+```
 git lfs fetch --all
 git lfs migrate export --everything --include="*.bin,*.dat"
 git lfs checkout
@@ -50,7 +50,7 @@ new repository if needed: [git-lfs-migrate](https://github.com/git-lfs/git-lfs/b
 
 Useful checks after migration:
 
-```bash
+```
 git lfs ls-files
 git grep -n -I "^version https://git-lfs.github.com/spec/v1" HEAD --
 git status --short
@@ -78,7 +78,7 @@ datasets.
 If the air-gapped copy only needs source history and does not need the large files yet, retain the
 LFS metadata and skip automatic downloads:
 
-```bash
+```
 git lfs install --skip-smudge
 ```
 

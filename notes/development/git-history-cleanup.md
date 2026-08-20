@@ -26,7 +26,7 @@ version in an old command is not a repository requirement.
 
 Run BFG against a disposable mirror clone. For example, this removes blobs larger than 3 MiB:
 
-```bash
+```
 java -jar /path/to/bfg.jar --strip-blobs-bigger-than 3M /path/to/repository.git
 ```
 
@@ -37,7 +37,7 @@ shown with generic paths and does not include a JAR or a repository copy.
 
 Only after reviewing the rewritten result, expire `reflogs` and repack the disposable clone:
 
-```bash
+```
 cd /path/to/repository.git
 git reflog expire --expire=now --all
 git gc --prune=now --aggressive
@@ -45,7 +45,7 @@ git gc --prune=now --aggressive
 
 Inspect the repository before publishing it:
 
-```bash
+```
 git fsck --full --no-reflogs
 git log --all --stat
 git status --short

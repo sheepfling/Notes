@@ -12,10 +12,8 @@ platform’s build directory separate and use an out-of-source configure.
 
 Use a fresh build directory and pass the source and build locations explicitly:
 
-```bash
-cmake -S . -B build \
-  -DCMAKE_BUILD_TYPE=Debug \
-  -DCMAKE_PREFIX_PATH=/path/to/dependency/prefix
+```
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH=/path/to/dependency/prefix
 ```
 
 On Windows with a multi-configuration generator, select the configuration at build time rather
@@ -34,13 +32,13 @@ build directory after confirming it contains no source files.
 
 For package search problems, enable CMake’s find debugging:
 
-```bash
+```
 cmake -S . -B build -DCMAKE_FIND_DEBUG_MODE=ON
 ```
 
 The command-line debug switches are useful when tracing a particular configure:
 
-```bash
+```
 cmake --debug-find -S . -B build
 cmake --trace-source=CMakeLists.txt --trace-expand -S . -B build
 ```
@@ -79,7 +77,7 @@ error. They can make a broken package appear usable while leaving link failures 
 
 For a short diagnostic snapshot, inspect the cache and selected variables:
 
-```bash
+```
 cmake -LAH -N build
 ```
 
@@ -100,7 +98,7 @@ paths.
 
 Configure, build, and run the smallest relevant test target:
 
-```bash
+```
 cmake --build build --verbose
 ctest --test-dir build --output-on-failure
 ```

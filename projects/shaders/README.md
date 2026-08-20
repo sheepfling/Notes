@@ -37,7 +37,7 @@ The [GLSL shader gallery](shader-gallery/index.html) discovers every `.glsl` fil
 its source. The retained point-scatterer helper also has a small WebGL2 adapter so its interference
 pattern can be viewed interactively:
 
-```powershell
+```
 uv run python scripts/serve_shader_gallery.py
 ```
 

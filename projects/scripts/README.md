@@ -17,12 +17,13 @@ and safety boundary.
 | [toy-ciphers](toy-ciphers/README.md) | OTP-shaped and repeating-passphrase experiments | Not cryptography |
 | [git-maintenance](git-maintenance/README.md) | Repository discovery and update helpers | Can change repositories |
 | [readlines](readlines/README.md) | Line-ending inspection helper | Diagnostic utility |
+| [power-diagnostics](power-diagnostics/README.md) | Sleep, wake, reboot, and report generation | Read-only Windows diagnostics |
 
 The Windows batch files live beside the Python or archive workflow they support. This makes the
 fallback path discoverable without presenting all batch files as one unrelated toolkit.
 
 Run the focused tests from the repository root:
 
-```powershell
+```
 python -m pytest tests/test_script_collection.py tests/test_batch_collection.py
 ```

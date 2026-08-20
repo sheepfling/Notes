@@ -15,6 +15,7 @@ SCRIPT_PATHS = {
     "find_and_pull_all_git.py": Path("git-maintenance") / "find_and_pull_all_git.py",
     "otp.py": Path("toy-ciphers") / "otp.py",
     "pcrypt.py": Path("toy-ciphers") / "pcrypt.py",
+    "power_history.py": Path("power-diagnostics") / "power_history.py",
     "readlines.py": Path("readlines") / "readlines.py",
     "textball.py": Path("textball") / "textball.py",
 }
@@ -215,4 +216,19 @@ def test_readlines_represents_line_endings(tmp_dir: Path) -> None:
     source.write_text("one\nlast", encoding="utf-8", newline="")
 
     assert module.represented_lines(source) == ["0: 'one\\n'", "1: 'last'"]
+####
+
+
+def test_power_history_launcher_builds_report_command() -> None:
+    module = load_script_module("power_history", "power_history.py")
+    arguments = module.build_parser().parse_args(
+        ["--report", "--days", "7", "--max-events", "25", "--skip-powercfg"]
+    )
+
+    command = module.collector_command(arguments, "pwsh")
+
+    assert command[:5] == ["pwsh", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File"]
+    assert command[-2:] == ["-SkipPowerCfg", "-OutputDirectory"] or "-SkipPowerCfg" in command
+    assert "-Days" in command and "7" in command
+    assert "-MaxEvents" in command and "25" in command
 ####
