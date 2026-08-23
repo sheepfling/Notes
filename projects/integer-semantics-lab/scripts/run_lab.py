@@ -51,10 +51,13 @@ def run(command: Sequence[str], *, cwd: Path | None = None, stdout: Path | None 
 
 
 def executable_path(build_dir: Path, name: str, configuration: str) -> Path:
-    suffix = ".exe" if os.name == "nt" else ""
-    direct = build_dir / f"{name}{suffix}"
-    configured = build_dir / configuration / f"{name}{suffix}"
-    return configured if configured.exists() else direct
+    suffixes = (".exe", "") if os.name == "nt" else ("", ".exe")
+    candidates = [
+        build_dir / configuration / f"{name}{suffix}"
+        for suffix in suffixes
+    ]
+    candidates.extend(build_dir / f"{name}{suffix}" for suffix in suffixes)
+    return next((candidate for candidate in candidates if candidate.exists()), candidates[-1])
 ####
 
 
