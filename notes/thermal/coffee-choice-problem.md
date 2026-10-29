@@ -3,6 +3,7 @@
 > Type: reference
 > Status: current
 > Updated: 2026-10-29
+> Tags: coffee, thermal
 
 You have a hot cup of coffee and ten minutes before you want to drink it.
 There are two options:
@@ -52,6 +53,10 @@ Using these assumptions:
 - room: 20 °C
 - total wait: 10 minutes
 - late addition: after 5 minutes
+- effective conductance: 3.0 W/K
+- coffee specific heat: 4.18 J/(g·K), giving 1045 J/K
+- creamer specific heat: 3.90 J/(g·K), giving 117 J/K
+- mixture capacity: 1162 J/K
 
 the final temperatures are:
 
@@ -71,6 +76,10 @@ period.
 
 ## This is not a universal coffee rule
 
+The creamer remains at its stated temperature until it is added. The model
+omits the cup's heat capacity and treats heat loss as a constant effective
+conductance; it does not separately model evaporation or radiation.
+
 The conclusion belongs to the model, not to coffee in the abstract. Change the
 creamer temperature, the amount of creamer, the cup, or the timing and the
 comparison can change. For example, with a warmer 70 °C creamer, the same model
@@ -82,18 +91,19 @@ cooling rate—while the simulation keeps both effects in view.
 
 ## Reproduce it
 
-The companion simulation accepts the physical assumptions as command-line
-parameters and can write the temperature histories as CSV or SVG. Its default
-run is:
+The [small Python proof](coffee_choice.py) uses the original simulation's
+cooling and mixing equations and defaults. It was adapted from the local
+`thermal-problems` repository at commit
+`d1927b95c5a69b947496c9d55b1a63a94da2bb19`; that repository has no configured
+remote. The proof needs Python 3.10 or later and only the standard library. From
+the repository root, run:
 
 ```sh
-PYTHONPATH=src python3 -m thermal_problems.coffee_choice \
-  --plot examples/coffee-choice.svg \
-  --csv examples/coffee-choice.csv
+python3 notes/thermal/coffee_choice.py
+python3 -m unittest discover -s notes/thermal -p 'test_coffee_choice.py' -v
 ```
 
-The important thing to preserve when adapting the model is the distinction
-between cooling before mixing, the instantaneous mixing step, and cooling after
-mixing. Collapsing those into one average temperature hides the timing effect
-that this problem is asking about.
-
+It prints both the default and 70 °C creamer comparisons. The important thing
+to preserve when adapting the model is the distinction between cooling before
+mixing, instantaneous mixing, and cooling after mixing. The temperatures are
+model outputs, not measured coffee temperatures.

@@ -23,12 +23,36 @@ Prefer Markdown. Start each note with:
 > Type: how-to | reference | decision | troubleshooting
 > Status: current | superseded | needs-review
 > Updated: YYYY-MM-DD
+> Tags: example, topic-name
 ```
+
+Use a few lowercase, hyphenated tags separated by a comma and one space. Tags identify subjects across folders; use the type and status fields for the kind and currency of a note.
 
 Then capture the purpose, prerequisites, procedure or findings, verification, and recovery/rollback details as relevant. Record environment-specific values explicitly, and separate them from reusable instructions. Link related notes instead of duplicating them.
 
-## Index
+## Find a note
 
-- [Should You Add Creamer Now or Later?](notes/thermal/coffee-choice-problem.md)
-- [Set Git Bash as the Windows Terminal default](notes/windows/windows-terminal-default-git-bash.md)
-- [Shrink a WSL2 virtual disk](notes/windows/shrink-wsl2-vhdx.md)
+Browse by subject below, or search from the repository root:
+
+```sh
+rg --files notes -g '*.md'                       # list notes
+rg -n -i 'cooling' notes                         # search note contents
+rg -l '^> Type: reference$' notes                # find notes by type
+rg -l '^> Tags: ([a-z0-9-]+, )*thermal(,|$)' notes  # find an exact tag
+```
+
+Replace the example terms with the subject, type, or tag you need. The index
+points to subject entry points; add related notes beneath each subject instead
+of maintaining a single undifferentiated list.
+
+## Browse by subject
+
+### Thermal
+
+- [Should You Add Creamer Now or Later?](notes/thermal/coffee-choice-problem.md) — cooling and mixing comparison
+
+### Windows
+
+The earlier index listed notes about setting Git Bash as the Windows Terminal
+default and shrinking a WSL2 virtual disk, but those files are not present in
+this branch.
