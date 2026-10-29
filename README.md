@@ -31,3 +31,4 @@ Then capture the purpose, prerequisites, procedure or findings, verification, an
 
 - [Set Git Bash as the Windows Terminal default](notes/windows/windows-terminal-default-git-bash.md)
 - [Shrink a WSL2 virtual disk](notes/windows/shrink-wsl2-vhdx.md)
+- [Quaternion performance in Python](notes/quaternions/quaternion-performance.md)
