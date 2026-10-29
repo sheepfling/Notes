@@ -21,7 +21,8 @@ Preserve fair comparisons and distinguish measured results from inference.
 Keep the final summary in Markdown. By default, do not commit raw result dumps,
 captured stdout, generated reports, superseded experiments, or large one-off
 scripts. Retain or link supporting evidence outside the repository when useful,
-and say when it is unavailable. If executable proof is needed, prefer a small,
-reusable harness with shared code and clear dependencies over duplicated or
-report-generating scripts. Include additional artifacts when the user explicitly
-requests them or they are necessary for the task.
+and say when it is unavailable. Keep runnable experiment or verification scripts
+needed to regenerate results; prefer a small, reusable harness with shared code
+and clear dependencies over duplicated or report-generating scripts. Include
+additional artifacts when the user explicitly requests them or they are necessary
+for the task.
