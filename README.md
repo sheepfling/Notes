@@ -29,5 +29,6 @@ Then capture the purpose, prerequisites, procedure or findings, verification, an
 
 ## Index
 
+- [Should You Add Creamer Now or Later?](notes/thermal/coffee-choice-problem.md)
 - [Set Git Bash as the Windows Terminal default](notes/windows/windows-terminal-default-git-bash.md)
 - [Shrink a WSL2 virtual disk](notes/windows/shrink-wsl2-vhdx.md)
