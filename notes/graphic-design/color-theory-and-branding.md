@@ -1,4 +1,10 @@
 # Color Theory & Branding Terminology
+
+> Type: reference
+> Status: needs-review
+> Updated: 2026-10-29
+> Tags: branding, color, graphic-design
+
 ### A Practical Guide to Color, Harmony, Contrast, and Visual Identity
 
 Color is one of the most recognizable components of visual identity.
@@ -11,29 +17,39 @@ This guide establishes a practical vocabulary for understanding,
 selecting, evaluating, and maintaining color systems in graphic design
 and branding.
 
+### Illustrative color-family swatches
+
+![Named-color examples for red, orange, yellow, green, cyan, blue, violet, magenta, teal, black, white, gray, blue-green, yellow-green, reddish violet, bluish violet, warm off-white, and cool charcoal.](swatches/named-color-examples.svg)
+
+The swatches use CSS named-color values as illustrations, not unique
+definitions of these broad color families. The qualified examples use
+`darkcyan`, `yellowgreen`, `mediumvioletred`, `blueviolet`, `floralwhite`,
+and `darkslategray`, respectively. Actual shades, mixtures, and appearances
+depend on the color model and context.
+
 ---
 
 ## 1. Core Terminology
 
-| Term | Definition |
-|---|---|
-| **Color** | A visual perception produced by light and the human visual system. |
-| **Hue** | The attribute identifying a color as red, orange, yellow, green, blue, etc. |
-| **Saturation** | The degree of colorfulness relative to a reference, with its precise meaning depending on the color model. |
-| **Chroma** | The colorfulness of a color relative to a similarly illuminated neutral reference. |
-| **Lightness** | How light or dark a color appears relative to a reference white. |
-| **Value** | A traditional art term describing the relative lightness or darkness of a color. |
-| **Brightness** | The perceived intensity of light; also used differently in various digital color models. |
-| **Luminance** | A physical, photometrically weighted measure of light intensity per unit area in a given direction. |
-| **Tint** | A color mixed with white, in traditional color terminology. |
-| **Shade** | A color mixed with black. |
-| **Tone** | A color modified with gray or otherwise reduced in purity. |
-| **Contrast** | A perceptible difference between colors or visual elements. |
-| **Palette** | A selected collection of colors used together. |
-| **Color Harmony** | A relationship between colors perceived as visually coherent or pleasing. |
-| **Color Gamut** | The range of colors representable by a device or color space. |
-| **Color Space** | A defined system for representing colors numerically. |
-| **Color Profile** | Data describing a device's or color space's color reproduction characteristics. |
+| Term              | Definition                                                                                                 |
+| ----------------- | ---------------------------------------------------------------------------------------------------------- |
+| **Color**         | A visual perception produced by light and the human visual system.                                         |
+| **Hue**           | The attribute identifying a color as red, orange, yellow, green, blue, etc.                                |
+| **Saturation**    | The degree of colorfulness relative to a reference, with its precise meaning depending on the color model. |
+| **Chroma**        | The colorfulness of a color relative to a similarly illuminated neutral reference.                         |
+| **Lightness**     | How light or dark a color appears relative to a reference white.                                           |
+| **Value**         | A traditional art term describing the relative lightness or darkness of a color.                           |
+| **Brightness**    | The perceived intensity of light; also used differently in various digital color models.                   |
+| **Luminance**     | A physical, photometrically weighted measure of light intensity per unit area in a given direction.        |
+| **Tint**          | A color mixed with white, in traditional color terminology.                                                |
+| **Shade**         | A color mixed with black.                                                                                  |
+| **Tone**          | A color modified with gray or otherwise reduced in purity.                                                 |
+| **Contrast**      | A perceptible difference between colors or visual elements.                                                |
+| **Palette**       | A selected collection of colors used together.                                                             |
+| **Color Harmony** | A relationship between colors perceived as visually coherent or pleasing.                                  |
+| **Color Gamut**   | The range of colors representable by a device or color space.                                              |
+| **Color Space**   | A defined system for representing colors numerically.                                                      |
+| **Color Profile** | Data describing a device's or color space's color reproduction characteristics.                            |
 
 > **Key distinction:** Hue determines the general color family.
 > Lightness determines how light or dark it appears. Chroma or
@@ -103,12 +119,12 @@ It strongly influences:
 
 ### Practical Distinction
 
-| Property | Primary Question |
-|---|---|
-| Hue | What color family is this? |
-| Saturation | How saturated is it within this color model? |
-| Chroma | How colorful is it relative to a comparable neutral? |
-| Lightness | How light or dark does it appear? |
+| Property   | Primary Question                                     |
+| ---------- | ---------------------------------------------------- |
+| Hue        | What color family is this?                           |
+| Saturation | How saturated is it within this color model?         |
+| Chroma     | How colorful is it relative to a comparable neutral? |
+| Lightness  | How light or dark does it appear?                    |
 
 **Important:** A color can be highly saturated without appearing
 particularly bright.
@@ -201,11 +217,11 @@ and should not be confused with digital RGB or printing CMYK.
 
 ### Comparison
 
-| Model | Primary Application | Mixing Principle |
-|---|---|---|
-| RGB | Digital displays | Additive |
-| CMYK | Process printing | Subtractive |
-| RYB | Traditional art education | Simplified pigment mixing |
+| Model | Primary Application       | Mixing Principle          |
+| ----- | ------------------------- | ------------------------- |
+| RGB   | Digital displays          | Additive                  |
+| CMYK  | Process printing          | Subtractive               |
+| RYB   | Traditional art education | Simplified pigment mixing |
 
 **Practical rule:** Design digital palettes in a defined digital
 color space. Evaluate printed reproduction separately.
@@ -377,15 +393,15 @@ equally vivid, harmonious, or perceptually distinct.
 
 ### Harmony Summary
 
-| Scheme | Typical Hue Count | General Character |
-|---|---:|---|
-| Monochromatic | 1 | Cohesive, restrained |
-| Analogous | 2–5 | Related, continuous |
-| Complementary | 2 | Contrasting |
-| Split-Complementary | 3 | Contrasting, nuanced |
-| Triadic | 3 | Varied, balanced |
-| Tetradic | 4 | Flexible, complex |
-| Hexadic | 6 | Diverse, systematic |
+| Scheme              | Typical Hue Count | General Character    |
+| ------------------- | ----------------: | -------------------- |
+| Monochromatic       | 1                 | Cohesive, restrained |
+| Analogous           | 2–5               | Related, continuous  |
+| Complementary       | 2                 | Contrasting          |
+| Split-Complementary | 3                 | Contrasting, nuanced |
+| Triadic             | 3                 | Varied, balanced     |
+| Tetradic            | 4                 | Flexible, complex    |
+| Hexadic             | 6                 | Diverse, systematic  |
 
 Hue count refers to the conceptual arrangement, not the total
 number of colors in a finished palette.
@@ -536,13 +552,13 @@ and saturation.
 
 ### Contrast Summary
 
-| Contrast Type | Typical Design Application |
-|---|---|
-| Lightness | Text, interfaces, hierarchy |
-| Hue | Category differentiation, accents |
-| Chroma | Emphasis, visual restraint |
-| Warm–Cool | Mood, separation |
-| Simultaneous | Contextual color evaluation |
+| Contrast Type | Typical Design Application        |
+| ------------- | --------------------------------- |
+| Lightness     | Text, interfaces, hierarchy       |
+| Hue           | Category differentiation, accents |
+| Chroma        | Emphasis, visual restraint        |
+| Warm–Cool     | Mood, separation                  |
+| Simultaneous  | Contextual color evaluation       |
 
 **Practical rule:** Do not rely on hue contrast alone
 when legibility is important.
@@ -559,12 +575,12 @@ documents, diagrams, and different viewing conditions.
 WCAG 2.2 Level AA establishes the following commonly
 applicable minimum contrast ratios:
 
-| Content | Minimum Contrast |
-|---|---:|
-| Normal text | 4.5:1 |
-| Large text | 3:1 |
-| Essential graphical elements | 3:1 |
-| Required visual indicators of UI components | 3:1 |
+| Content                                     | Minimum Contrast |
+| ------------------------------------------- | ---------------: |
+| Normal text                                 | 4.5:1            |
+| Large text                                  | 3:1              |
+| Essential graphical elements                | 3:1              |
+| Required visual indicators of UI components | 3:1              |
 
 Large text is generally defined as at least 18 pt regular
 or 14 pt bold, or an equivalent size.
@@ -627,19 +643,19 @@ not universally fixed.
 
 Common branding associations include:
 
-| Color | Common Associations |
-|---|---|
-| Red | Energy, urgency, intensity |
-| Orange | Activity, warmth, enthusiasm |
-| Yellow | Optimism, attention, brightness |
-| Green | Nature, growth, health |
-| Cyan / Teal | Technology, clarity, freshness |
-| Blue | Stability, trust, professionalism |
-| Violet | Imagination, distinction, luxury |
-| Magenta | Creativity, expressiveness |
-| Black | Authority, sophistication |
-| White | Simplicity, cleanliness |
-| Gray | Neutrality, restraint |
+| Color       | Common Associations               |
+| ----------- | --------------------------------- |
+| Red         | Energy, urgency, intensity        |
+| Orange      | Activity, warmth, enthusiasm      |
+| Yellow      | Optimism, attention, brightness   |
+| Green       | Nature, growth, health            |
+| Cyan / Teal | Technology, clarity, freshness    |
+| Blue        | Stability, trust, professionalism |
+| Violet      | Imagination, distinction, luxury  |
+| Magenta     | Creativity, expressiveness        |
+| Black       | Authority, sophistication         |
+| White       | Simplicity, cleanliness           |
+| Gray        | Neutrality, restraint             |
 
 These are common conventions, not scientific guarantees.
 
@@ -917,6 +933,8 @@ Example:
 #FF8000
 ```
 
+![Orange color swatch](swatches/ff8000.svg) `#FF8000`
+
 This represents:
 
 ```text
@@ -941,6 +959,8 @@ Example:
 ```css
 color: hsl(30 100% 50%);
 ```
+
+![HSL orange color swatch](swatches/ff8000.svg) `hsl(30 100% 50%)`
 
 HSL is intuitive for manipulating hues,
 but its lightness and saturation are not perceptually uniform.
@@ -994,6 +1014,11 @@ Example:
 color: oklch(70% 0.18 55);
 ```
 
+![OKLCH orange color swatch](swatches/oklch-70-018-55.svg) `oklch(70% 0.18 55)`
+
+This example is outside the sRGB gamut, so its displayed appearance depends
+on the display and browser's gamut mapping.
+
 OKLCH is especially useful for:
 
 - Constructing tonal scales.
@@ -1007,14 +1032,14 @@ and not every coordinate corresponds to a displayable color.
 
 ### Comparison
 
-| Representation | Strength | Limitation |
-|---|---|---|
-| Hex RGB | Compact, interoperable | Difficult to manipulate intuitively |
-| RGB | Direct channel representation | Not perceptually uniform |
-| HSL | Intuitive hue manipulation | Lightness and saturation are perceptually uneven |
-| HSV / HSB | Familiar color picker controls | Not perceptually uniform |
-| CIELAB | Perceptually oriented color comparison | More complex |
-| OKLCH | Intuitive perceptual adjustments | Requires gamut awareness |
+| Representation | Strength                               | Limitation                                       |
+| -------------- | -------------------------------------- | ------------------------------------------------ |
+| Hex RGB        | Compact, interoperable                 | Difficult to manipulate intuitively              |
+| RGB            | Direct channel representation          | Not perceptually uniform                         |
+| HSL            | Intuitive hue manipulation             | Lightness and saturation are perceptually uneven |
+| HSV / HSB      | Familiar color picker controls         | Not perceptually uniform                         |
+| CIELAB         | Perceptually oriented color comparison | More complex                                     |
+| OKLCH          | Intuitive perceptual adjustments       | Requires gamut awareness                         |
 
 **Practical recommendation:** Use OKLCH or another perceptual
 color space when developing palette relationships, then define
@@ -1076,13 +1101,13 @@ or perceptual color distance.
 
 ### Comparison
 
-| Measurement | Primary Purpose |
-|---|---|
-| Hue Separation | Evaluate relationships around a color wheel |
-| Chroma Difference | Compare colorfulness |
-| Lightness Difference | Compare perceived light/dark characteristics |
-| Perceptual Color Distance | Estimate visual dissimilarity |
-| WCAG Contrast Ratio | Evaluate contrast against accessibility thresholds |
+| Measurement               | Primary Purpose                                    |
+| ------------------------- | -------------------------------------------------- |
+| Hue Separation            | Evaluate relationships around a color wheel        |
+| Chroma Difference         | Compare colorfulness                               |
+| Lightness Difference      | Compare perceived light/dark characteristics       |
+| Perceptual Color Distance | Estimate visual dissimilarity                      |
+| WCAG Contrast Ratio       | Evaluate contrast against accessibility thresholds |
 
 A color pair can have substantial hue separation
 while remaining inadequate for readable text.
@@ -1217,19 +1242,19 @@ but not identical to, the main brand palette.
 
 ## 19. Common Color Design Mistakes
 
-| Mistake | Why It Fails |
-|---|---|
-| Equal saturation percentages across hues | Does not produce equal perceived vividness. |
-| Equal hue spacing alone | Does not guarantee perceptual harmony. |
-| Using every palette color equally | Creates competing visual priorities. |
-| Relying only on color for meaning | Creates accessibility problems. |
-| Assuming hue contrast ensures legibility | Hue differences do not guarantee luminance contrast. |
-| Using one accent value in light and dark modes | May produce inconsistent emphasis or contrast. |
-| Treating color psychology as universal | Ignores culture, context, and brand associations. |
-| Converting RGB directly to CMYK without proofing | Can produce unexpected printed results. |
+| Mistake                                             | Why It Fails                                           |
+| --------------------------------------------------- | ------------------------------------------------------ |
+| Equal saturation percentages across hues            | Does not produce equal perceived vividness.            |
+| Equal hue spacing alone                             | Does not guarantee perceptual harmony.                 |
+| Using every palette color equally                   | Creates competing visual priorities.                   |
+| Relying only on color for meaning                   | Creates accessibility problems.                        |
+| Assuming hue contrast ensures legibility            | Hue differences do not guarantee luminance contrast.   |
+| Using one accent value in light and dark modes      | May produce inconsistent emphasis or contrast.         |
+| Treating color psychology as universal              | Ignores culture, context, and brand associations.      |
+| Converting RGB directly to CMYK without proofing    | Can produce unexpected printed results.                |
 | Treating hex codes as complete color specifications | Ignores color spaces, devices, and viewing conditions. |
-| Building scales through naive RGB interpolation | Can create uneven lightness or unexpected hue shifts. |
-| Adding colors without assigning roles | Weakens consistency and hierarchy. |
+| Building scales through naive RGB interpolation     | Can create uneven lightness or unexpected hue shifts.  |
+| Adding colors without assigning roles               | Weakens consistency and hierarchy.                     |
 
 ---
 
@@ -1239,17 +1264,17 @@ A practical brand palette should document more than swatches.
 
 For each color, record:
 
-| Property | Description |
-|---|---|
-| Name | Human-readable identifier |
-| Role | Primary, secondary, accent, neutral, semantic, etc. |
-| Digital Value | Defined RGB/hex value and color space |
-| Perceptual Coordinates | Optional OKLCH or Lab values |
-| Light Variant | Approved use on light backgrounds |
-| Dark Variant | Approved use on dark backgrounds |
-| Contrast | Verified foreground/background combinations |
-| Print Specification | Approved CMYK or spot-color specification |
-| Restrictions | Inappropriate backgrounds or combinations |
+| Property               | Description                                         |
+| ---------------------- | --------------------------------------------------- |
+| Name                   | Human-readable identifier                           |
+| Role                   | Primary, secondary, accent, neutral, semantic, etc. |
+| Digital Value          | Defined RGB/hex value and color space               |
+| Perceptual Coordinates | Optional OKLCH or Lab values                        |
+| Light Variant          | Approved use on light backgrounds                   |
+| Dark Variant           | Approved use on dark backgrounds                    |
+| Contrast               | Verified foreground/background combinations         |
+| Print Specification    | Approved CMYK or spot-color specification           |
+| Restrictions           | Inappropriate backgrounds or combinations           |
 
 ### Example Token Naming
 
@@ -1294,6 +1319,10 @@ For example:
     --text-primary: var(--neutral-950);
 }
 ```
+
+Example palette swatches: ![Orange](swatches/e87524.svg) `#E87524`,
+![Dark neutral](swatches/141414.svg) `#141414`,
+![White surface](swatches/ffffff.svg) `#FFFFFF`.
 
 The example values are illustrative,
 not a validated accessible palette.
@@ -1379,27 +1408,27 @@ and usage restrictions.
 
 ## 22. Quick Reference
 
-| When referring to... | Prefer |
-|---|---|
-| The basic color family | **Hue** |
-| Colorfulness within a model such as HSL | **Saturation** |
-| Colorfulness relative to a comparable neutral | **Chroma** |
-| Perceived light/dark appearance | **Lightness** |
-| Traditional artistic light/dark description | **Value** |
-| Difference between visual elements | **Contrast** |
-| Selected group of colors | **Palette** |
-| Relationship among selected hues | **Color Harmony** |
-| Dominant identity color | **Primary Color** |
-| Supporting brand colors | **Secondary Colors** |
-| Selective emphasis colors | **Accent Colors** |
-| Structural background and text colors | **Neutrals** |
-| Colors assigned interface meanings | **Semantic Colors** |
-| Ordered variations of one color family | **Tonal Scale** |
-| Range of reproducible colors | **Color Gamut** |
-| Defined numerical representation of color | **Color Space** |
-| Description of reproduction characteristics | **Color Profile** |
-| Approximate visual difference between colors | **Perceptual Color Difference** |
-| Conversion between device conditions | **Color Management** |
+| When referring to...                          | Prefer                          |
+| --------------------------------------------- | ------------------------------- |
+| The basic color family                        | **Hue**                         |
+| Colorfulness within a model such as HSL       | **Saturation**                  |
+| Colorfulness relative to a comparable neutral | **Chroma**                      |
+| Perceived light/dark appearance               | **Lightness**                   |
+| Traditional artistic light/dark description   | **Value**                       |
+| Difference between visual elements            | **Contrast**                    |
+| Selected group of colors                      | **Palette**                     |
+| Relationship among selected hues              | **Color Harmony**               |
+| Dominant identity color                       | **Primary Color**               |
+| Supporting brand colors                       | **Secondary Colors**            |
+| Selective emphasis colors                     | **Accent Colors**               |
+| Structural background and text colors         | **Neutrals**                    |
+| Colors assigned interface meanings            | **Semantic Colors**             |
+| Ordered variations of one color family        | **Tonal Scale**                 |
+| Range of reproducible colors                  | **Color Gamut**                 |
+| Defined numerical representation of color     | **Color Space**                 |
+| Description of reproduction characteristics   | **Color Profile**               |
+| Approximate visual difference between colors  | **Perceptual Color Difference** |
+| Conversion between device conditions          | **Color Management**            |
 
 ---
 

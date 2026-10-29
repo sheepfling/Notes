@@ -1,4 +1,10 @@
 # Logo & Visual Identity Terminology
+
+> Type: reference
+> Status: needs-review
+> Updated: 2026-10-29
+> Tags: graphic-design, logo
+
 ### A Practical Guide to Marks, Wordmarks, Lockups, and Brand Assets
 
 Logo terminology is frequently used inconsistently, even among designers.
@@ -7,18 +13,18 @@ organizing, and maintaining visual identities.
 
 ## 1. Core Terminology
 
-| Term | Definition | Examples |
-|---|---|---|
-| **Logo** | General term for a brand's identifying graphic, whether text, symbol, or both. | Nike, Apple, Google |
-| **Logomark** | A standalone graphical symbol representing a brand, typically without text. | Apple silhouette, Nike swoosh |
-| **Wordmark** | A brand name rendered in distinctive typography. | Google, Coca-Cola, FedEx |
-| **Logotype** | A typographic logo; generally synonymous with *wordmark*. | Disney, Canon |
-| **Lettermark** | A logo formed from initials or abbreviated letters. | IBM, NASA, HBO |
-| **Monogram** | Two or more letters combined or interwoven into a unified symbol. | Chanel CC, Louis Vuitton LV |
-| **Combination Mark** | A logo incorporating both a graphical symbol and typography. | Adidas, Burger King |
-| **Emblem** | A logo whose text and graphical elements form an integrated badge, crest, or seal. | Harley-Davidson, Starbucks |
-| **Brandmark** | Often synonymous with *logomark*; sometimes used more broadly for a brand's identifying graphic. | Nike swoosh |
-| **Lockup** | A prescribed arrangement of identity elements, including positioning, proportions, and spacing. | Symbol left of wordmark |
+| Term                 | Definition                                                                                       | Examples                      |
+| -------------------- | ------------------------------------------------------------------------------------------------ | ----------------------------- |
+| **Logo**             | General term for a brand's identifying graphic, whether text, symbol, or both.                   | Nike, Apple, Google           |
+| **Logomark**         | A standalone graphical symbol representing a brand, typically without text.                      | Apple silhouette, Nike swoosh |
+| **Wordmark**         | A brand name rendered in distinctive typography.                                                 | Google, Coca-Cola, FedEx      |
+| **Logotype**         | A typographic logo; generally synonymous with *wordmark*.                                        | Disney, Canon                 |
+| **Lettermark**       | A logo formed from initials or abbreviated letters.                                              | IBM, NASA, HBO                |
+| **Monogram**         | Two or more letters combined or interwoven into a unified symbol.                                | Chanel CC, Louis Vuitton LV   |
+| **Combination Mark** | A logo incorporating both a graphical symbol and typography.                                     | Adidas, Burger King           |
+| **Emblem**           | A logo whose text and graphical elements form an integrated badge, crest, or seal.               | Harley-Davidson, Starbucks    |
+| **Brandmark**        | Often synonymous with *logomark*; sometimes used more broadly for a brand's identifying graphic. | Nike swoosh                   |
+| **Lockup**           | A prescribed arrangement of identity elements, including positioning, proportions, and spacing.  | Symbol left of wordmark       |
 
 > **Key distinction:** A logo identifies the brand. A lockup specifies
 > how its constituent elements appear together.
@@ -27,12 +33,12 @@ organizing, and maintaining visual identities.
 
 Logomarks can be classified by their visual construction.
 
-| Type | Description | Example |
-|---|---|---|
-| **Pictorial Mark** | Depicts a recognizable object or figure. | Apple |
-| **Abstract Mark** | Uses nonrepresentational geometry or shapes. | Nike, Pepsi |
-| **Mascot Mark** | Uses an illustrated character as the identity. | Michelin Man |
-| **Monogram** | Combines letters into a distinctive graphical symbol. | Chanel CC |
+| Type               | Description                                           | Example      |
+| ------------------ | ----------------------------------------------------- | ------------ |
+| **Pictorial Mark** | Depicts a recognizable object or figure.              | Apple        |
+| **Abstract Mark**  | Uses nonrepresentational geometry or shapes.          | Nike, Pepsi  |
+| **Mascot Mark**    | Uses an illustrated character as the identity.        | Michelin Man |
+| **Monogram**       | Combines letters into a distinctive graphical symbol. | Chanel CC    |
 
 These categories are descriptive rather than mutually exclusive.
 A monogram, for example, can also function as an abstract symbol.
@@ -85,17 +91,17 @@ For example:
 
 A complete identity usually requires more than one configuration.
 
-| Term | Purpose |
-|---|---|
-| **Primary Logo** | Preferred representation of the identity. |
-| **Secondary Logo** | Approved alternative configuration. |
-| **Responsive Logo** | Simplified versions optimized for different display sizes. |
-| **Submark** | Simplified or subsidiary brand identifier. |
-| **App Icon** | Application-specific graphical identity. |
-| **Favicon** | Small icon identifying a website or browser tab. |
-| **Monochrome Variant** | Single-color reproduction. |
-| **Reversed Variant** | Version intended for dark or contrasting backgrounds. |
-| **Dynamic Logo** | Identity designed to vary within defined visual rules. |
+| Term                   | Purpose                                                    |
+| ---------------------- | ---------------------------------------------------------- |
+| **Primary Logo**       | Preferred representation of the identity.                  |
+| **Secondary Logo**     | Approved alternative configuration.                        |
+| **Responsive Logo**    | Simplified versions optimized for different display sizes. |
+| **Submark**            | Simplified or subsidiary brand identifier.                 |
+| **App Icon**           | Application-specific graphical identity.                   |
+| **Favicon**            | Small icon identifying a website or browser tab.           |
+| **Monochrome Variant** | Single-color reproduction.                                 |
+| **Reversed Variant**   | Version intended for dark or contrasting backgrounds.      |
+| **Dynamic Logo**       | Identity designed to vary within defined visual rules.     |
 
 ### Important: App Icon vs. Logomark
 
@@ -114,18 +120,18 @@ not necessarily pixel-perfect reproduction of the original symbol.
 
 ## 5. Supporting Identity Terminology
 
-| Term | Definition |
-|---|---|
-| **Visual Identity** | The complete visual language of a brand, including logos, colors, typography, and graphics. |
-| **Brand Identity** | The broader system expressing a brand's identity, including visual and potentially verbal elements. |
-| **Logo System** | The collection of approved logo elements, variants, and configurations. |
-| **Brand Architecture** | The organizational relationship between parent brands, subbrands, and products. |
-| **Signature** | Sometimes used to describe a complete arrangement of symbol and typography. |
-| **Clear Space** | Minimum unobstructed area surrounding a logo. |
-| **Exclusion Zone** | Another term for required clear space. |
-| **Minimum Size** | Smallest approved reproduction size that preserves legibility. |
-| **Safe Area** | Region within an icon or layout where important content should remain. |
-| **Brand Guidelines** | Rules governing the consistent use of identity elements. |
+| Term                   | Definition                                                                                          |
+| ---------------------- | --------------------------------------------------------------------------------------------------- |
+| **Visual Identity**    | The complete visual language of a brand, including logos, colors, typography, and graphics.         |
+| **Brand Identity**     | The broader system expressing a brand's identity, including visual and potentially verbal elements. |
+| **Logo System**        | The collection of approved logo elements, variants, and configurations.                             |
+| **Brand Architecture** | The organizational relationship between parent brands, subbrands, and products.                     |
+| **Signature**          | Sometimes used to describe a complete arrangement of symbol and typography.                         |
+| **Clear Space**        | Minimum unobstructed area surrounding a logo.                                                       |
+| **Exclusion Zone**     | Another term for required clear space.                                                              |
+| **Minimum Size**       | Smallest approved reproduction size that preserves legibility.                                      |
+| **Safe Area**          | Region within an icon or layout where important content should remain.                              |
+| **Brand Guidelines**   | Rules governing the consistent use of identity elements.                                            |
 
 ## 6. Recommended Asset Organization
 
@@ -203,18 +209,18 @@ may incorporate both graphical and typographic elements.
 
 ## 8. Quick Reference
 
-| When referring to... | Prefer |
-|---|---|
-| The overall identifying graphic | **Logo** |
-| The graphical symbol alone | **Logomark** |
-| The complete stylized brand name | **Wordmark** |
-| Initials used as the identity | **Lettermark** |
-| Interwoven or combined initials | **Monogram** |
-| Symbol and typography together | **Combination Mark** |
-| Their specific arrangement | **Lockup** |
-| A compact application-specific asset | **App Icon** |
-| The collection of approved configurations | **Logo System** |
-| The complete visual language | **Visual Identity** |
+| When referring to...                      | Prefer               |
+| ----------------------------------------- | -------------------- |
+| The overall identifying graphic           | **Logo**             |
+| The graphical symbol alone                | **Logomark**         |
+| The complete stylized brand name          | **Wordmark**         |
+| Initials used as the identity             | **Lettermark**       |
+| Interwoven or combined initials           | **Monogram**         |
+| Symbol and typography together            | **Combination Mark** |
+| Their specific arrangement                | **Lockup**           |
+| A compact application-specific asset      | **App Icon**         |
+| The collection of approved configurations | **Logo System**      |
+| The complete visual language              | **Visual Identity**  |
 
 ---
 

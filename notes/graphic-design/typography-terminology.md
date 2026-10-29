@@ -1,4 +1,10 @@
 # Typography & Font Terminology
+
+> Type: reference
+> Status: needs-review
+> Updated: 2026-10-29
+> Tags: graphic-design, typography
+
 ### A Practical Guide to Typefaces, Fonts, Letterforms, and Typesetting
 
 Typography terminology mixes centuries of printing tradition with
@@ -15,23 +21,23 @@ selecting, designing, implementing, and maintaining typography.
 
 ## 1. Core Terminology
 
-| Term | Definition |
-|---|---|
-| **Typography** | The art and practice of arranging type to make written language readable, legible, and visually effective. |
-| **Typeface** | A coordinated visual design for a collection of characters and glyphs. |
-| **Font** | A specific implementation of a typeface, historically at a particular size and style. |
-| **Type Family** | A collection of related typefaces or styles sharing a common design. |
-| **Font Family** | The grouping of related fonts under a shared family name, particularly in software and CSS. |
-| **Font Face** | A particular member of a font family, such as Regular, Bold, or Italic. |
-| **Style** | A variation in the appearance of a typeface, such as Roman, Italic, or Oblique. |
-| **Weight** | The relative thickness of a typeface's strokes, such as Light, Regular, or Bold. |
-| **Width** | The relative horizontal proportions of characters, such as Condensed or Expanded. |
-| **Point Size** | The nominal size of type, traditionally measured in typographic points. |
-| **Glyph** | A particular visual representation used to render a character or character sequence. |
-| **Character** | An abstract unit of text, such as the letter A or the numeral 7. |
-| **Letterform** | The visual shape or construction of a letter. |
-| **Typesetting** | The process of arranging text into lines, paragraphs, and pages. |
-| **Font Foundry** | A company or individual producing and distributing typefaces and fonts. |
+| Term             | Definition                                                                                                 |
+| ---------------- | ---------------------------------------------------------------------------------------------------------- |
+| **Typography**   | The art and practice of arranging type to make written language readable, legible, and visually effective. |
+| **Typeface**     | A coordinated visual design for a collection of characters and glyphs.                                     |
+| **Font**         | A specific implementation of a typeface, historically at a particular size and style.                      |
+| **Type Family**  | A collection of related typefaces or styles sharing a common design.                                       |
+| **Font Family**  | The grouping of related fonts under a shared family name, particularly in software and CSS.                |
+| **Font Face**    | A particular member of a font family, such as Regular, Bold, or Italic.                                    |
+| **Style**        | A variation in the appearance of a typeface, such as Roman, Italic, or Oblique.                            |
+| **Weight**       | The relative thickness of a typeface's strokes, such as Light, Regular, or Bold.                           |
+| **Width**        | The relative horizontal proportions of characters, such as Condensed or Expanded.                          |
+| **Point Size**   | The nominal size of type, traditionally measured in typographic points.                                    |
+| **Glyph**        | A particular visual representation used to render a character or character sequence.                       |
+| **Character**    | An abstract unit of text, such as the letter A or the numeral 7.                                           |
+| **Letterform**   | The visual shape or construction of a letter.                                                              |
+| **Typesetting**  | The process of arranging text into lines, paragraphs, and pages.                                           |
+| **Font Foundry** | A company or individual producing and distributing typefaces and fonts.                                    |
 
 > **Key distinction:** A typeface is a design. A font is an
 > implementation of that design.
@@ -87,13 +93,13 @@ point size.
 
 ### Practical distinction
 
-| Concept | Example |
-|---|---|
-| Typeface | Inter |
-| Family | Inter |
-| Face | Inter Bold Italic |
+| Concept   | Example                |
+| --------- | ---------------------- |
+| Typeface  | Inter                  |
+| Family    | Inter                  |
+| Face      | Inter Bold Italic      |
 | Font file | `Inter-BoldItalic.ttf` |
-| Size | 14 pt |
+| Size      | 14 pt                  |
 
 In everyday conversation, *font* is frequently used to mean
 *typeface*. This is widely understood.
@@ -252,17 +258,17 @@ Both can produce inferior results compared with properly designed faces.
 
 Digital typography commonly uses numerical weight values.
 
-| Weight | Common CSS Value |
-|---|---:|
-| Thin | 100 |
-| Extra Light / Ultra Light | 200 |
-| Light | 300 |
-| Regular / Normal | 400 |
-| Medium | 500 |
-| Semibold / Demi Bold | 600 |
-| Bold | 700 |
-| Extra Bold / Ultra Bold | 800 |
-| Black / Heavy | 900 |
+| Weight                    | Common CSS Value |
+| ------------------------- | ---------------: |
+| Thin                      | 100              |
+| Extra Light / Ultra Light | 200              |
+| Light                     | 300              |
+| Regular / Normal          | 400              |
+| Medium                    | 500              |
+| Semibold / Demi Bold      | 600              |
+| Bold                      | 700              |
+| Extra Bold / Ultra Bold   | 800              |
+| Black / Heavy             | 900              |
 
 These are conventional CSS weight mappings, not measurements
 of actual stroke thickness.
@@ -288,12 +294,12 @@ Letters incorporate small terminal strokes or projections.
 
 Common subcategories:
 
-| Classification | Characteristics |
-|---|---|
-| **Old Style** | Humanist influence, moderate contrast, often angled stress. |
-| **Transitional** | Greater contrast and more regular construction. |
-| **Didone / Modern** | Strong stroke contrast and thin, often unbracketed serifs. |
-| **Slab Serif** | Heavy, block-like serifs. |
+| Classification      | Characteristics                                             |
+| ------------------- | ----------------------------------------------------------- |
+| **Old Style**       | Humanist influence, moderate contrast, often angled stress. |
+| **Transitional**    | Greater contrast and more regular construction.             |
+| **Didone / Modern** | Strong stroke contrast and thin, often unbracketed serifs.  |
+| **Slab Serif**      | Heavy, block-like serifs.                                   |
 
 Examples include Garamond, Baskerville, Bodoni, and Rockwell.
 
@@ -303,25 +309,25 @@ Letterforms generally lack conventional serifs.
 
 Common subcategories:
 
-| Classification | Characteristics |
-|---|---|
-| **Grotesque** | Early sans-serif designs, often with irregular or distinctive proportions. |
-| **Neo-Grotesque** | More systematic, comparatively neutral construction. |
-| **Geometric** | Forms influenced by circles, squares, and geometric construction. |
-| **Humanist** | Forms influenced by handwriting and traditional letter construction. |
+| Classification    | Characteristics                                                            |
+| ----------------- | -------------------------------------------------------------------------- |
+| **Grotesque**     | Early sans-serif designs, often with irregular or distinctive proportions. |
+| **Neo-Grotesque** | More systematic, comparatively neutral construction.                       |
+| **Geometric**     | Forms influenced by circles, squares, and geometric construction.          |
+| **Humanist**      | Forms influenced by handwriting and traditional letter construction.       |
 
 Examples include Akzidenz-Grotesk, Helvetica, Futura, and Frutiger.
 
 ### Other Classifications
 
-| Classification | Description |
-|---|---|
-| **Monospaced** | Characters generally occupy equal horizontal advances. |
-| **Script** | Letterforms inspired by handwriting or connected writing. |
-| **Blackletter** | Dense, angular forms associated with historical manuscript traditions. |
-| **Display** | Designed primarily for prominent use at larger sizes. |
-| **Handwritten** | Emulates informal handwriting. |
-| **Decorative** | Emphasizes expressive or ornamental letterform design. |
+| Classification       | Description                                                                         |
+| -------------------- | ----------------------------------------------------------------------------------- |
+| **Monospaced**       | Characters generally occupy equal horizontal advances.                              |
+| **Script**           | Letterforms inspired by handwriting or connected writing.                           |
+| **Blackletter**      | Dense, angular forms associated with historical manuscript traditions.              |
+| **Display**          | Designed primarily for prominent use at larger sizes.                               |
+| **Handwritten**      | Emulates informal handwriting.                                                      |
+| **Decorative**       | Emphasizes expressive or ornamental letterform design.                              |
 | **Symbol / Dingbat** | Contains pictograms, symbols, or ornaments rather than conventional text alphabets. |
 
 Classification systems vary, and categories can overlap.
@@ -387,27 +393,27 @@ design's adaptation to that scale.
 Understanding letterform anatomy helps describe precisely
 what makes two typefaces different.
 
-| Term | Definition |
-|---|---|
-| **Baseline** | Imaginary line on which most characters rest. |
-| **X-height** | Height of the lowercase `x`, often used to characterize lowercase proportions. |
-| **Cap Height** | Height of typical flat-topped capital letters. |
-| **Ascender** | Portion of a lowercase letter extending above the x-height. |
-| **Descender** | Portion extending below the baseline. |
-| **Stem** | Principal structural stroke of a letter. |
-| **Crossbar** | Horizontal stroke connecting parts of a letter. |
-| **Counter** | Enclosed or partially enclosed interior space of a letter. |
-| **Aperture** | Opening in a partially enclosed letterform. |
-| **Bowl** | Curved stroke enclosing or partially enclosing a counter. |
-| **Terminal** | End of a stroke. |
-| **Serif** | Small finishing stroke or projection. |
-| **Shoulder** | Curved stroke extending from a stem. |
-| **Spine** | Principal curved stroke of an `S`. |
-| **Eye** | Enclosed counter of a lowercase `e`. |
-| **Ear** | Small projecting stroke, notably on some lowercase `g` forms. |
-| **Stress** | Direction of the apparent thick-to-thin stroke relationship. |
-| **Stroke Contrast** | Difference between thick and thin strokes. |
-| **Overshoot** | Slight extension of curved or pointed forms beyond alignment lines. |
+| Term                | Definition                                                                     |
+| ------------------- | ------------------------------------------------------------------------------ |
+| **Baseline**        | Imaginary line on which most characters rest.                                  |
+| **X-height**        | Height of the lowercase `x`, often used to characterize lowercase proportions. |
+| **Cap Height**      | Height of typical flat-topped capital letters.                                 |
+| **Ascender**        | Portion of a lowercase letter extending above the x-height.                    |
+| **Descender**       | Portion extending below the baseline.                                          |
+| **Stem**            | Principal structural stroke of a letter.                                       |
+| **Crossbar**        | Horizontal stroke connecting parts of a letter.                                |
+| **Counter**         | Enclosed or partially enclosed interior space of a letter.                     |
+| **Aperture**        | Opening in a partially enclosed letterform.                                    |
+| **Bowl**            | Curved stroke enclosing or partially enclosing a counter.                      |
+| **Terminal**        | End of a stroke.                                                               |
+| **Serif**           | Small finishing stroke or projection.                                          |
+| **Shoulder**        | Curved stroke extending from a stem.                                           |
+| **Spine**           | Principal curved stroke of an `S`.                                             |
+| **Eye**             | Enclosed counter of a lowercase `e`.                                           |
+| **Ear**             | Small projecting stroke, notably on some lowercase `g` forms.                  |
+| **Stress**          | Direction of the apparent thick-to-thin stroke relationship.                   |
+| **Stroke Contrast** | Difference between thick and thin strokes.                                     |
+| **Overshoot**       | Slight extension of curved or pointed forms beyond alignment lines.            |
 
 ### Double-Storey vs. Single-Storey
 
@@ -496,12 +502,12 @@ additional adjustments such as kerning.
 
 ### Comparison
 
-| Term | Controls |
-|---|---|
-| **Kerning** | Spacing between particular glyph pairs. |
-| **Tracking** | Spacing across a sequence of characters. |
-| **Leading** | Baseline-to-baseline vertical spacing. |
-| **Word Spacing** | Space between words. |
+| Term             | Controls                                            |
+| ---------------- | --------------------------------------------------- |
+| **Kerning**      | Spacing between particular glyph pairs.             |
+| **Tracking**     | Spacing across a sequence of characters.            |
+| **Leading**      | Baseline-to-baseline vertical spacing.              |
+| **Word Spacing** | Space between words.                                |
 | **Sidebearings** | Built-in spacing associated with individual glyphs. |
 
 **Rule of thumb:** Use kerning for problematic pairs, tracking for
@@ -666,22 +672,22 @@ Modern fonts can contain sophisticated typographic behaviors.
 
 Common OpenType feature tags include:
 
-| Feature | Tag | Purpose |
-|---|---|---|
-| Standard Ligatures | `liga` | Common ligature substitutions. |
-| Discretionary Ligatures | `dlig` | Optional decorative or historical ligatures. |
-| Kerning | `kern` | Glyph positioning adjustments. |
-| Small Capitals | `smcp` | Small capitals substituted for lowercase letters. |
-| Capitals to Small Capitals | `c2sc` | Small capitals substituted for uppercase letters. |
-| Oldstyle Figures | `onum` | Numerals with varying heights and alignments. |
-| Lining Figures | `lnum` | Numerals aligned to a common height. |
-| Tabular Figures | `tnum` | Equal-width numerals for tabular alignment. |
-| Proportional Figures | `pnum` | Numerals with varying advance widths. |
-| Fractions | `frac` | Fraction formatting and substitutions. |
-| Stylistic Alternates | `salt` | Alternative glyph designs. |
-| Stylistic Sets | `ss01`–`ss20` | Groups of coordinated alternate glyphs. |
-| Swashes | `swsh` | Decorative glyph variations. |
-| Contextual Alternates | `calt` | Glyph substitutions influenced by surrounding context. |
+| Feature                    | Tag           | Purpose                                                |
+| -------------------------- | ------------- | ------------------------------------------------------ |
+| Standard Ligatures         | `liga`        | Common ligature substitutions.                         |
+| Discretionary Ligatures    | `dlig`        | Optional decorative or historical ligatures.           |
+| Kerning                    | `kern`        | Glyph positioning adjustments.                         |
+| Small Capitals             | `smcp`        | Small capitals substituted for lowercase letters.      |
+| Capitals to Small Capitals | `c2sc`        | Small capitals substituted for uppercase letters.      |
+| Oldstyle Figures           | `onum`        | Numerals with varying heights and alignments.          |
+| Lining Figures             | `lnum`        | Numerals aligned to a common height.                   |
+| Tabular Figures            | `tnum`        | Equal-width numerals for tabular alignment.            |
+| Proportional Figures       | `pnum`        | Numerals with varying advance widths.                  |
+| Fractions                  | `frac`        | Fraction formatting and substitutions.                 |
+| Stylistic Alternates       | `salt`        | Alternative glyph designs.                             |
+| Stylistic Sets             | `ss01`–`ss20` | Groups of coordinated alternate glyphs.                |
+| Swashes                    | `swsh`        | Decorative glyph variations.                           |
+| Contextual Alternates      | `calt`        | Glyph substitutions influenced by surrounding context. |
 
 Not every font implements every feature.
 
@@ -733,12 +739,12 @@ that allows supported attributes to vary.
 
 Typical registered axes include:
 
-| Axis | Tag | Controls |
-|---|---|---|
-| Weight | `wght` | Stroke weight. |
-| Width | `wdth` | Character width proportions. |
-| Slant | `slnt` | Slant angle. |
-| Italic | `ital` | Italic selection or variation. |
+| Axis         | Tag    | Controls                                  |
+| ------------ | ------ | ----------------------------------------- |
+| Weight       | `wght` | Stroke weight.                            |
+| Width        | `wdth` | Character width proportions.              |
+| Slant        | `slnt` | Slant angle.                              |
+| Italic       | `ital` | Italic selection or variation.            |
 | Optical Size | `opsz` | Optical-size-specific design adaptations. |
 
 Some variable fonts expose additional custom axes.
@@ -780,13 +786,13 @@ These are called **named instances**.
 
 A typeface design may be distributed in several technical formats.
 
-| Format | Extension | Description |
-|---|---|---|
-| TrueType | `.ttf` | Common scalable font format, conventionally using TrueType outlines. |
-| OpenType | `.otf` | Common extension for OpenType fonts, often using CFF/PostScript outlines. |
-| Web Open Font Format | `.woff` | Compressed font packaging intended for web delivery. |
-| WOFF2 | `.woff2` | More efficient compressed web font packaging. |
-| TrueType Collection | `.ttc` | Collection containing multiple font resources, potentially sharing data. |
+| Format               | Extension | Description                                                               |
+| -------------------- | --------- | ------------------------------------------------------------------------- |
+| TrueType             | `.ttf`    | Common scalable font format, conventionally using TrueType outlines.      |
+| OpenType             | `.otf`    | Common extension for OpenType fonts, often using CFF/PostScript outlines. |
+| Web Open Font Format | `.woff`   | Compressed font packaging intended for web delivery.                      |
+| WOFF2                | `.woff2`  | More efficient compressed web font packaging.                             |
+| TrueType Collection  | `.ttc`    | Collection containing multiple font resources, potentially sharing data.  |
 
 ### Important Technical Distinction
 
@@ -881,12 +887,12 @@ but is a distinct practice.
 
 ### Comparison
 
-| Discipline | Primary Concern |
-|---|---|
-| **Typography** | Effective visual arrangement of type. |
-| **Typesetting** | Composition of text into a layout. |
-| **Type Design** | Creation of reusable systems of letterforms. |
-| **Lettering** | Creation of letterforms for a specific composition. |
+| Discipline      | Primary Concern                                     |
+| --------------- | --------------------------------------------------- |
+| **Typography**  | Effective visual arrangement of type.               |
+| **Typesetting** | Composition of text into a layout.                  |
+| **Type Design** | Creation of reusable systems of letterforms.        |
+| **Lettering**   | Creation of letterforms for a specific composition. |
 | **Calligraphy** | Creation of letterforms through the act of writing. |
 
 A custom logo wordmark may involve lettering, type design,
@@ -942,17 +948,17 @@ as absolute properties of a typeface.
 Several technical processes occur between selecting a font
 and displaying text.
 
-| Term | Definition |
-|---|---|
-| **Shaping** | Converting character sequences into positioned glyph sequences according to script, language, and font rules. |
-| **Rasterization** | Converting glyph outlines into pixels. |
-| **Hinting** | Instructions or adjustments intended to improve glyph appearance at particular pixel sizes. |
-| **Antialiasing** | Techniques for smoothing the appearance of rasterized edges. |
-| **Subpixel Rendering** | Rendering techniques that exploit display subpixel geometry. |
-| **Fallback Font** | A font used when the preferred font cannot render required characters. |
-| **Font Stack** | Ordered list of preferred font families for rendering. |
-| **Font Subsetting** | Producing a reduced font containing only selected glyphs or character coverage. |
-| **Font Embedding** | Including font data within a document or application resource. |
+| Term                   | Definition                                                                                                    |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------- |
+| **Shaping**            | Converting character sequences into positioned glyph sequences according to script, language, and font rules. |
+| **Rasterization**      | Converting glyph outlines into pixels.                                                                        |
+| **Hinting**            | Instructions or adjustments intended to improve glyph appearance at particular pixel sizes.                   |
+| **Antialiasing**       | Techniques for smoothing the appearance of rasterized edges.                                                  |
+| **Subpixel Rendering** | Rendering techniques that exploit display subpixel geometry.                                                  |
+| **Fallback Font**      | A font used when the preferred font cannot render required characters.                                        |
+| **Font Stack**         | Ordered list of preferred font families for rendering.                                                        |
+| **Font Subsetting**    | Producing a reduced font containing only selected glyphs or character coverage.                               |
+| **Font Embedding**     | Including font data within a document or application resource.                                                |
 
 ### Font Fallback
 
@@ -995,20 +1001,20 @@ A practical example:
 
 ### Property Terminology
 
-| CSS Property | Typographic Concept |
-|---|---|
-| `font-family` | Family selection and fallback. |
-| `font-size` | Nominal type size. |
-| `font-weight` | Weight selection. |
-| `font-style` | Upright, italic, or oblique selection. |
-| `font-stretch` | Width-related face selection. |
-| `line-height` | Line box height and vertical text rhythm. |
-| `letter-spacing` | Tracking. |
-| `word-spacing` | Interword spacing adjustments. |
-| `font-kerning` | Kerning behavior. |
-| `font-optical-sizing` | Automatic optical-size selection when supported. |
-| `font-feature-settings` | Low-level OpenType feature controls. |
-| `font-variation-settings` | Low-level variable-font axis controls. |
+| CSS Property              | Typographic Concept                              |
+| ------------------------- | ------------------------------------------------ |
+| `font-family`             | Family selection and fallback.                   |
+| `font-size`               | Nominal type size.                               |
+| `font-weight`             | Weight selection.                                |
+| `font-style`              | Upright, italic, or oblique selection.           |
+| `font-stretch`            | Width-related face selection.                    |
+| `line-height`             | Line box height and vertical text rhythm.        |
+| `letter-spacing`          | Tracking.                                        |
+| `word-spacing`            | Interword spacing adjustments.                   |
+| `font-kerning`            | Kerning behavior.                                |
+| `font-optical-sizing`     | Automatic optical-size selection when supported. |
+| `font-feature-settings`   | Low-level OpenType feature controls.             |
+| `font-variation-settings` | Low-level variable-font axis controls.           |
 
 CSS property behavior is determined by the CSS specifications
 and available font resources.
@@ -1078,29 +1084,29 @@ For a brand or product, document:
 
 ## 20. Quick Reference
 
-| When referring to... | Prefer |
-|---|---|
-| The underlying design of the letters | **Typeface** |
-| A software implementation of that design | **Font** |
-| A collection of related typographic designs | **Type Family** |
-| A specific family member | **Face** |
-| Thickness of strokes | **Weight** |
-| Upright, italic, or slanted construction | **Style** |
-| Horizontal proportions | **Width** |
-| A visual representation used to render text | **Glyph** |
-| An abstract textual element | **Character** |
-| Spacing adjustment between particular glyph pairs | **Kerning** |
-| Overall intercharacter spacing adjustment | **Tracking** |
-| Baseline-to-baseline vertical spacing | **Leading** |
-| Nominal scale of type | **Point Size / Font Size** |
-| Size-dependent design adaptation | **Optical Size** |
-| Arrangement and visual treatment of type | **Typography** |
-| Composition of text into a layout | **Typesetting** |
-| Design of reusable letterform systems | **Type Design** |
-| Custom-drawn letterforms for a particular application | **Lettering** |
-| Letterforms produced through writing | **Calligraphy** |
-| Recognition of individual letterforms | **Legibility** |
-| Comfortable processing of extended text | **Readability** |
+| When referring to...                                  | Prefer                     |
+| ----------------------------------------------------- | -------------------------- |
+| The underlying design of the letters                  | **Typeface**               |
+| A software implementation of that design              | **Font**                   |
+| A collection of related typographic designs           | **Type Family**            |
+| A specific family member                              | **Face**                   |
+| Thickness of strokes                                  | **Weight**                 |
+| Upright, italic, or slanted construction              | **Style**                  |
+| Horizontal proportions                                | **Width**                  |
+| A visual representation used to render text           | **Glyph**                  |
+| An abstract textual element                           | **Character**              |
+| Spacing adjustment between particular glyph pairs     | **Kerning**                |
+| Overall intercharacter spacing adjustment             | **Tracking**               |
+| Baseline-to-baseline vertical spacing                 | **Leading**                |
+| Nominal scale of type                                 | **Point Size / Font Size** |
+| Size-dependent design adaptation                      | **Optical Size**           |
+| Arrangement and visual treatment of type              | **Typography**             |
+| Composition of text into a layout                     | **Typesetting**            |
+| Design of reusable letterform systems                 | **Type Design**            |
+| Custom-drawn letterforms for a particular application | **Lettering**              |
+| Letterforms produced through writing                  | **Calligraphy**            |
+| Recognition of individual letterforms                 | **Legibility**             |
+| Comfortable processing of extended text               | **Readability**            |
 
 ---
 
