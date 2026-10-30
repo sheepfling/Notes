@@ -127,15 +127,26 @@ The checked-in JSON parameter sets make material properties, geometry, source
 strength, insertion timing, numerical limits, and rendering cadence reproducible
 and adjustable without modifying an example driver.
 
-Generate a small backend-agnostic radiant-wave gallery with captured budgets and animations:
+From the repository root, generate a small backend-agnostic radiant-wave gallery
+with captured budgets and animations:
 
-```
-python examples/physics_diagnostics/run_gallery.py --backend auto --final-time 0.04 --frames 9 --output artifacts/converging-flow/physics-gallery
+```shell
+python projects/converging-flow/examples/physics_diagnostics/run_gallery.py --backend auto --final-time 0.04 --frames 9 --output artifacts/converging-flow/physics-gallery
 ```
 
 Use `--backend numpy` for CPU-only output or `--backend cupy` to require the CUDA GPU.
 The runner generates the 1D scalar-wave study, an asymmetric spherical-shell 3D gallery,
 the reactive-Euler gallery, and the pressure-semantics comparison in one cross-platform command.
+
+Run the gallery orchestration smoke test from the repository root:
+
+```shell
+python -m pytest tests/converging_flow/test_gallery.py
+```
+
+The test uses small CPU simulations and a temporary directory for generated artifacts
+and caches. It checks that the stages produce usable outputs; it is not a validation
+of the physical model.
 
 Generate the reactive-Euler pressure/acceleration gallery:
 
