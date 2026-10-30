@@ -34,11 +34,11 @@ coordinates, and an estimated matrix that is not a valid 3-D rotation.
 
 ## Run and test the metrics
 
-After installing the repository's development dependencies as described in the
-[setup instructions](../../README.md#validation), run the following from the
-repository root to check a small example and the shared-package tests:
+From the repository root, install the focused dependencies, then run a small
+example and the shared-package tests:
 
 ```shell
+python -m pip install -e ".[point-cloud-registration,testing]"
 python -c "import numpy as np; from notes_tools.point_cloud_registration.metrics import rmse; print(rmse(np.array([[0., 0., 0.]]), np.array([[1., 0., 0.]])))"
 python -m pytest tests/test_point_cloud_metrics.py
 ```

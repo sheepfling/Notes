@@ -31,11 +31,10 @@ the API and raises `ValueError` rather than returning a misleading result.
 
 ## Run and test
 
-After installing the repository's development dependencies as described in the
-[setup instructions](../../README.md#validation), run these from the repository
-root:
+From the repository root, install the focused dependencies and run:
 
 ```shell
+python -m pip install -e ".[vector-geometry,testing]"
 python -m notes_tools.vector_geometry.orthogonal_vector
 python -m pytest tests/test_vector_geometry.py
 ```

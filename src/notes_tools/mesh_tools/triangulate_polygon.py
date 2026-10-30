@@ -1,12 +1,4 @@
 #!/usr/bin/env python3
-# /// script
-# requires-python = ">=3.12"
-# dependencies = [
-#   "numpy>=2.0",
-#   "PyYAML>=6.0",
-#   "shapely>=2.1",
-# ]
-# ///
 """Triangulate a planar polygon with optional holes into a YAML mesh.
 
 Input schema::

@@ -19,29 +19,31 @@ documented input schema.
 
 ## Setup and run
 
-Run these commands from the repository root. The module commands need the
-`dev` extra for PyYAML and Shapely. Although the source files include PEP 723
-metadata, `python -m` does not use that metadata to install dependencies.
-With `uv`, select the extra explicitly:
+Run these commands from the repository root. Select the `mesh-tools` extra
+to install the package and its dependencies. With `uv`:
 
 ```shell
-uv run --extra dev python -m notes_tools.mesh_tools.triangulate_polygon projects/mesh-tools/examples/example_polygon.yaml artifacts/example_mesh.yaml
-uv run --extra dev python -m notes_tools.mesh_tools.display_mesh artifacts/example_mesh.yaml --wireframe --vertices
+uv run --extra mesh-tools python -m notes_tools.mesh_tools.triangulate_polygon projects/mesh-tools/examples/example_polygon.yaml artifacts/example_mesh.yaml
+uv run --extra mesh-tools python -m notes_tools.mesh_tools.display_mesh artifacts/example_mesh.yaml --wireframe --vertices
 ```
 
 Render without opening a window:
 
 ```bash
-uv run --extra dev python -m notes_tools.mesh_tools.display_mesh artifacts/example_mesh.yaml \
+uv run --extra mesh-tools python -m notes_tools.mesh_tools.display_mesh artifacts/example_mesh.yaml \
   --wireframe \
   --save-dir artifacts/mesh-tools/rendered \
   --no-show
 ```
 
 Alternatively, activate a Python 3.12 virtual environment and install the
-repository with `python -m pip install -e ".[dev]"`; then replace
-`uv run --extra dev python` with `python` in the commands above. The
+repository with `python -m pip install -e ".[mesh-tools]"`; then replace
+`uv run --extra mesh-tools python` with `python` in the commands above. The
 [repository setup](../../README.md#validation) includes environment setup.
+The historical requirements files remain root-invoked compatibility entry
+points: `python -m pip install -r projects/mesh-tools/requirements.txt`, or
+`python -m pip install -r projects/mesh-tools/requirements-dev.txt` for the test
+runner. Both delegate to the root extras.
 The tools refuse to replace existing mesh or image files unless `--overwrite`
 is supplied. Outputs shown above stay in the ignored `artifacts/` directory.
 
@@ -100,10 +102,11 @@ Those GUI and optional-library integrations remain outside the validated core.
 ## Tests
 
 ```shell
+python -m pip install -e ".[mesh-tools,testing]"
 python -m pytest tests/test_mesh_tools.py
 ```
 
-With `uv`, use `uv run --extra dev python -m pytest tests/test_mesh_tools.py`.
+With `uv`, use `uv run --extra mesh-tools --extra testing python -m pytest tests/test_mesh_tools.py`.
 
 The test suite covers polygon validation, winding normalization, concave
 polygons, holes, mesh round-tripping, generic axis labels, both command-line

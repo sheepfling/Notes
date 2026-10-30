@@ -84,11 +84,14 @@ Or use `rg` from the repository root:
 ```shell
 rg --files notes -g '*.md'
 rg -n -i 'cooling' notes
-rg -l '^> Type: reference$' notes
-rg -l '^> Tags: ([a-z0-9-]+, )*thermal(,|$)' notes
+rg -l '^> Type: reference *$' notes -g '*.md'
+rg -n '^> Tags: ' notes -g '*.md'
+rg -l '^> Tags: ([a-z0-9-]+, )*git-lfs(, | *$)' notes -g '*.md'
 ```
 
-Replace the example terms with the subject, type, or tag you need.
+Replace the example terms with the subject, type, or exact tag you need. The
+tag query only finds notes that have a `Tags` field; some older notes have not
+been tagged yet, so also browse categories or search their contents.
 
 ## Validation
 

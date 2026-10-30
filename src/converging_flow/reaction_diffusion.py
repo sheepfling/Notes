@@ -529,7 +529,7 @@ def _build_reaction_stepper(
     except ImportError as error:
         raise RuntimeError(
             "the numba backend requires the optional 'fast' dependency: "
-            "pip install 'converging-flow[fast]'"
+            "pip install '.[fast]' from the repository root"
         ) from error
     ####
 

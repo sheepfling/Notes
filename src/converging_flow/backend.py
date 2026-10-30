@@ -96,7 +96,7 @@ def _cupy_backend(*, require_device: bool) -> ArrayBackend:
         ####
         raise RuntimeError(
             "the CuPy backend is not installed; install the optional GPU "
-            "dependency with: pip install 'converging-flow[gpu]'"
+            "dependency from the repository root with: pip install '.[gpu]'"
         ) from error
     ####
 

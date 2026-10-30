@@ -3,6 +3,7 @@
 > Type: reference  
 > Status: needs-review  
 > Updated: 2026-08-01
+> Tags: git, git-lfs, air-gap
 
 Git LFS stores small pointer files in Git commits and keeps the corresponding large content in
 an LFS object store. A working tree can contain the real files even though the commits still

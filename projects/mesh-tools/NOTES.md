@@ -10,7 +10,7 @@ This directory preserves and organizes the old mesh-tools package:
 
 - Mesh examples and documentation for the maintained Python package under `src/notes_tools/mesh_tools`
 - YAML polygon and mesh examples
-- Legacy runtime and development dependency lists
+- Compatibility entry points for runtime and test dependencies
 - The original package README
 
 ## Exclusions
@@ -19,9 +19,9 @@ The original package included a rendered PNG under `examples/rendered/`. It was 
 
 ## Caveat
 
-The repository-root `pyproject.toml` is now the canonical dependency and test configuration. The local
-requirements files remain as compatibility snapshots for readers who expect the old layout; they no longer
-refer to a missing `requirements_mesh_tools.txt` file.
+The repository-root `pyproject.toml` is the canonical dependency and test configuration. The local
+requirements files delegate to the root extras and must be invoked from the repository root; see the
+[setup instructions](README.md#setup-and-run).
 
 This began as preserved source material, but its core Python paths now run in the shared test suite. Review
 optional GUI dependencies and the original package assumptions before relying on it in a new application.

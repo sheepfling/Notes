@@ -1,12 +1,4 @@
 #!/usr/bin/env python3
-# /// script
-# requires-python = ">=3.12"
-# dependencies = [
-#   "matplotlib>=3.9",
-#   "numpy>=2.0",
-#   "PyYAML>=6.0",
-# ]
-# ///
 """Display or render one or more indexed triangular meshes from YAML."""
 
 from __future__ import annotations

@@ -18,9 +18,22 @@ Each project keeps its own README, examples, validation notes, and historical ca
 
 ## Find the tests and outputs
 
-Install the development environment using the [repository setup](../README.md#validation),
-then run the commands below from the repository root. Each linked project note
-documents its run commands, dependencies, output paths and platform limits.
+The root `pyproject.toml` declares selectable project extras. From the repository
+root, install a focused environment, for example:
+
+```shell
+python -m pip install -e ".[mesh-tools,testing]"
+python -m pytest tests/test_mesh_tools.py
+```
+
+Use `converging-flow`, `mesh-tools`, `point-cloud-registration`, or
+`vector-geometry` with `testing` for the corresponding tests. The `jorth`,
+`integer-semantics-lab`, `scripts`, and `shaders` extras supply pytest for
+their standard-library Python code; their non-Python platform and toolchain
+requirements still apply. A bare install supplies no third-party project
+dependencies. The [repository setup](../README.md#validation) describes the
+aggregate `dev` environment. Run the commands below from the repository root;
+each project note documents outputs and platform limits.
 
 | Collection | Focused tests | Outputs and limits |
 | --- | --- | --- |

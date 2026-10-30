@@ -21,6 +21,8 @@ can remain documentation-first.
 
 ## Standalone notes
 
+- [Architecture Patterns with Python](architecture-patterns-with-python.md) — reading note on domain logic, persistence boundaries, and tradeoffs.
+
 The remaining files cover CMake, Docker, Emscripten, Git maintenance, offline package workflows, Python debugging,
 PyVista history, and editor or platform-specific procedures. Browse the directory or search the repository when the
 exact topic is unknown.

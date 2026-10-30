@@ -47,13 +47,13 @@ naturally expose symmetry errors that cannot exist in 1D.
 
 ```
 uv venv
-uv pip install -e '.[dev]'
+uv pip install -e '.[converging-flow,testing]'
 ```
 
 Or with ordinary pip:
 
 ```
-python -m pip install -e '.[dev]'
+python -m pip install -e '.[converging-flow,testing]'
 ```
 
 For the optional compiled reaction-diffusion backend without the full developer toolset:
@@ -70,6 +70,8 @@ python -m pip install -e '.[gpu]'
 
 The package keeps CuPy optional. CPU installations do not import it unless the `cupy`
 backend is selected, and `auto` falls back to NumPy when no usable CUDA device exists.
+The `fast` and `gpu` extras include the base Converging Flow dependencies;
+add `testing` when running tests. GPU execution also requires compatible NVIDIA hardware.
 
 ## One-command runs
 

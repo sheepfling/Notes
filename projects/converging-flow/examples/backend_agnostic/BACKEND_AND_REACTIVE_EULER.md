@@ -68,7 +68,7 @@ force would double-count pressure.
 CPU:
 
 ```
-python -m pip install -e .
+python -m pip install -e '.[converging-flow]'
 ```
 
 NVIDIA CUDA 13.x GPU:
