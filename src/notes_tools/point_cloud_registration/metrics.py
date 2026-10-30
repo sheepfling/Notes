@@ -29,7 +29,7 @@ def rmse_nearest(
     *,
     symmetric: bool = True,
 ) -> float:
-    """Measure nearest-neighbor RMSE, optionally in both directions."""
+    """Measure nearest-neighbor RMSE, optionally averaging both directional means."""
 
     reference_points = _points(reference, "reference")
     candidate_points = _points(candidate, "candidate")
@@ -43,7 +43,7 @@ def rmse_nearest(
     reference_to_candidate, _ = candidate_tree.query(reference_points)
     return float(
         np.sqrt(
-            np.mean((candidate_to_reference**2 + reference_to_candidate**2) / 2.0)
+            (np.mean(candidate_to_reference**2) + np.mean(reference_to_candidate**2)) / 2.0
         )
     )
 ####
