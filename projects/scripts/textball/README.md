@@ -27,7 +27,13 @@ python projects/scripts/textball/textball.py create input-directory artifacts/te
 The current implementation expects the package placeholder to exist before
 creation. With `--encode`, it writes `package.txt.b64` beside that placeholder.
 Keep the artifact directory outside the input directory to avoid including the
-output in its own package.
+output in its own package. Creation rejects a final output inside the input
+tree or hard-linked to an input file, including the derived `.b64` and `.obs`
+output paths. File symlinks resolving within the input tree retain their previous
+content-following behavior; links outside it, dangling links, and directory
+symlinks cause an error rather than silently omitting or importing content.
+An unreadable or disappearing input also stops creation before the output is
+opened. Concurrent changes to paths during capture are not protected.
 
 The encoded form can optionally insert harmless non-Base64 characters:
 
@@ -37,6 +43,21 @@ python projects/scripts/textball/textball.py create input-directory artifacts/te
 
 The obfuscated output is written as `package.txt.b64.obs`; pass that path to
 the extractor with `--decode` when using this option.
+
+## Text encoding across environments
+
+For portable readable text, specify the same codec when creating and extracting.
+For example, use `--text --encoding utf-8` with `create`, then
+`--encoding utf-8` with `extract`. Text that cannot be decoded and re-encoded
+byte-for-byte with the chosen codec is retained as Base64 bytes. The outer
+`--encode`/`--decode` layer continues to use UTF-8 for the inner text stream.
+
+Without `--encoding`, both commands retain their historical locale-dependent
+behavior. The v1 format does not record the codec: for an existing archive,
+specify the codec used to create it rather than guessing. A wrong codec can
+alter non-ASCII path names even when member checksums match. The operating
+system's filesystem encoding must also support the stored path names; on
+Python, UTF-8 mode may be needed for non-ASCII names in an ASCII locale.
 
 Extract the encoded package into a new directory:
 
@@ -49,8 +70,8 @@ invalid members stop extraction without replacing their destination. Valid
 members may still overwrite existing files, but a member cannot overwrite the
 input textball itself, even through a symbolic or hard link. Extraction is not transactional:
 members written before a later error remain in place. Use a new, empty
-destination and retain the original inputs. Creation can also overwrite an
-existing output package.
+destination and retain the original inputs. Creation still overwrites an existing
+distinct output package; an output write failure can leave that file incomplete.
 
 Text members preserve their original line endings through the CLI. For older
 archives whose Windows output translated line endings, extraction accepts a

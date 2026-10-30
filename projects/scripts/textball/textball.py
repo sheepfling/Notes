@@ -1,6 +1,7 @@
 import argparse
 import ast
 import base64
+import codecs
 import hashlib
 import io
 import os
@@ -30,40 +31,95 @@ def get_md5_hash(file_path: Path) -> str:
     return hash_md5.hexdigest()
 ####
 
-def write_tarball(directory: Path, tar: TextIO, encode_all: bool = True, verbose: bool = False) -> None:
+
+def _encode_text(value: str, encoding: str | None) -> bytes:
+    """Encode exactly as the selected text stream would, before touching output."""
+    buffer = io.BytesIO()
+    with io.TextIOWrapper(buffer, encoding=encoding, newline='\n') as writer:
+        writer.write(value)
+        writer.flush()
+        return buffer.getvalue()
+    ####
+####
+
+
+def write_tarball(
+    directory: Path,
+    tar: TextIO,
+    encode_all: bool = True,
+    verbose: bool = False,
+    protected_output: Path | None = None,
+    encoding: str | None = None,
+) -> None:
     """Create a tarball from the directory containing text files."""
     # Ensure the output tarball path is a Path object
     directory = Path(directory)
 
+    source_root = directory.resolve(strict=True)
+    output = protected_output.resolve() if protected_output is not None else None
+    if output is not None and output.is_relative_to(source_root):
+        raise RuntimeError('Output must be outside the input directory')
+    ####
+
+    def fail_walk(error: OSError) -> None:
+        raise error
+    ####
+
     # Make the custom stream self-identifying before writing any records.
     tar.write(f'{FORMAT_MAGIC}\n')
     # Walk through the directory recursively
-    for cur_path, dirname, files in os.walk(directory):
+    for cur_path, dirname, files in os.walk(directory, onerror=fail_walk, followlinks=False):
         cur_path = Path(cur_path)
+        for name in dirname:
+            if (cur_path / name).is_symlink():
+                raise RuntimeError(f'Directory symlink cannot be archived: {str(cur_path / name)!r}')
+            ####
+        ####
         for file in files:
             filepath = cur_path / file
+            if filepath.is_symlink():
+                resolved = filepath.resolve(strict=True)
+                if not resolved.is_relative_to(source_root):
+                    raise RuntimeError(f'File symlink leaves input directory: {str(filepath)!r}')
+                ####
+            ####
+            if output is not None:
+                try:
+                    aliases_output = filepath.samefile(output)
+                except FileNotFoundError:
+                    # A missing output is normal, but a missing input is not.
+                    filepath.stat()
+                    aliases_output = False
+                ####
+                if aliases_output:
+                    raise RuntimeError(f'Output aliases an input file: {str(filepath)!r}')
+                ####
+            ####
             is_base64 = False
             data = None
-            try:
-                if not encode_all:
-                    try:
-                        with open(filepath, 'r', newline='\n') as fin:
-                            data = fin.read()
-                        ####
-                    except UnicodeDecodeError:
-                        pass
+            # Capture each member once so metadata describes the bytes archived.
+            with open(filepath, 'rb') as fin:
+                source_bytes = fin.read()
+            ####
+            if not encode_all:
+                try:
+                    with io.TextIOWrapper(io.BytesIO(source_bytes), encoding=encoding, newline='\n') as fin:
+                        data = fin.read()
                     ####
-                ####
-                if data is None:
-                    with open(filepath, 'rb') as fin:
-                        data = base64.b64encode(fin.read()).decode()
+                    # Some codecs can decode bytes but do not reproduce them
+                    # exactly when encoding (for example, a BOM-less UTF-8
+                    # stream read using utf-8-sig). Preserve those as bytes.
+                    if _encode_text(data, encoding) != source_bytes:
+                        data = None
                     ####
-                    is_base64 = True
-                    data = '\n'.join(data[i:i + MAX_LINE_LENGTH] for i in range(0, len(data), MAX_LINE_LENGTH))
+                except UnicodeError:
+                    data = None
                 ####
-            except (FileNotFoundError, IOError):
-                print(f'Could not open {str(filepath)!r}')
-                continue
+            ####
+            if data is None:
+                data = base64.b64encode(source_bytes).decode()
+                is_base64 = True
+                data = '\n'.join(data[i:i + MAX_LINE_LENGTH] for i in range(0, len(data), MAX_LINE_LENGTH))
             ####
             num_lines = data.count('\n')
             has_trailing_newline = bool(data) and data[-1] == '\n'
@@ -76,8 +132,8 @@ def write_tarball(directory: Path, tar: TextIO, encode_all: bool = True, verbose
                 'num_lines': num_lines,
                 'is_base64': is_base64,
                 'has_trailing_newline': has_trailing_newline,
-                'file_size': filepath.stat().st_size,
-                'md5': get_md5_hash(filepath),
+                'file_size': len(source_bytes),
+                'md5': hashlib.md5(source_bytes).hexdigest(),
             }
             header_line = '\t'.join(
                 [repr(header_path), str(num_lines), str(int(is_base64)), str(int(has_trailing_newline)),
@@ -119,6 +175,7 @@ def extract_tarball(
     verbose: bool = False,
     allow_legacy: bool = False,
     protected_source: Path | None = None,
+    encoding: str | None = None,
 ) -> None:
     """Extract the files from the tarball to the specified output directory."""
     output_dirpath = Path(output_dirpath)
@@ -213,15 +270,7 @@ def extract_tarball(
                 ####
             ####
             variants.extend(value.replace('\r\n', '\n') for value in tuple(variants))
-            candidates = []
-            for value in variants:
-                buffer = io.BytesIO()
-                with io.TextIOWrapper(buffer, newline='\n') as writer:
-                    writer.write(value)
-                    writer.flush()
-                    candidates.append(buffer.getvalue())
-                ####
-            ####
+            candidates = [_encode_text(value, encoding) for value in variants]
         ####
         matching_size = [value for value in candidates if len(value) == expected_size]
         if not matching_size:
@@ -272,12 +321,14 @@ def main():
         ),
     )
     create_parser.add_argument('--text', action='store_true', help='Allows for pure-text to be non-encoded.')
+    create_parser.add_argument('--encoding', help='Text codec for members and archive; default is the locale codec.')
 
     # Subcommand for extracting a tarball
     extract_parser = subparsers.add_parser('extract', help='Extract a tarball')
     extract_parser.add_argument('tarball_filename', type=str, help='The tarball file to extract')
     extract_parser.add_argument('output_directory', type=str, help='The directory to extract files to')
     extract_parser.add_argument('--decode', action='store_true', help='Decodes the input from base64.')
+    extract_parser.add_argument('--encoding', help='Text codec used when creating the archive; default is the locale codec.')
     extract_parser.add_argument(
         '--legacy',
         action='store_true',
@@ -286,6 +337,13 @@ def main():
 
     # Parse the arguments
     args, unknown = parser.parse_known_args()
+    if args.encoding is not None:
+        try:
+            codecs.lookup(args.encoding)
+        except LookupError:
+            parser.error(f'unknown text encoding: {args.encoding}')
+        ####
+    ####
     verbose = args.verbose
     if verbose > 1:
         print(f'Arguments: {args}')
@@ -308,29 +366,37 @@ def main():
         encode = bool(args.encode)
         obfuscate = max(0, int(args.obfuscate))
 
-        tarball_io = io.StringIO()
-        write_tarball(input_directory, tarball_io, verbose=verbose, encode_all=not allow_text)
-        tarball_io.seek(0)
-        text = tarball_io.read()
-
         out_filepath = tarball_path
         if encode:
-            text = base64.b64encode(text.encode()).decode()
             out_filepath = out_filepath.parent / (out_filepath.name + '.b64')
             if obfuscate > 0:
-                text = ''.join(f'{text[i:i+obfuscate]}~' for i in range(0, len(text), obfuscate))
                 out_filepath = out_filepath.parent / (out_filepath.name + '.obs')
             ####
         ####
+        tarball_io = io.StringIO()
+        write_tarball(
+            input_directory, tarball_io, verbose=verbose,
+            encode_all=not allow_text, protected_output=out_filepath, encoding=args.encoding,
+        )
+        tarball_io.seek(0)
+        text = tarball_io.read()
+
+        if encode:
+            text = base64.b64encode(text.encode()).decode()
+            if obfuscate > 0:
+                text = ''.join(f'{text[i:i+obfuscate]}~' for i in range(0, len(text), obfuscate))
+            ####
+        ####
+        encoded_output = _encode_text(text, args.encoding)
         out_filepath.parent.mkdir(parents=True, exist_ok=True)
-        with open(out_filepath, 'w', newline='\n') as fout:
-            fout.write(text)
+        with open(out_filepath, 'wb') as fout:
+            fout.write(encoded_output)
         ####
         print(f'Wrote {str(out_filepath)!r} ' + ('as encoded' if encode else ''))
     elif args.action == 'extract':
         tarball_path = Path(args.tarball_filename)
         decode = bool(args.decode)
-        with open(tarball_path, 'r', newline='') as fin:
+        with open(tarball_path, 'r', encoding=args.encoding, newline='') as fin:
             data = fin.read()
         ####
         if decode:
@@ -340,7 +406,7 @@ def main():
         output_dirpath = Path(args.output_directory)
         extract_tarball(
             io.StringIO(data), output_dirpath, verbose=verbose,
-            allow_legacy=args.legacy, protected_source=tarball_path,
+            allow_legacy=args.legacy, protected_source=tarball_path, encoding=args.encoding,
         )
         print(f"Tarball {str(tarball_path)!r} extracted to {str(output_dirpath)!r}.")
     else:

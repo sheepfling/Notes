@@ -3,7 +3,6 @@ import argparse
 import logging
 import os
 import subprocess
-import sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from logging import getLogger
 from pathlib import Path
@@ -141,7 +140,7 @@ def update_commands(repo_dir: Path, *, bare: bool) -> list[list[str]]:
 
 
 
-def main() -> None:
+def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("search_folder", type=Path, help="Root folder to search")
     parser.add_argument('--stdout', action='store_true', help='Logs output to stdout as well')
@@ -155,7 +154,7 @@ def main() -> None:
 
     if not search_dir.is_dir():
         print(f"Error: {search_dir} is not a valid directory")
-        sys.exit(1)
+        return 1
     ####
 
     if search_dir.is_symlink():
@@ -166,7 +165,7 @@ def main() -> None:
         for repo in find_git_repos(search_dir):
             print(repo)
         ####
-        return
+        return 0
     ####
 
     # Log file
@@ -186,11 +185,12 @@ def main() -> None:
     repos = list(dict.fromkeys(find_git_repos_semi_random(search_dir)))
     if not repos:
         log.info(f'No repos found in {str(search_dir)!r}')
-        return
+        return 0
     ####
 
     max_workers = max(1, min(8, args.num_workers))
     futures = {}
+    failed = False
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
         for repo in repos:
             log.debug("Submitting repo to update: %s", repo)
@@ -204,16 +204,19 @@ def main() -> None:
                     log.info("Repo %s updated successfully", repo)
                 else:
                     log.warning("Repo %s update failed", repo)
+                    failed = True
                 ####
             except Exception:
                 log.exception("Exception during repo %s update", repo)
+                failed = True
             ####
         ####
     ####
+    return 1 if failed else 0
 ####
 
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())
 ####

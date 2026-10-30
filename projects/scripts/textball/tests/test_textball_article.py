@@ -26,6 +26,163 @@ def run_textball(tmp_path: Path, *arguments: str) -> subprocess.CompletedProcess
 ####
 
 
+def run_textball_in_locale(
+    tmp_path: Path, utf8_mode: bool, *arguments: str
+) -> subprocess.CompletedProcess[str]:
+    env = os.environ.copy()
+    env.update({
+        "LC_ALL": "C",
+        "LANG": "C",
+        "PYTHONCOERCECLOCALE": "0",
+        "PYTHONUTF8": "1" if utf8_mode else "0",
+    })
+    return subprocess.run(
+        [sys.executable, str(SCRIPT), *arguments],
+        cwd=tmp_path, env=env, check=False, capture_output=True, text=True,
+    )
+####
+
+
+@pytest.mark.parametrize("encoded", [False, True])
+@pytest.mark.parametrize("creator_utf8", [False, True])
+def test_explicit_utf8_round_trip_across_locale_modes(
+    tmp_path: Path, encoded: bool, creator_utf8: bool
+) -> None:
+    source = tmp_path / "source"
+    source.mkdir()
+    content = "café ☃\r\n".encode()
+    binary = b"\xff\x80\x00\r\n"
+    (source / "text.txt").write_bytes(content)
+    (source / "binary.bin").write_bytes(binary)
+    package = tmp_path / "package.txt"
+    package.touch()
+    create_args = ["create", str(source), str(package), "--text", "--encoding", "utf-8"]
+    if encoded:
+        create_args.append("--encode")
+    ####
+    created = run_textball_in_locale(tmp_path, creator_utf8, *create_args)
+    assert created.returncode == 0, created.stderr
+
+    actual_package = Path(str(package) + ".b64") if encoded else package
+    output = tmp_path / "output"
+    extract_args = ["extract", str(actual_package), str(output), "--encoding", "utf-8"]
+    if encoded:
+        extract_args.append("--decode")
+    ####
+    extracted = run_textball_in_locale(tmp_path, not creator_utf8, *extract_args)
+    assert extracted.returncode == 0, extracted.stderr
+    assert (output / "source" / "text.txt").read_bytes() == content
+    assert (output / "source" / "binary.bin").read_bytes() == binary
+    assert (source / "text.txt").read_bytes() == content
+####
+
+
+@pytest.mark.parametrize("encoded", [False, True])
+@pytest.mark.parametrize("bom", [False, True])
+def test_utf8_sig_preserves_bom_and_bomless_members(tmp_path: Path, encoded: bool, bom: bool) -> None:
+    source = tmp_path / "source"
+    source.mkdir()
+    content = (b"\xef\xbb\xbf" if bom else b"") + "café\r\n".encode()
+    (source / "member.txt").write_bytes(content)
+    package = tmp_path / "package.txt"
+    package.touch()
+    create_args = ["create", str(source), str(package), "--text", "--encoding", "utf-8-sig"]
+    if encoded:
+        create_args.append("--encode")
+    ####
+    created = run_textball_in_locale(tmp_path, True, *create_args)
+    assert created.returncode == 0, created.stderr
+
+    actual_package = Path(str(package) + ".b64") if encoded else package
+    archive_text = actual_package.read_text(encoding="utf-8-sig")
+    if encoded:
+        archive_text = base64.b64decode(archive_text).decode()
+    ####
+    metadata = ast.literal_eval(archive_text.splitlines()[1].split("\t")[4])
+    assert metadata["is_base64"] is (not bom)
+
+    output = tmp_path / "output"
+    extract_args = ["extract", str(actual_package), str(output), "--encoding", "utf-8-sig"]
+    if encoded:
+        extract_args.append("--decode")
+    ####
+    extracted = run_textball_in_locale(tmp_path, False, *extract_args)
+    assert extracted.returncode == 0, extracted.stderr
+    assert (output / "source" / "member.txt").read_bytes() == content
+    assert (source / "member.txt").read_bytes() == content
+####
+
+
+def test_explicit_legacy_codec_preserves_member_bytes(tmp_path: Path) -> None:
+    source = tmp_path / "source"
+    source.mkdir()
+    content = "café\r\n".encode("cp1252")
+    (source / "member.txt").write_bytes(content)
+    package = tmp_path / "legacy-codec.txt"
+    package.touch()
+
+    created = run_textball_in_locale(
+        tmp_path, True, "create", str(source), str(package), "--text", "--encoding", "cp1252"
+    )
+    output = tmp_path / "output"
+    extracted = run_textball_in_locale(
+        tmp_path, False, "extract", str(package), str(output), "--encoding", "cp1252"
+    )
+
+    assert created.returncode == 0, created.stderr
+    assert extracted.returncode == 0, extracted.stderr
+    assert (output / "source" / "member.txt").read_bytes() == content
+####
+
+
+@pytest.mark.parametrize("codec", ["not-a-real-codec", "ascii"])
+def test_unusable_archive_codec_never_truncates_existing_output(tmp_path: Path, codec: str) -> None:
+    source = tmp_path / "source"
+    source.mkdir()
+    (source / "snowman-☃.txt").write_text("content", encoding="utf-8")
+    package = tmp_path / "package.txt"
+    package.write_bytes(b"original archive")
+
+    result = run_textball_in_locale(
+        tmp_path, True, "create", str(source), str(package), "--text", "--encoding", codec
+    )
+
+    assert result.returncode != 0
+    assert package.read_bytes() == b"original archive"
+    assert (source / "snowman-☃.txt").read_text(encoding="utf-8") == "content"
+####
+
+
+@pytest.mark.parametrize("link_kind", ["symlink", "hardlink"])
+def test_create_preserves_distinct_output_link(tmp_path: Path, link_kind: str) -> None:
+    source = tmp_path / "source"
+    source.mkdir()
+    (source / "member.txt").write_bytes(b"input bytes\n")
+    target = tmp_path / "existing.txt"
+    target.write_bytes(b"old archive")
+    package = tmp_path / "package.txt"
+    try:
+        if link_kind == "symlink":
+            package.symlink_to(target)
+        else:
+            os.link(target, package)
+        ####
+    except OSError as error:
+        pytest.skip(f"{link_kind} unavailable: {error}")
+    ####
+    original_inode = target.stat().st_ino
+
+    result = run_textball(tmp_path, "create", str(source), str(package), "--encoding", "utf-8")
+
+    assert result.returncode == 0, result.stderr
+    assert package.samefile(target)
+    assert target.stat().st_ino == original_inode
+    assert package.is_symlink() == (link_kind == "symlink")
+    assert target.read_bytes().startswith(b"NOTES-TEXTBALL/1\n")
+    assert (source / "member.txt").read_bytes() == b"input bytes\n"
+####
+
+
 def load_textball(name: str):
     spec = importlib.util.spec_from_file_location(name, SCRIPT)
     assert spec is not None and spec.loader is not None

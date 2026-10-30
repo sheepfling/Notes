@@ -24,6 +24,9 @@ It does discover nested ordinary repositories inside an ordinary worktree, so
 review the entire target list. Choose a narrow search root: an actual update
 fetches and prunes remote refs and then fast-forwards ordinary repositories,
 which changes repository state.
+The update command exits nonzero if any repository update fails or raises an
+error; it continues processing the other discovered repositories and records
+their outcomes in the log. A successful update or dry run exits zero.
 
 Run the focused tests from the repository root:
 

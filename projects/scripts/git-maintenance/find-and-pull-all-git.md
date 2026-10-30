@@ -14,6 +14,8 @@ For a normal working tree it fetches tags and prunes stale remote references, th
 `git pull --ff-only`. It does not reset, clean, or switch branches.
 
 Bare repositories receive a fetch of all remotes, tags, and pruned references. The script writes a `git_update.log` in the searched directory and offers a worker-count option.
+It attempts all discovered targets and exits nonzero if any update fails or
+raises an error; inspect the log for the affected repositories.
 
 ## Important warning
 
