@@ -74,8 +74,8 @@ not claims that Rick explicitly requested a global rule.
   and the [module command preference](https://github.com/sheepfling/mdutils-stubs/pull/1#discussion_r4243574657).
 - Keep provider configuration thin when practical. One suggested approach is
   to put reusable checks in a local runner and have CI invoke the same entry
-  point. Consolidate development
-  dependency definitions when doing so reduces drift. See [thin CI](https://github.com/sheepfling/snakemd-stubs/pull/1#discussion_r4418876608)
+  point. Consolidate development dependency definitions when doing so reduces
+  drift. See [thin CI](https://github.com/sheepfling/snakemd-stubs/pull/1#discussion_r4418876608)
   and [dependency consolidation](https://github.com/sheepfling/mdutils-stubs/pull/1#discussion_r4407107911).
   Suggested practice: prefer reliable discovery or a stable package boundary
   to brittle, hand-maintained source lists when that preserves check coverage.
@@ -83,8 +83,9 @@ not claims that Rick explicitly requested a global rule.
   semantics, dependencies, and evidence relevant to the task. The request to use
   a [Markdown assembly package](https://github.com/sheepfling/Notes/pull/3#discussion_r4419725812)
   arose in a specific implementation; it is not a blanket dependency mandate.
-- Use accurate language identifiers in fenced examples, including `shell` for
-  shell commands. See [Notes feedback](https://github.com/sheepfling/Notes/pull/1#discussion_r4419760709).
+- Suggested practice: use a language identifier that matches the commands in a
+  fenced example, such as `shell` or `powershell` as appropriate. A particular
+  Notes example received [shell-label feedback](https://github.com/sheepfling/Notes/pull/1#discussion_r4419760709).
 
 ### Tests and evidence
 
@@ -108,9 +109,7 @@ not claims that Rick explicitly requested a global rule.
 - Suggested review practice: inspect individual threads, reviews, and
   general comments; address or explain each applicable point; and verify thread
   state and the checks for the actual head. A reply in one thread does not
-  establish that every related thread is resolved. The evolving [Notes guide
-  review](https://github.com/sheepfling/Notes/pull/2#discussion_r4419896563)
-  illustrates why the final state matters.
+  establish that every related thread is resolved.
 
 ### Project-specific decisions
 
@@ -128,10 +127,10 @@ not claims that Rick explicitly requested a global rule.
   and [snakemd-stubs](https://github.com/sheepfling/snakemd-stubs/pull/1#issuecomment-6513810921).
   Surface mismatches with upstream libraries when useful for upstream fixes:
   [review](https://github.com/sheepfling/mdutils-stubs/pull/1#discussion_r4418983271).
-- **Alphus:** Treat it as experimental and separate from Notes development
+- **Alphus:** In Notes, keep this experimental tool separate from development
   dependencies and required CI. This is not a prohibition on experiments in
-  other projects. See the [experimental-tool discussion](https://github.com/sheepfling/mdutils-stubs/pull/1#discussion_r4418976420)
-  and [CI discussion](https://github.com/sheepfling/snakemd-stubs/pull/1#discussion_r4418899341).
+  other projects. The stub projects likewise discuss [experimental use](https://github.com/sheepfling/mdutils-stubs/pull/1#discussion_r4418976420)
+  and [non-required CI](https://github.com/sheepfling/snakemd-stubs/pull/1#discussion_r4418899341).
 
 ### Maintaining this guidance
 
@@ -141,5 +140,6 @@ and a public source link when available. Label an inference or proposal as such;
 do not promote a one-off implementation choice into a global requirement. If
 new evidence changes a rule, revise or remove the old text so future readers see
 one current explanation. Keep temporary task status in its issue or PR. This is
-a public repository: do not add credentials, private project material, machine
-specifics, or raw private memory.
+a public repository: do not add credentials, private project material, sensitive
+or identifying machine details, or raw private memory. Non-sensitive environment
+context may be needed to interpret and reproduce an experiment.

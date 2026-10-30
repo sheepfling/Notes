@@ -67,6 +67,11 @@ of maintaining a single undifferentiated list.
 
 ## Browse by subject
 
+### Graphic design
+
+- [Graphic design terminology](notes/graphic-design/graphic-design-terminology.md)
+  — logo, typography, and color guides
+
 ### Quaternions
 
 - [Quaternion performance in Python](notes/quaternions/quaternion-performance.md)
