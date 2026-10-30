@@ -98,7 +98,7 @@ cooling and mixing equations and defaults. It was adapted from the local
 remote. The proof needs Python 3.10 or later and only the standard library. From
 the repository root, run:
 
-```sh
+```shell
 python3 notes/thermal/coffee_choice.py
 python3 -m unittest discover -s notes/thermal -p 'test_coffee_choice.py' -v
 ```

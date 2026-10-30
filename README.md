@@ -1,6 +1,7 @@
 # Notes
 
-A small, durable note dump for procedures, references, decisions, troubleshooting, and other useful context.
+A small, durable note dump for procedures, references, decisions,
+troubleshooting, and other useful context.
 
 ## Organization
 
@@ -11,7 +12,9 @@ Use folders by subject area rather than by file type:
 - `troubleshooting/` — symptoms, diagnosis, and fixes
 - `inbox/` — unprocessed material that still needs a home
 
-Create a new top-level folder only when a subject will have several related notes. Keep filenames lowercase, use hyphens, and make them descriptive enough to find with a quick directory search.
+Create a new top-level folder only when a subject will have several related
+notes. Keep filenames lowercase, use hyphens, and make them descriptive enough
+to find with a quick directory search.
 
 ## Note conventions
 
@@ -26,15 +29,20 @@ Prefer Markdown. Start each note with:
 > Tags: example, topic-name
 ```
 
-Use a few lowercase, hyphenated tags separated by a comma and one space. Tags identify subjects across folders; use the type and status fields for the kind and currency of a note.
+Use a few lowercase, hyphenated tags separated by a comma and one space. Tags
+identify subjects across folders; use the type and status fields for the kind
+and currency of a note.
 
-Then capture the purpose, prerequisites, procedure or findings, verification, and recovery/rollback details as relevant. Record environment-specific values explicitly, and separate them from reusable instructions. Link related notes instead of duplicating them.
+Then capture the purpose, prerequisites, procedure or findings, verification,
+and recovery/rollback details as relevant. Record environment-specific values
+explicitly, and separate them from reusable instructions. Link related notes
+instead of duplicating them.
 
 ## Find a note
 
 Browse by subject below, or search from the repository root:
 
-```sh
+```shell
 rg --files notes -g '*.md'                       # list notes
 rg -n -i 'cooling' notes                         # search note contents
 rg -l '^> Type: reference$' notes                # find notes by type
@@ -49,7 +57,8 @@ of maintaining a single undifferentiated list.
 
 ### Thermal
 
-- [Should You Add Creamer Now or Later?](notes/thermal/coffee-choice-problem.md) — cooling and mixing comparison
+- [Should You Add Creamer Now or Later?](notes/thermal/coffee-choice-problem.md)
+  — cooling and mixing comparison
 
 ### Windows
 

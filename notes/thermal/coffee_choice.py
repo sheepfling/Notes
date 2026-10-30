@@ -26,18 +26,25 @@ class Parameters:
 
 def cool(start_c: float, room_c: float, capacity_j_per_k: float,
          conductance_w_per_k: float, seconds: float) -> float:
-    """Newtonian cooling with constant thermal capacity and conductance."""
+    """Return the cooled temperature in °C.
+
+    Temperatures are in °C, thermal capacity in J/K, conductance in W/K,
+    and elapsed time in seconds. Capacity and conductance remain constant.
+    """
     return room_c + (start_c - room_c) * exp(-conductance_w_per_k * seconds / capacity_j_per_k)
 
 
 def mix(coffee_c: float, creamer_c: float, coffee_capacity: float,
         creamer_capacity: float) -> float:
-    """Ideal instantaneous energy-weighted mixing."""
+    """Return the ideal instantaneous mixture temperature in °C.
+
+    Input temperatures are in °C and both thermal capacities are in J/K.
+    """
     return (coffee_capacity * coffee_c + creamer_capacity * creamer_c) / (coffee_capacity + creamer_capacity)
 
 
 def compare(p: Parameters) -> tuple[float, float]:
-    """Return final temperatures for adding creamer now and later."""
+    """Return final temperatures in °C, as (creamer now, creamer later)."""
     if (p.coffee_g <= 0 or p.creamer_g <= 0 or p.coffee_specific_heat <= 0
             or p.creamer_specific_heat <= 0 or p.conductance_w_per_k <= 0
             or p.total_s <= 0 or not 0 <= p.add_later_s <= p.total_s):
