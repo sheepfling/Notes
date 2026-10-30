@@ -92,19 +92,25 @@ The original raw timing samples are retained in a Library bundle outside this re
 
 ## Reproduce the experiment
 
-The measured list-origin harness and its shared implementations are in [benchmark.py](benchmark/benchmark.py) and [operations.py](benchmark/operations.py). They are preserved byte-for-byte from the supplied evidence. The [semantic probes](benchmark/semantics.py) reuse those implementations; their import was adapted from the earlier array-origin harness. The harness checks correctness before timing and writes fresh JSON results. Generated results and stdout are local artifacts, not repository inputs.
+The [list-origin harness](benchmark/benchmark.py) and [shared implementations](benchmark/operations.py) reproduce the recorded experiment’s workload. They have since been refactored for typed results and report generation, so they are not byte-for-byte copies of the scripts used for the recorded measurements. The [semantic probes](benchmark/semantics.py) reuse the shared implementations. The harness checks correctness before timing and writes fresh JSON results. Generated results and stdout are local artifacts, not repository inputs.
 
-From the repository root, create a disposable environment with Python 3.12.14 and the recorded package versions:
+From the repository root, create a disposable environment with Python 3.12.14 and the recorded numerical package versions. SnakeMD is a later reporting dependency, not part of the original timing environment:
 
-```sh
+```shell
 python3.12 -m venv .venv
 .venv/bin/python -m pip install numpy==2.3.5 scipy==1.17.0 \
-  numpy-quaternion==2024.0.13 rowan==1.3.2 pylinalg==0.6.8
+  numpy-quaternion==2024.0.13 rowan==1.3.2 pylinalg==0.6.8 snakemd==2.4.1
+```
+
+Check report serialization and a small smoke run without committing generated evidence:
+
+```shell
+.venv/bin/python -m unittest discover -s notes/quaternions/benchmark -p 'test_*.py' -v
 ```
 
 Run from the artifact directory so generated JSON stays outside tracked files:
 
-```sh
+```shell
 mkdir -p notes/quaternions/benchmark/artifacts
 cd notes/quaternions/benchmark/artifacts
 ../../../../.venv/bin/python ../semantics.py > semantics.txt
@@ -114,4 +120,4 @@ OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 \
   ../../../../.venv/bin/python ../benchmark.py --output run2.json > run2.txt
 ```
 
-The full benchmark uses the default three sizes, five repeats, and calibration protocol above; it can take time, particularly for the pylinalg scalar-loop adapter. These are new measurements, not a promise to reproduce the recorded timing on another host.
+The full benchmark uses the default three sizes, five repeats, and calibration protocol above; it can take time, particularly for the pylinalg scalar-loop adapter. These are new measurements, not a promise to reproduce the recorded timing on another host. Refactoring and package versions can also change overhead; do not mix new timings with the original results.

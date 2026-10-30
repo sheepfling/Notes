@@ -128,7 +128,9 @@ $RECYCLE.BIN/
 *.sqlite
 *.sqlite3
 
-# Locally generated quaternion experiment evidence
-/notes/quaternions/benchmark/artifacts/
+# Generated artifacts at any depth
+artifacts/
+
+# Default quaternion experiment outputs
 /notes/quaternions/benchmark/results.json
 /notes/quaternions/benchmark/semantics.json
