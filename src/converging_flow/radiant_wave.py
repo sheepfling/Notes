@@ -477,6 +477,8 @@ class RadiantWaveFrame:
 
 @dataclass(frozen=True, slots=True)
 class RadiantWaveResult:
+    """Simulation output; the resolved method is the method used by the last step."""
+
     config: RadiantWaveConfig
     resolved_backend: ResolvedBackendName
     resolved_diffusion_method: Literal["explicit", "crank-nicolson"]
@@ -1297,14 +1299,17 @@ def advance_fields(
 
 def _timestep_limits(
     config: RadiantWaveConfig,
-    materials: MaterialFields,
+    materials: MaterialFields | DeviceMaterialFields,
+    backend: ArrayBackend | None = None,
 ) -> tuple[float, float, float]:
     minimum_spacing = min(config.spacing)
     dimensionality = float(config.dimensions)
+    xp = np if backend is None else backend.xp
+    scalar = float if backend is None else backend.scalar
 
-    maximum_activity_diffusivity = float(np.max(materials.activity_diffusivity))
-    maximum_thermal_diffusivity = float(
-        np.max(materials.thermal_conductivity / materials.heat_capacity)
+    maximum_activity_diffusivity = scalar(xp.max(materials.activity_diffusivity))
+    maximum_thermal_diffusivity = scalar(
+        xp.max(materials.thermal_conductivity / materials.heat_capacity)
     )
     maximum_diffusivity = max(
         maximum_activity_diffusivity,
@@ -1320,8 +1325,8 @@ def _timestep_limits(
         )
     ####
 
-    maximum_wave_speed = float(
-        np.max(np.sqrt(materials.wave_stiffness / materials.wave_density))
+    maximum_wave_speed = scalar(
+        xp.max(xp.sqrt(materials.wave_stiffness / materials.wave_density))
     )
     wave_limit = np.inf
     if maximum_wave_speed > 0.0:
@@ -1332,8 +1337,8 @@ def _timestep_limits(
         )
     ####
 
-    local_rate = float(
-        np.max(
+    local_rate = scalar(
+        xp.max(
             materials.growth_rate
             + materials.loss_rate
             + materials.heat_loss_rate / materials.heat_capacity
@@ -1354,6 +1359,16 @@ def resolve_diffusion_method(
     config: RadiantWaveConfig,
     materials: MaterialFields,
 ) -> Literal["explicit", "crank-nicolson"]:
+    return _resolve_diffusion_method_from_limits(
+        config, _timestep_limits(config, materials)
+    )
+####
+
+
+def _resolve_diffusion_method_from_limits(
+    config: RadiantWaveConfig,
+    limits: tuple[float, float, float],
+) -> Literal["explicit", "crank-nicolson"]:
     if config.diffusion_method == "explicit":
         return "explicit"
     ####
@@ -1361,10 +1376,7 @@ def resolve_diffusion_method(
         return "crank-nicolson"
     ####
 
-    diffusion_limit, wave_limit, reaction_limit = _timestep_limits(
-        config,
-        materials,
-    )
+    diffusion_limit, wave_limit, reaction_limit = limits
     non_diffusion_limit = min(
         config.maximum_timestep,
         wave_limit,
@@ -1389,10 +1401,18 @@ def stable_timestep(
         if diffusion_method is None
         else diffusion_method
     )
-    diffusion_limit, wave_limit, reaction_limit = _timestep_limits(
-        config,
-        materials,
+    return _stable_timestep_from_limits(
+        config, _timestep_limits(config, materials), resolved_method
     )
+####
+
+
+def _stable_timestep_from_limits(
+    config: RadiantWaveConfig,
+    limits: tuple[float, float, float],
+    resolved_method: Literal["explicit", "crank-nicolson"],
+) -> float:
+    diffusion_limit, wave_limit, reaction_limit = limits
     if resolved_method == "crank-nicolson":
         diffusion_limit = np.inf
     ####
@@ -1720,17 +1740,28 @@ def run_radiant_wave(
     ) = initialize_fields(config)
     backend = get_array_backend(config.backend)
     base_device_materials = _device_material_fields(materials, backend)
+    material_event_progress = config.material_events.progress_at(0.0)
+    for event, progress in zip(
+        config.material_events.replacements, material_event_progress, strict=True
+    ):
+        if progress > 0.0:
+            base_device_materials = _replace_material_region(
+                base_device_materials,
+                backend.asarray(event.mask_at(0.0)),
+                event.target_material_id,
+                config,
+                backend,
+            )
+        ####
+    ####
     device_materials = _apply_material_property_ramps(
         base_device_materials,
         config.material_events.property_ramps,
         time=0.0,
         backend=backend,
     )
-    absorber_inserted = False
-    absorber_fraction = 0.0
-    material_event_progress = tuple(
-        0.0 for _event in config.material_events.replacements
-    )
+    absorber_inserted = any(progress > 0.0 for progress in material_event_progress)
+    absorber_fraction = material_event_progress[0] if material_event_progress else 0.0
     activity = backend.asarray(activity_numpy)
     heat = backend.asarray(heat_numpy)
     wave = backend.asarray(wave_numpy)
@@ -1797,13 +1828,21 @@ def run_radiant_wave(
         next_target = 1
     ####
 
-    resolved_diffusion_method = resolve_diffusion_method(config, materials)
-    base_timestep = stable_timestep(
-        config,
-        materials,
-        resolved_diffusion_method,
+    limits = _timestep_limits(config, device_materials, backend)
+    resolved_diffusion_method = _resolve_diffusion_method_from_limits(config, limits)
+    base_timestep = _stable_timestep_from_limits(config, limits, resolved_diffusion_method)
+    changing_materials = bool(
+        config.material_events.replacements
+        or config.material_events.property_ramps
+        or config.absorber_insertion_time is not None
+        or config.rod_insertion_start_time is not None
     )
     while time < config.final_time and step < config.max_steps:
+        if changing_materials and step:
+            limits = _timestep_limits(config, device_materials, backend)
+            resolved_diffusion_method = _resolve_diffusion_method_from_limits(config, limits)
+            base_timestep = _stable_timestep_from_limits(config, limits, resolved_diffusion_method)
+        ####
         timestep = min(base_timestep, config.final_time - time)
         if config.absorber_insertion_time is not None and not absorber_inserted:
             timestep = min(

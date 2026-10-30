@@ -121,7 +121,7 @@ function createRenderer() {
   return { gl, program, buffer, position, resolution, time, phase };
 }
 
-function draw(timestamp) {
+function renderFrame(timestamp) {
   if (!renderer) return;
   const { gl, program, buffer, position, resolution, time, phase } = renderer;
   const width = elements.canvas.clientWidth * window.devicePixelRatio;
@@ -140,6 +140,11 @@ function draw(timestamp) {
   const automaticPhase = elements.animate.checked ? timestamp * 0.00035 : 0;
   gl.uniform1f(phase, Number(elements.phase.value) + automaticPhase);
   gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+}
+
+function draw(timestamp) {
+  if (!renderer) return;
+  renderFrame(timestamp);
   animationFrame = requestAnimationFrame(draw);
 }
 
@@ -223,6 +228,6 @@ async function start() {
 }
 
 elements.phase.addEventListener("input", () => {
-  if (!elements.animate.checked && renderer) draw(performance.now());
+  if (!elements.animate.checked && renderer) renderFrame(performance.now());
 });
 start();

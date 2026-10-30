@@ -14,8 +14,8 @@ relative 3-D rotation error, and proper-rotation generation.
 - `rmse` compares corresponding rows using Euclidean point distances and therefore requires equal
   shapes.
 - `rmse_nearest` compares each point to its nearest point in the other cloud and can compare
-  clouds with different point counts. Its symmetric form averages both directions before taking
-  the square root.
+  clouds with different point counts. Its symmetric form gives equal weight to the mean squared
+  distances in each direction before taking the square root.
 - `chamfer_distance` returns the sum of the two mean squared nearest-neighbor distances; it is
   not the same scale as `RMSE`.
 - `rotation_angle_degrees` is a 3-D relative-rotation diagnostic. It should not be used on an
