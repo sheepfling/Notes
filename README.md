@@ -61,6 +61,10 @@ Replace the example terms with the subject, type, or tag you need. The index
 points to subject entry points; add related notes beneath each subject instead
 of maintaining a single undifferentiated list.
 
+## Working guidance
+
+- [Living agent guidance](AGENTS.md)
+
 ## Browse by subject
 
 ### Graphic design
