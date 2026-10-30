@@ -24,24 +24,24 @@ color families. Actual shades, mixtures, and appearances depend on context.
 
 | Color family   | CSS color       | Hex value |
 | -------------- | --------------- | --------- |
-| Red            | red             | `#FF0000` |
-| Orange         | orange          | `#FFA500` |
-| Yellow         | yellow          | `#FFFF00` |
-| Green          | green           | `#008000` |
-| Cyan           | cyan            | `#00FFFF` |
-| Blue           | blue            | `#0000FF` |
-| Violet         | violet          | `#EE82EE` |
-| Magenta        | magenta         | `#FF00FF` |
-| Teal           | teal            | `#008080` |
-| Black          | black           | `#000000` |
-| White          | white           | `#FFFFFF` |
-| Gray           | gray            | `#808080` |
-| Blue-green     | darkcyan        | `#008B8B` |
-| Yellow-green   | yellowgreen     | `#9ACD32` |
-| Reddish violet | mediumvioletred | `#C71585` |
-| Bluish violet  | blueviolet      | `#8A2BE2` |
-| Warm off-white | floralwhite     | `#FFFAF0` |
-| Cool charcoal  | darkslategray   | `#2F4F4F` |
+| Red            | red             | ![#FF0000](https://placehold.co/15x15/FF0000/FF0000.png) `#FF0000` |
+| Orange         | orange          | ![#FFA500](https://placehold.co/15x15/FFA500/FFA500.png) `#FFA500` |
+| Yellow         | yellow          | ![#FFFF00](https://placehold.co/15x15/FFFF00/FFFF00.png) `#FFFF00` |
+| Green          | green           | ![#008000](https://placehold.co/15x15/008000/008000.png) `#008000` |
+| Cyan           | cyan            | ![#00FFFF](https://placehold.co/15x15/00FFFF/00FFFF.png) `#00FFFF` |
+| Blue           | blue            | ![#0000FF](https://placehold.co/15x15/0000FF/0000FF.png) `#0000FF` |
+| Violet         | violet          | ![#EE82EE](https://placehold.co/15x15/EE82EE/EE82EE.png) `#EE82EE` |
+| Magenta        | magenta         | ![#FF00FF](https://placehold.co/15x15/FF00FF/FF00FF.png) `#FF00FF` |
+| Teal           | teal            | ![#008080](https://placehold.co/15x15/008080/008080.png) `#008080` |
+| Black          | black           | ![#000000](https://placehold.co/15x15/000000/000000.png) `#000000` |
+| White          | white           | ![#FFFFFF](https://placehold.co/15x15/FFFFFF/FFFFFF.png) `#FFFFFF` |
+| Gray           | gray            | ![#808080](https://placehold.co/15x15/808080/808080.png) `#808080` |
+| Blue-green     | darkcyan        | ![#008B8B](https://placehold.co/15x15/008B8B/008B8B.png) `#008B8B` |
+| Yellow-green   | yellowgreen     | ![#9ACD32](https://placehold.co/15x15/9ACD32/9ACD32.png) `#9ACD32` |
+| Reddish violet | mediumvioletred | ![#C71585](https://placehold.co/15x15/C71585/C71585.png) `#C71585` |
+| Bluish violet  | blueviolet      | ![#8A2BE2](https://placehold.co/15x15/8A2BE2/8A2BE2.png) `#8A2BE2` |
+| Warm off-white | floralwhite     | ![#FFFAF0](https://placehold.co/15x15/FFFAF0/FFFAF0.png) `#FFFAF0` |
+| Cool charcoal  | darkslategray   | ![#2F4F4F](https://placehold.co/15x15/2F4F4F/2F4F4F.png) `#2F4F4F` |
 
 ---
 
@@ -949,7 +949,7 @@ Example:
 #FF8000
 ```
 
-Orange example: `#FF8000`.
+Orange example: ![#FF8000](https://placehold.co/15x15/FF8000/FF8000.png) `#FF8000`.
 
 This represents:
 
@@ -976,7 +976,8 @@ Example:
 color: hsl(30 100% 50%);
 ```
 
-Orange example: `hsl(30 100% 50%)`.
+Orange example: ![#FF8000](https://placehold.co/15x15/FF8000/FF8000.png)
+`hsl(30 100% 50%)`, equivalent to `#FF8000` in sRGB.
 
 HSL is intuitive for manipulating hues,
 but its lightness and saturation are not perceptually uniform.
@@ -1030,7 +1031,8 @@ Example:
 color: oklch(70% 0.18 55);
 ```
 
-Orange example: `oklch(70% 0.18 55)`.
+Orange example: `oklch(70% 0.18 55)`. An illustrative sRGB approximation is
+![#F07800](https://placehold.co/15x15/F07800/F07800.png) `#F07800`.
 
 This example is outside the sRGB gamut, so its displayed appearance depends
 on the display and browser's gamut mapping.
@@ -1336,8 +1338,10 @@ For example:
 }
 ```
 
-Example palette colors: orange `#E87524`, dark neutral `#141414`, and white
-surface `#FFFFFF`.
+Example palette colors: orange ![#E87524](https://placehold.co/15x15/E87524/E87524.png)
+`#E87524`, dark neutral ![#141414](https://placehold.co/15x15/141414/141414.png)
+`#141414`, and white surface ![#FFFFFF](https://placehold.co/15x15/FFFFFF/FFFFFF.png)
+`#FFFFFF`.
 
 The example values are illustrative,
 not a validated accessible palette.
