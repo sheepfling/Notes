@@ -184,24 +184,21 @@ RGB describes color through combinations of:
 
 It is an additive model associated with light-emitting displays.
 
-Conceptually:
+Conceptually, using illustrative full-intensity sRGB chips:
 
-```text
-Red + Green = Yellow
-Green + Blue = Cyan
-Blue + Red = Magenta
-
-Red + Green + Blue = White
-```
-
-Illustrative chips: Red ![#FF0000](https://placehold.co/15x15/FF0000/FF0000.png)
-`#FF0000`, Green ![#00FF00](https://placehold.co/15x15/00FF00/00FF00.png)
-`#00FF00`, Yellow ![#FFFF00](https://placehold.co/15x15/FFFF00/FFFF00.png)
-`#FFFF00`, Blue ![#0000FF](https://placehold.co/15x15/0000FF/0000FF.png)
-`#0000FF`, Cyan ![#00FFFF](https://placehold.co/15x15/00FFFF/00FFFF.png)
-`#00FFFF`, Magenta ![#FF00FF](https://placehold.co/15x15/FF00FF/FF00FF.png)
-`#FF00FF`, White ![#FFFFFF](https://placehold.co/15x15/FFFFFF/FFFFFF.png)
-`#FFFFFF`.
+- Red ![#FF0000](https://placehold.co/15x15/FF0000/FF0000.png) `#FF0000` +
+  Green ![#00FF00](https://placehold.co/15x15/00FF00/00FF00.png) `#00FF00` =
+  Yellow ![#FFFF00](https://placehold.co/15x15/FFFF00/FFFF00.png) `#FFFF00`
+- Green ![#00FF00](https://placehold.co/15x15/00FF00/00FF00.png) `#00FF00` +
+  Blue ![#0000FF](https://placehold.co/15x15/0000FF/0000FF.png) `#0000FF` =
+  Cyan ![#00FFFF](https://placehold.co/15x15/00FFFF/00FFFF.png) `#00FFFF`
+- Blue ![#0000FF](https://placehold.co/15x15/0000FF/0000FF.png) `#0000FF` +
+  Red ![#FF0000](https://placehold.co/15x15/FF0000/FF0000.png) `#FF0000` =
+  Magenta ![#FF00FF](https://placehold.co/15x15/FF00FF/FF00FF.png) `#FF00FF`
+- Red ![#FF0000](https://placehold.co/15x15/FF0000/FF0000.png) `#FF0000` +
+  Green ![#00FF00](https://placehold.co/15x15/00FF00/00FF00.png) `#00FF00` +
+  Blue ![#0000FF](https://placehold.co/15x15/0000FF/0000FF.png) `#0000FF` =
+  White ![#FFFFFF](https://placehold.co/15x15/FFFFFF/FFFFFF.png) `#FFFFFF`
 
 These relationships assume suitable additive primaries.
 
