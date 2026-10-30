@@ -88,7 +88,7 @@ Seed `20261029` generated scalar, 1,000-pair, and 100,000-pair float64 inputs. T
 
 Both runs passed checks against normalized SciPy results at relative and absolute tolerance `2e-13`, including Hamilton basis products, identity, +90° rotation, sign equivalence, composition order, vector norms, paired shapes, float64 output, and contiguous layout. The largest observed component discrepancy was `3.109e-15`. The shared normalizer was also tested across scales from 10⁻³⁰⁰ to 10³⁰⁰ and for invalid inputs. These checks do not prove correctness for every input.
 
-The full benchmark bundle and its raw data are retained in the original Library evidence bundle, outside this repository. The timings are workload- and host-specific; replicate the same input, validation, representation, output, and timing boundaries when testing an application.
+The original raw timing samples are retained in a Library bundle outside this repository; access depends on Library permissions, and no public download is provided here. Readers without that access cannot independently audit the original samples or reported medians. The scripts below permit new runs under the documented boundaries; timing varies with the host and workload.
 
 ## Reproduce the experiment
 
@@ -114,4 +114,4 @@ OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 \
   ../../../../.venv/bin/python ../benchmark.py --output run2.json > run2.txt
 ```
 
-The full benchmark uses the default three sizes, five repeats, and calibration protocol above; it can take time, particularly for the pylinalg scalar-loop adapter. The results are new measurements, not a promise to reproduce the recorded timing on another host. The complete original evidence remains in Library.
+The full benchmark uses the default three sizes, five repeats, and calibration protocol above; it can take time, particularly for the pylinalg scalar-loop adapter. These are new measurements, not a promise to reproduce the recorded timing on another host.
