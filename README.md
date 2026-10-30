@@ -38,6 +38,14 @@ and recovery/rollback details as relevant. Record environment-specific values
 explicitly, and separate them from reusable instructions. Link related notes
 instead of duplicating them.
 
+## Tests for notes and experiments
+
+Place automated tests for notes and their supporting code under
+`tests/<topic>/`, separate from the note and its implementation. Use pytest
+for Python tests, and make supporting Python code importable as a module.
+Document the dependencies and repository-root commands needed to reproduce an
+experiment and run its tests in the note itself.
+
 ## Find a note
 
 Browse by subject below, or search from the repository root:
