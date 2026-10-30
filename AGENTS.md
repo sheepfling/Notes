@@ -70,6 +70,8 @@ not claims that Rick explicitly requested a global rule.
   point. Consolidate development
   dependency definitions when doing so reduces drift. See [thin CI](https://github.com/sheepfling/snakemd-stubs/pull/1#discussion_r4418876608)
   and [dependency consolidation](https://github.com/sheepfling/mdutils-stubs/pull/1#discussion_r4407107911).
+  Suggested practice: prefer reliable discovery or a stable package boundary
+  to brittle, hand-maintained source lists when that preserves check coverage.
 - Consider established libraries when they fit the problem, while checking
   semantics, dependencies, and evidence relevant to the task. The request to use
   a [Markdown assembly package](https://github.com/sheepfling/Notes/pull/3#discussion_r4419725812)
@@ -83,7 +85,9 @@ not claims that Rick explicitly requested a global rule.
   boundaries, including representative inputs and failure cases. For typing
   work, include typed variables; literals alone can be contextually typed and
   conceal a gap. This is a review suggestion from [mdutils-stubs](https://github.com/sheepfling/mdutils-stubs/pull/1#discussion_r4419816005),
-  not a global test matrix.
+  not a global test matrix. Suggested practice: use meaningfully typed, shared
+  pytest fixtures when useful, and assert real behavior against independent
+  expectations rather than comparing a helper or fixture with itself.
 - Keep reproducible proof or verification code when it is needed to support a
   result. Share a small harness and dependencies where possible; distinguish the
   source from generated reports, captured output, and superseded results. See
