@@ -63,6 +63,11 @@ of maintaining a single undifferentiated list.
 
 ## Browse by subject
 
+### Quaternions
+
+- [Quaternion performance in Python](notes/quaternions/quaternion-performance.md)
+  — six-way benchmark and reproduction
+
 ### Thermal
 
 - [Should You Add Creamer Now or Later?](notes/thermal/coffee-choice-problem.md)
