@@ -63,6 +63,10 @@ of maintaining a single undifferentiated list.
 
 ## Browse by subject
 
+### Development
+
+- [Diagnose GitHub access in ChatGPT and Codex](notes/development/codex-github-access-troubleshooting.md)
+
 ### Graphic design
 
 - [Graphic design terminology](notes/graphic-design/graphic-design-terminology.md)
