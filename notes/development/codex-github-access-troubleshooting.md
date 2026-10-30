@@ -12,8 +12,10 @@ prove that another route has the same access.
 
 ## What the observed incidents showed
 
-These examples are anonymized from actual task observations. They illustrate
-routes and boundaries, not permanent permissions or universal fixes.
+These examples are anonymized from reported task observations. The underlying
+task logs are not published here, so the examples cannot be independently
+verified from this note. They illustrate routes and boundaries, not permanent
+permissions or universal fixes.
 
 - **Network before authentication:** A sandboxed `git ls-remote` failed DNS
   resolution. A later, separately approved network execution reached GitHub and
@@ -107,7 +109,7 @@ routes can be coupled. Do not assume they are. See [Git credentials](https://git
 Codex sandbox permissions and approval review are separate controls; changing
 who reviews a request does not expand the sandbox. Local and cloud tasks may
 also have different tool, network and credential contexts. Check the actual
-product and session rather than assuming one mode applies everywhere. [Codex sandbox](https://developers.openai.com/codex/sandboxing), [Codex auto-review](https://developers.openai.com/codex/sandboxing/auto-review), [Codex cloud environments](https://developers.openai.com/codex/environments/cloud-environments)
+product and session rather than assuming one mode applies everywhere. [Codex sandbox](https://learn.chatgpt.com/docs/sandboxing), [Codex auto-review](https://learn.chatgpt.com/docs/sandboxing/auto-review), [Codex cloud environments](https://learn.chatgpt.com/docs/environments/cloud-environments)
 
 ## Safe checks in the affected executor
 
@@ -151,8 +153,9 @@ authentication issue, so inspect the output. `GH_TOKEN` and `GITHUB_TOKEN` can
 override stored `gh` credentials. [CLI status](https://cli.github.com/manual/gh_auth_status), [CLI environment](https://cli.github.com/manual/gh_help_environment)
 
 For a known private repository, after confirming the active account and an
-approved network route, a read-only check can report that account's repository
-permission. Replace the placeholders locally and keep the output private:
+approved network route, a read-only [`gh repo view`](https://cli.github.com/manual/gh_repo_view)
+check can report that account's repository permission. Replace the placeholders
+locally and keep the output private:
 
 ```sh
 gh repo view OWNER/REPO --json viewerPermission --jq .viewerPermission
