@@ -26,3 +26,10 @@ needed to regenerate results; prefer a small, reusable harness with shared code
 and clear dependencies over duplicated or report-generating scripts. Include
 additional artifacts when the user explicitly requests them or they are necessary
 for the task.
+
+## Tests for notes and experiments
+
+Place tests for notes and their supporting code under `tests/<topic>/`,
+separate from note content and implementation. Use pytest for Python tests;
+make supporting code importable as a module, and document dependencies and
+repository-root commands to reproduce the experiment and run its tests.
