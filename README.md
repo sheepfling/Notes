@@ -29,28 +29,54 @@ Prefer Markdown. Start each note with:
 > Tags: example, topic-name
 ```
 
-Use lowercase tags separated by a comma and one space; use hyphens within
-multiword tags. Choose a few stable subject terms, not a long list of synonyms.
-Search a complete tag from the repository root with:
-
-```sh
-rg -l '^> Tags: ([a-z0-9-]+, )*typography(,|$)' notes
-```
-
-Replace `typography` with the tag to find. `rg` searches note text as well; tags
-provide a consistent way to discover related subjects without requiring a
-generated index.
+Use a few lowercase, hyphenated tags separated by a comma and one space. Tags
+identify subjects across folders; use the type and status fields for the kind
+and currency of a note.
 
 Then capture the purpose, prerequisites, procedure or findings, verification,
 and recovery/rollback details as relevant. Record environment-specific values
 explicitly, and separate them from reusable instructions. Link related notes
 instead of duplicating them.
 
+## Tests for notes and experiments
+
+Place automated tests for notes and their supporting code under
+`tests/<topic>/`, separate from the note and its implementation. Use pytest
+for Python tests, and make supporting Python code importable as a module.
+Document the dependencies and repository-root commands needed to reproduce an
+experiment and run its tests in the note itself.
+
+## Find a note
+
+Browse by subject below, or search from the repository root:
+
+```shell
+rg --files notes -g '*.md'                       # list notes
+rg -n -i 'cooling' notes                         # search note contents
+rg -l '^> Type: reference$' notes                # find notes by type
+rg -l '^> Tags: ([a-z0-9-]+, )*thermal(,|$)' notes  # find an exact tag
+```
+
+Replace the example terms with the subject, type, or tag you need. The index
+points to subject entry points; add related notes beneath each subject instead
+of maintaining a single undifferentiated list.
+
 ## Browse by subject
 
 ### Graphic design
 
-- [Graphic design terminology](notes/graphic-design/graphic-design-terminology.md) — logo, typography, and color guides
+- [Graphic design terminology](notes/graphic-design/graphic-design-terminology.md)
+  — logo, typography, and color guides
+
+### Quaternions
+
+- [Quaternion performance in Python](notes/quaternions/quaternion-performance.md)
+  — six-way benchmark and reproduction
+
+### Thermal
+
+- [Should You Add Creamer Now or Later?](notes/thermal/coffee-choice-problem.md)
+  — cooling and mixing comparison
 
 ### Windows
 

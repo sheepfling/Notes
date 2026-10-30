@@ -127,3 +127,10 @@ $RECYCLE.BIN/
 *.cache
 *.sqlite
 *.sqlite3
+
+# Generated artifacts at any depth
+artifacts/
+
+# Default quaternion experiment outputs
+/notes/quaternions/benchmark/results.json
+/notes/quaternions/benchmark/semantics.json
