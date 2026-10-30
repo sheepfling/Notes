@@ -1,20 +1,30 @@
 # Notes
 
-A small, durable note dump for procedures, references, decisions,
-troubleshooting, and other useful context.
+A small, durable note dump for procedures, references, decisions, troubleshooting, and other useful context.
 
-## Organization
+## Browse by category
 
-Use folders by subject area rather than by file type:
+Notes live under `notes/`, grouped by subject rather than file type:
 
-- `notes/<topic>/` — focused notes, procedures, and references
-- `decisions/` — durable choices and their rationale
-- `troubleshooting/` — symptoms, diagnosis, and fixes
-- `inbox/` — unprocessed material that still needs a home
+- [Aerospace](notes/aerospace/README.md) — flight dynamics and validation
+- [Development](notes/development/README.md) — compilers, SDKs, and build tools
+- [Graphic design](notes/graphic-design/graphic-design-terminology.md) — logo, typography, and color guides
+- [Quaternions](notes/quaternions/quaternion-performance.md) — six-way Python benchmark and reproduction
+- [Thermal](notes/thermal/coffee-choice-problem.md) — coffee cooling and mixing comparison
+- [Projects](projects/README.md) — runnable and preserved source collections
+- [Converging Flow](projects/converging-flow/README.md) — vectorized inert-flow, reactive-Euler,
+  reaction-diffusion, and heterogeneous-wave simulations with reproducible artifacts
+- [Windows](notes/windows/README.md) — Windows, WSL, and desktop procedures
+- [References](notes/references/README.md) — curated link archives and reading queues
 
-Create a new top-level folder only when a subject will have several related
-notes. Keep filenames lowercase, use hyphens, and make them descriptive enough
-to find with a quick directory search.
+Material imported from other note collections should be reviewed and shaped into a durable note
+or collection before it is committed. A local `inbox/` directory may be used as a temporary
+ingestion scratchpad, but it is intentionally ignored and is not part of the published notes.
+
+Add new notes to the appropriate subject directory. The index links to subject entry points;
+add related notes beneath each subject rather than maintaining one undifferentiated list.
+Create a new top-level folder only when a subject has several related notes. Keep filenames
+lowercase, use hyphens, and make them descriptive enough to find with a quick search.
 
 ## Note conventions
 
@@ -24,7 +34,7 @@ Prefer Markdown. Start each note with:
 # Clear title
 
 > Type: how-to | reference | decision | troubleshooting
-> Status: current | superseded | needs-review
+> Status: current | historical | superseded | needs-review
 > Updated: YYYY-MM-DD
 > Tags: example, topic-name
 ```
@@ -33,53 +43,160 @@ Use a few lowercase, hyphenated tags separated by a comma and one space. Tags
 identify subjects across folders; use the type and status fields for the kind
 and currency of a note.
 
-Then capture the purpose, prerequisites, procedure or findings, verification,
-and recovery/rollback details as relevant. Record environment-specific values
-explicitly, and separate them from reusable instructions. Link related notes
-instead of duplicating them.
+Then capture the purpose, prerequisites, procedure or findings, verification, and recovery/rollback details as relevant. Record environment-specific values explicitly, and separate them from reusable instructions. Link related notes instead of duplicating them.
+
+Keep general command examples console-neutral when possible. Prefer `shell`
+fences for commands that work in both Bash-like shells and PowerShell; existing
+unlabeled portable examples remain acceptable. Reserve `bash`, `powershell`,
+and similar labels for shell-specific syntax.
+See [console-neutral command examples](notes/development/markdown-console-conventions.md).
+
+Use `current` for guidance that is intended to remain usable, `historical` for preserved material
+that depends on an older tool or event, `superseded` when another note replaces it, and
+`needs-review` when the material is useful but has not been recently revalidated.
 
 ## Tests for notes and experiments
 
-Place automated tests for notes and their supporting code under
-`tests/<topic>/`, separate from the note and its implementation. Use pytest
-for Python tests, and make supporting Python code importable as a module.
-Document the dependencies and repository-root commands needed to reproduce an
-experiment and run its tests in the note itself.
+For a self-contained article, keep its Markdown, article-specific Python and tests
+together in a subject folder. Place tests for shared packages or behavior spanning
+articles under `tests/<topic>/`. Use pytest for Python tests, make supporting code
+importable where needed, and add package markers when useful. Document dependencies
+and repository-root commands to reproduce the experiment and run its tests. Add
+co-located test directories to pytest discovery. Keep generated outputs in ignored
+`artifacts/` or a temporary test directory, not beside the source.
 
-## Find a note
+Each executable article or collection documents its dependencies and commands
+to run and test it from the repository root. The notes also identify generated
+outputs, overwrite behavior, and platform limitations where relevant. Historical
+maintenance scripts remain explicit tools; discovering articles does not run them.
 
-Browse by subject below, or search from the repository root:
+## Finding a note
 
-```shell
-rg --files notes -g '*.md'                       # list notes
-rg -n -i 'cooling' notes                         # search note contents
-rg -l '^> Type: reference$' notes                # find notes by type
-rg -l '^> Tags: ([a-z0-9-]+, )*thermal(,|$)' notes  # find an exact tag
+Use the category directories above, or search filenames and note contents from the repository root. For example, in PowerShell:
+
+```powershell
+Get-ChildItem -Path notes -Recurse -File |
+    Select-String -Pattern 'search term'
 ```
 
-Replace the example terms with the subject, type, or tag you need. The index
-points to subject entry points; add related notes beneath each subject instead
-of maintaining a single undifferentiated list.
+Or use `rg` from the repository root:
 
-## Browse by subject
+```shell
+rg --files notes -g '*.md'
+rg -n -i 'cooling' notes
+rg -l '^> Type: reference *$' notes -g '*.md'
+rg -n '^> Tags: ' notes -g '*.md'
+rg -l '^> Tags: ([a-z0-9-]+, )*git-lfs(, | *$)' notes -g '*.md'
+```
 
-### Graphic design
+Replace the example terms with the subject, type, or exact tag you need. The
+tag query only finds notes that have a `Tags` field; some older notes have not
+been tagged yet, so also browse categories or search their contents.
 
-- [Graphic design terminology](notes/graphic-design/graphic-design-terminology.md)
-  — logo, typography, and color guides
+## Validation
 
-### Quaternions
+The repository is primarily Markdown, but source collections can have optional automated checks. Python tooling is declared in `pyproject.toml`; it is not required to read or edit notes.
 
-- [Quaternion performance in Python](notes/quaternions/quaternion-performance.md)
-  — six-way benchmark and reproduction
+Set up a development virtual environment with pip:
 
-### Thermal
+```
+python -m venv .venv
+```
 
-- [Should You Add Creamer Now or Later?](notes/thermal/coffee-choice-problem.md)
-  — cooling and mixing comparison
+Activate it using the shell-specific command for your environment:
 
-### Windows
+```powershell
+.\.venv\Scripts\Activate.ps1
+```
 
-The earlier index listed notes about setting Git Bash as the Windows Terminal
-default and shrinking a WSL2 virtual disk, but those files are not present in
-this branch.
+```bash
+source .venv/bin/activate
+```
+
+With the virtual environment active, install the development dependencies:
+
+```shell
+python -m pip install --upgrade pip
+python -m pip install -e ".[dev]"
+```
+
+The equivalent setup with uv is:
+
+```
+uv sync --extra dev
+```
+
+Run all configured checks:
+
+```
+python -m scripts.ci
+```
+
+The local autofix sequence is deliberately ordered: Ruff fixes first,
+scope-markers inserts/regenerates structural markers, and rumdl applies safe
+Markdown fixes. The same checks then run in check mode afterward:
+
+```
+python -m scripts.ci --fix
+```
+
+The CI workflow runs the check form; it can write bytecode, caches and temporary test files.
+Rumdl checks `README.md`, `notes/`,
+and `projects/` using the repository's relaxed-project policy in
+`.rumdl.toml`; generated files and the intentionally scratch `inbox/` are
+excluded. CI then runs `mdrepo check .` for repository-wide Markdown path,
+case, and reachability policy. `mdrepo` leaves orphan detection disabled for
+the historical note dump; link and path checks remain active.
+
+Run pytest separately with uv using `uv run pytest`.
+
+Validate local Markdown links, including repository containment and ignore rules:
+
+```
+uv run python scripts/validate_notes.py
+```
+
+Check for machine-specific absolute paths and private IPv4 addresses. Placeholder paths such as
+`C:\Users\<user>` and `/Users/REPLACE_ME` are allowed; pass any known private names or values at
+runtime with `--forbidden` rather than writing them into the repository:
+
+```
+uv run python scripts/check_scrubbed.py
+```
+
+Check HTTP(S) links for 404/410 responses as a separate network-dependent step:
+
+```
+uv run python scripts/validate_notes.py --external
+```
+
+When dependencies are already installed in the active environment, run pytest directly:
+
+```
+python -m pytest
+```
+
+Measure Python line and branch coverage, including Python tools launched by the tests as subprocesses:
+
+```
+python -m pytest --cov --cov-report=term-missing
+```
+
+The configured report threshold is an initial 45 percent floor. Batch files are covered by their
+behavioral tests; Python coverage tools do not measure `.bat` source lines.
+
+Add future Python test directories to `testpaths` and keep generated environments and caches out of version control. Generated Python outputs belong under the ignored `artifacts/` directory, not beside the notes or source.
+
+## Source hygiene
+
+When promoting material from an external collection, remove personal absolute paths, usernames,
+employer or project identifiers, internal URLs, private IP addresses, credentials, generated
+dumps, and binary artifacts. Use generic placeholders such as `<project-root>`,
+`%USERPROFILE%`, or `/Users/REPLACE_ME` when the shape of a procedure matters. Keep generated
+reports, plots, decoded files, package caches, and archives outside the repository or under the
+ignored `artifacts/` directory. Run `check_scrubbed.py` with any known private values supplied
+at runtime rather than recording those values in the repository.
+
+## Collections
+
+Collections can contain a README, scripts, source files, tests, and supporting notes. The directory itself is the durable record; use `NOTES.md` for provenance, caveats, and validation history.

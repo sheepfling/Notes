@@ -29,7 +29,16 @@ for the task.
 
 ## Tests for notes and experiments
 
-Place tests for notes and their supporting code under `tests/<topic>/`,
-separate from note content and implementation. Use pytest for Python tests;
-make supporting code importable as a module, and document dependencies and
-repository-root commands to reproduce the experiment and run its tests.
+For a self-contained article, keep its Markdown, article-specific Python and
+tests together in a subject folder. Place tests of shared packages or behavior
+spanning articles under `tests/<topic>/`. Use pytest for Python tests; make
+supporting code importable where needed, adding package markers when useful.
+Document dependencies and repository-root commands to reproduce the experiment
+and run its tests. Add co-located test directories to pytest discovery. Keep
+generated artifacts under the ignored `artifacts/` directory or a temporary
+test directory, not beside source files.
+
+For each executable article or collection, document its dependencies and
+repository-root run and test commands next to its note. Specify output paths
+and any overwrite or platform limitations. Do not run historical or
+cross-project maintenance scripts automatically as part of article discovery.

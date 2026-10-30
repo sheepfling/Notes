@@ -30,6 +30,7 @@ class ScaleProbe:
     scale: float
     result: list[float]
     passed: bool
+####
 
 
 @dataclass(frozen=True)
@@ -37,6 +38,7 @@ class NormalizerChecks:
     passed: bool
     scale_probes: list[ScaleProbe]
     rejected_invalid_inputs: list[str]
+####
 
 
 @dataclass(frozen=True)
@@ -46,6 +48,7 @@ class CorrectnessCheck:
     path: str
     implementation: str
     max_abs_error: float
+####
 
 
 @dataclass(frozen=True)
@@ -55,6 +58,7 @@ class InputSummary:
     inputs_unchanged_after_correctness_checks: bool
     raw_q1_norm_range: list[float]
     unit_norm_max_abs_error: float
+####
 
 
 @dataclass
@@ -68,6 +72,7 @@ class TimingCase:
     timer: timeit.Timer | None = field(default=None, repr=False)
     number: int = 1
     samples_seconds_per_call: list[float] = field(default_factory=list)
+####
 
 
 @dataclass(frozen=True)
@@ -75,6 +80,7 @@ class CaseSet:
     cases: list[TimingCase]
     correctness: list[CorrectnessCheck]
     inputs: list[InputSummary]
+####
 
 
 @dataclass(frozen=True)
@@ -92,12 +98,14 @@ class TimingResult:
     p25_seconds_per_call: float
     p75_seconds_per_call: float
     median_nanoseconds_per_element: float
+####
 
 
 @dataclass(frozen=True)
 class Tolerance:
     rtol: float
     atol: float
+####
 
 
 @dataclass(frozen=True)
@@ -107,6 +115,7 @@ class RunParameters:
     seed: int
     repeats: int
     target_seconds: float
+####
 
 
 @dataclass(frozen=True)
@@ -120,6 +129,7 @@ class Method:
     pylinalg: str
     timing: str
     scope: str
+####
 
 
 @dataclass(frozen=True)
@@ -127,6 +137,7 @@ class CorrectnessReport:
     passed: bool
     tolerance: Tolerance
     checks: list[CorrectnessCheck]
+####
 
 
 @dataclass(frozen=True)
@@ -145,6 +156,8 @@ class BenchmarkReport:
 
     def to_json(self) -> str:
         return json.dumps(asdict(self), indent=2) + '\n'
+    ####
+####
 
 
 
@@ -158,13 +171,17 @@ def normalize_quaternion_list(values: npt.ArrayLike) -> np.ndarray:
     q = np.asarray(values, dtype=np.float64)
     if q.ndim not in (1, 2) or q.shape[-1] != 4:
         raise ValueError('quaternions must have shape (4,) or (N,4)')
+    ####
     if not np.all(np.isfinite(q)):
         raise ValueError('quaternions must be finite')
+    ####
     scale = np.max(np.abs(q), axis=-1, keepdims=True)
     if np.any(scale == 0):
         raise ValueError('zero quaternion is not a rotation')
+    ####
     scaled = q / scale
     return np.ascontiguousarray(scaled / np.linalg.norm(scaled, axis=-1, keepdims=True))
+####
 
 
 def preprocess_raw_lists(operation: str, left: npt.ArrayLike, right: npt.ArrayLike) -> tuple[np.ndarray, np.ndarray]:
@@ -173,14 +190,19 @@ def preprocess_raw_lists(operation: str, left: npt.ArrayLike, right: npt.ArrayLi
         rhs = normalize_quaternion_list(right)
         if rhs.shape != q.shape:
             raise ValueError('paired quaternion inputs must have identical shapes')
+        ####
     else:
         rhs = np.asarray(right, dtype=np.float64)
         if rhs.shape != q.shape[:-1] + (3,):
             raise ValueError('paired vector shape must match quaternion shape')
+        ####
         if not np.all(np.isfinite(rhs)):
             raise ValueError('vectors must be finite')
+        ####
         rhs = np.ascontiguousarray(rhs)
+    ####
     return q, rhs
+####
 
 
 def run_array(name: str, operation: str, a: o.FloatArray, b: o.FloatArray) -> o.FloatArray:
@@ -188,17 +210,24 @@ def run_array(name: str, operation: str, a: o.FloatArray, b: o.FloatArray) -> o.
     if name == 'python':
         fn = o.multiply_python if operation == 'multiply' else o.rotate_python
         return o.python_array(fn, a, b, a.ndim == 1)
+    ####
     if name == 'numpy':
         return (o.multiply_numpy if operation == 'multiply' else o.rotate_numpy)(a, b)
+    ####
     if name == 'numpy_quaternion':
         return (o.qlib_multiply_array if operation == 'multiply' else o.qlib_rotate_array)(a, b)
+    ####
     if name == 'scipy':
         return (o.scipy_multiply_array if operation == 'multiply' else o.scipy_rotate_array)(a, b)
+    ####
     if name == 'rowan':
         return o.rowan.multiply(a, b) if operation == 'multiply' else o.rowan_rotate_array(a, b)
+    ####
     if name == 'pylinalg':
         return (o.pylinalg_multiply_array if operation == 'multiply' else o.pylinalg_rotate_array)(a, b)
+    ####
     raise KeyError(name)
+####
 
 
 def run_unit_lists(name: str, operation: str, a: npt.ArrayLike, b: npt.ArrayLike, scalar: bool) -> np.ndarray:
@@ -210,23 +239,31 @@ def run_unit_lists(name: str, operation: str, a: npt.ArrayLike, b: npt.ArrayLike
     if name == 'python':
         fn = o.multiply_python if operation == 'multiply' else o.rotate_python
         return np.asarray(fn(a, b) if scalar else o.python_batch(fn, a, b), dtype=np.float64)  # pyright: ignore[reportArgumentType]
+    ####
     if name == 'numpy':
         fn = o.multiply_numpy if operation == 'multiply' else o.rotate_numpy
         return fn(np.asarray(a, dtype=np.float64), np.asarray(b, dtype=np.float64))
+    ####
     if name == 'numpy_quaternion':
         return (o.qlib_multiply_array if operation == 'multiply' else o.qlib_rotate_array)(a, b)
+    ####
     if name == 'scipy':
         return (o.scipy_multiply_array if operation == 'multiply' else o.scipy_rotate_array)(a, b)
+    ####
     if name == 'rowan':
         return o.rowan.multiply(a, b) if operation == 'multiply' else o.rowan_rotate_array(a, b)
+    ####
     if name == 'pylinalg':
         return run_array(name, operation, np.asarray(a, dtype=np.float64), np.asarray(b, dtype=np.float64))
+    ####
     raise KeyError(name)
+####
 
 
 def run_normalized_lists(name: str, operation: str, a: npt.ArrayLike, b: npt.ArrayLike) -> np.ndarray:
     q, rhs = preprocess_raw_lists(operation, a, b)
     return run_array(name, operation, q, rhs)
+####
 
 
 def prepared_callable(name: str, operation: str, q: np.ndarray, rhs: np.ndarray) -> Callable[[], np.ndarray]:
@@ -237,30 +274,40 @@ def prepared_callable(name: str, operation: str, q: np.ndarray, rhs: np.ndarray)
         a, b = q.tolist(), rhs.tolist()
         a, b = (tuple(a), tuple(b)) if scalar else ([tuple(x) for x in a], [tuple(x) for x in b])
         return lambda: np.asarray(fn(a, b) if scalar else o.python_batch(fn, a, b), dtype=np.float64)  # pyright: ignore[reportArgumentType]
+    ####
     if name == 'numpy':
         return lambda: run_array(name, operation, q, rhs)
+    ####
     if name == 'rowan':
         return lambda: run_array(name, operation, q, rhs)
+    ####
     if name == 'numpy_quaternion':
         a = o.qlib.as_quat_array(q)
         if operation == 'multiply':
             b = o.qlib.as_quat_array(rhs)
             return lambda: o.qlib.as_float_array(a*b)
+        ####
         b = o.qlib.from_vector_part(rhs)
         return lambda: np.ascontiguousarray(o.qlib_rotate_prepared(a, b))
+    ####
     if name == 'scipy':
         a = o.Rotation.from_quat(q, scalar_first=True)
         if operation == 'multiply':
             b = o.Rotation.from_quat(rhs, scalar_first=True)
             return lambda: (a*b).as_quat(scalar_first=True)
+        ####
         return lambda: a.apply(rhs)
+    ####
     if name == 'pylinalg':
         a = o.to_xyzw(q)
         if operation == 'multiply':
             b = o.to_xyzw(rhs)
             return lambda: o.to_wxyz(o.pylinalg_multiply_prepared(a, b))
+        ####
         return lambda: np.ascontiguousarray(o.pylinalg_rotate_prepared(a, rhs))
+    ####
     raise KeyError(name)
+####
 
 
 def check_normalizer() -> NormalizerChecks:
@@ -271,6 +318,7 @@ def check_normalizer() -> NormalizerChecks:
         o.assert_close(result, q if scale > 0 else -q)
         o.assert_close(np.linalg.norm(result), 1.)
         probes.append(ScaleProbe(scale, result.tolist(), True))
+    ####
     bad = [[0., 0., 0., 0.], [1., 0., float('nan'), 0.],
            [float('inf'), 0., 0., 0.], [1., 0., 0.], [[1., 0., 0., 0.], [0., 0., 0., 0.]]]
     rejections = []
@@ -281,6 +329,8 @@ def check_normalizer() -> NormalizerChecks:
             rejections.append(str(e))
         else:
             raise AssertionError('invalid quaternion was not rejected')
+        ####
+    ####
     for op, a, b in [('multiply', [1., 0., 0., 0.], [[1., 0., 0., 0.]]),
                      ('rotate', [1., 0., 0., 0.], [1., 2.]),
                      ('rotate', [1., 0., 0., 0.], [1., float('inf'), 2.])]:
@@ -290,7 +340,10 @@ def check_normalizer() -> NormalizerChecks:
             rejections.append(str(e))
         else:
             raise AssertionError('invalid paired input was not rejected')
+        ####
+    ####
     return NormalizerChecks(True, probes, rejections)
+####
 
 
 def build_cases(seed: int, sizes: Sequence[int]) -> CaseSet:
@@ -321,6 +374,7 @@ def build_cases(seed: int, sizes: Sequence[int]) -> CaseSet:
                 o.assert_close(product.as_matrix(), reference_matrix.as_matrix() @ other.as_matrix())
             else:
                 o.assert_close(np.linalg.norm(expected, axis=-1), np.linalg.norm(rhs, axis=-1))
+            ####
             for name in _BACKENDS:
                 functions = [
                     ('prepared_reuse_common_output', prepared_callable(name, operation, q1, rhs)),
@@ -334,15 +388,20 @@ def build_cases(seed: int, sizes: Sequence[int]) -> CaseSet:
                     correctness.append(CorrectnessCheck(n, operation, path, name, float(np.max(np.abs(actual-expected)))))
                     cases.append(TimingCase(n, operation, path, name,
                                   'explicit_scalar_api_loop' if name == 'pylinalg' and not scalar else ('python_scalar_loop' if name == 'python' and not scalar else 'native'), fn))
+                ####
+            ####
             # Measured separately: same ingestion/validation/normalization stage,
             # returning its intermediate arrays but performing no operation.
             cases.append(TimingCase(n, operation, 'preprocessing_only', 'shared_numpy_preprocessor', 'native',
                           lambda op=operation, a=raw1_list, b=raw_rhs: preprocess_raw_lists(op, a, b)))
+        ####
         assert hashlib.sha256(pickle.dumps(saved_inputs)).hexdigest() == before_hash
         inputs.append(InputSummary(n, 'actual Python float list / nested lists', True,
                        [float(np.min(np.linalg.norm(raw1, axis=-1))), float(np.max(np.linalg.norm(raw1, axis=-1)))],
                        float(np.max(np.abs(np.linalg.norm(q1, axis=-1)-1)))))
+    ####
     return CaseSet(cases, correctness, inputs)
+####
 
 
 def render_summary(report: BenchmarkReport) -> str:
@@ -354,6 +413,7 @@ def render_summary(report: BenchmarkReport) -> str:
           f'{row.median_seconds_per_call * 1e6:.3f}'] for row in report.results],
     )
     return str(doc)
+####
 
 
 def main() -> None:
@@ -378,8 +438,11 @@ def main() -> None:
             elapsed = timer.timeit(number=number)
             if elapsed >= args.target_seconds:
                 break
+            ####
             number *= min(10, max(2, math.ceil(args.target_seconds/max(elapsed, 1e-9))))
+        ####
         case.timer, case.number = timer, number
+    ####
     rng = random.Random(args.seed + 1)
     for repeat in range(args.repeats):
         order = list(range(len(cases))); rng.shuffle(order)
@@ -387,7 +450,9 @@ def main() -> None:
             case = cases[i]
             assert case.timer is not None
             case.samples_seconds_per_call.append(case.timer.timeit(number=case.number) / case.number)
+        ####
         print(f'Repeat {repeat+1}/{args.repeats} completed.', flush=True)
+    ####
     rows: list[TimingResult] = []
     for case in cases:
         samples = case.samples_seconds_per_call
@@ -396,6 +461,7 @@ def main() -> None:
                                  case.execution, case.number, samples, median, min(samples),
                                  max(samples), float(np.percentile(samples, 25)),
                                  float(np.percentile(samples, 75)), median * 1e9 / case.n))
+    ####
     report = BenchmarkReport(started_utc=started, finished_utc=datetime.now(timezone.utc).isoformat(),
               script_sha256=hashlib.sha256(pathlib.Path(__file__).read_bytes()).hexdigest(),
               operations_sha256=hashlib.sha256(pathlib.Path(o.__file__).read_bytes()).hexdigest(),
@@ -415,7 +481,9 @@ def main() -> None:
               results=rows)
     pathlib.Path(args.output).write_text(report.to_json())
     print(render_summary(report))
+####
 
 
 if __name__ == '__main__':
     main()
+####

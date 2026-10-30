@@ -22,6 +22,7 @@ class Parameters:
     conductance_w_per_k: float = 3.0
     total_s: float = 600.0
     add_later_s: float = 300.0
+####
 
 
 def cool(start_c: float, room_c: float, capacity_j_per_k: float,
@@ -32,6 +33,7 @@ def cool(start_c: float, room_c: float, capacity_j_per_k: float,
     and elapsed time in seconds. Capacity and conductance remain constant.
     """
     return room_c + (start_c - room_c) * exp(-conductance_w_per_k * seconds / capacity_j_per_k)
+####
 
 
 def mix(coffee_c: float, creamer_c: float, coffee_capacity: float,
@@ -41,6 +43,7 @@ def mix(coffee_c: float, creamer_c: float, coffee_capacity: float,
     Input temperatures are in °C and both thermal capacities are in J/K.
     """
     return (coffee_capacity * coffee_c + creamer_capacity * creamer_c) / (coffee_capacity + creamer_capacity)
+####
 
 
 def compare(p: Parameters) -> tuple[float, float]:
@@ -49,6 +52,7 @@ def compare(p: Parameters) -> tuple[float, float]:
             or p.creamer_specific_heat <= 0 or p.conductance_w_per_k <= 0
             or p.total_s <= 0 or not 0 <= p.add_later_s <= p.total_s):
         raise ValueError("capacities, conductance and duration must be positive; addition must fall within the wait")
+    ####
     coffee_capacity = p.coffee_g * p.coffee_specific_heat
     creamer_capacity = p.creamer_g * p.creamer_specific_heat
     mixture_capacity = coffee_capacity + creamer_capacity
@@ -58,6 +62,7 @@ def compare(p: Parameters) -> tuple[float, float]:
     late_mix = mix(before_late_mix, p.creamer_c, coffee_capacity, creamer_capacity)
     late = cool(late_mix, p.room_c, mixture_capacity, p.conductance_w_per_k, p.total_s - p.add_later_s)
     return early, late
+####
 
 
 def main() -> None:
@@ -65,7 +70,10 @@ def main() -> None:
                           ("Warm creamer (70 °C)", Parameters(creamer_c=70.0))):
         early, late = compare(params)
         print(f"{label}: now {early:.2f} °C; later {late:.2f} °C; later minus now {late - early:+.2f} °C")
+    ####
+####
 
 
 if __name__ == "__main__":
     main()
+####

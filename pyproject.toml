@@ -1,0 +1,154 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "notes-validation"
+version = "0.1.0"
+description = "Validation tooling and numerical experiments for the Notes repository"
+requires-python = ">=3.12"
+dependencies = []
+
+[project.scripts]
+converging-flow = "converging_flow.cli:main"
+converging-flow-run = "converging_flow.runner:main"
+
+[project.optional-dependencies]
+converging-flow = [
+    "matplotlib>=3.9",
+    "numpy>=2.0",
+    "pillow>=10.4",
+    "PyYAML>=6.0",
+    "scipy>=1.13",
+]
+mesh-tools = [
+    "matplotlib>=3.9",
+    "numpy>=2.0",
+    "PyYAML>=6.0",
+    "shapely>=2.1",
+]
+point-cloud-registration = ["numpy>=2.0", "scipy>=1.13"]
+vector-geometry = ["numpy>=2.0"]
+# Test dependencies for an individual collection, composed with its extra.
+testing = ["pytest>=8.0"]
+# These projects use only the standard library at runtime. Their extras supply
+# the Python test runner; see project notes for Node, compiler and OS needs.
+integer-semantics-lab = ["notes-validation[testing]"]
+jorth = ["notes-validation[testing]"]
+scripts = ["notes-validation[testing]"]
+shaders = ["notes-validation[testing]"]
+
+dev = [
+    "notes-validation[test]",
+    "coverage>=7.10",
+    "mdrepo==0.0.1a0",
+    "numba>=0.66",
+    "pyright>=1.1.400",
+    "ruff>=0.12",
+    "rumdl>=0.2.49,<0.3",
+    "scope-markers==0.0.1a0",
+]
+# Keep the original extra name available for existing uv workflows.
+test = [
+    "notes-validation[converging-flow,mesh-tools,point-cloud-registration,testing,vector-geometry]",
+    "coverage>=7.10",
+    "pytest-cov>=6.0",
+    "scipy-stubs==1.18.0.1",
+    "types-PyYAML>=6.0.12",
+]
+
+fast = ["notes-validation[converging-flow]", "numba>=0.66"]
+gpu = ["notes-validation[converging-flow]", "cupy-cuda13x[ctk]>=14.0"]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = [
+    "tests",
+    "notes/thermal/tests",
+    "projects/scripts/altchar/tests",
+    "projects/scripts/base64/tests",
+    "projects/scripts/git-maintenance/tests",
+    "projects/scripts/power-diagnostics/tests",
+    "projects/scripts/readlines/tests",
+    "projects/scripts/textball/tests",
+    "projects/scripts/toy-ciphers/tests",
+    "projects/scripts/transfer-bundle/tests",
+    "projects/jorth/tests",
+    "projects/integer-semantics-lab/tests",
+    "projects/shaders/tests",
+    "projects/converging-flow/examples/physics_diagnostics/tests",
+    "projects/converging-flow/examples/backend_agnostic/tests",
+]
+addopts = ["-ra"]
+
+[tool.coverage.run]
+branch = true
+parallel = true
+source = [
+    "src",
+    "scripts",
+    "projects",
+]
+patch = ["subprocess"]
+omit = [
+    "*/__init__.py",
+    "*/test_*.py",
+    "*/tests/*",
+]
+
+[tool.coverage.report]
+exclude_also = [
+    "if TYPE_CHECKING:",
+    "if __name__ == .__main__.:",
+]
+# Baseline while archival project scripts and legacy helpers remain partially tested.
+fail_under = 45.0
+precision = 1
+show_missing = true
+
+[tool.pyright]
+include = ["src/converging_flow", "tests/converging_flow"]
+exclude = ["build", ".tmp", "artifacts", ".venv*"]
+pythonVersion = "3.12"
+typeCheckingMode = "basic"
+reportMissingTypeStubs = false
+
+[tool.ruff.lint.per-file-ignores]
+"tests/test_scrubbed.py" = ["FLY002"]
+"notes/quaternions/benchmark/benchmark.py" = ["UP017"]
+"notes/quaternions/benchmark/operations.py" = ["UP040"]
+
+[tool.uv]
+package = true
+
+[tool.mdrepo]
+include = ["*.md", "**/*.md"]
+exclude = [
+    ".git/**",
+    "inbox/**",
+    ".venv*/**",
+    ".codex_pydeps/**",
+    ".pip-cache/**",
+    ".pre-commit-cache/**",
+    ".pytest_cache/**",
+    ".ruff_cache/**",
+    ".tmp/**",
+    ".uv-cache/**",
+    "**/__pycache__/**",
+    "artifacts/**",
+    "build/**",
+    "dist/**",
+]
+
+[tool.mdrepo.links]
+check-missing-targets = false
+check-case = true
+
+[tool.mdrepo.orphans]
+enabled = false
+roots = ["README.md"]

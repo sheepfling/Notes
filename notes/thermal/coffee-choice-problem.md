@@ -103,10 +103,13 @@ virtual environment and run:
 python3 -m venv .venv
 .venv/bin/python -m pip install pytest
 .venv/bin/python -m notes.thermal.coffee_choice
-.venv/bin/python -m pytest tests/thermal -v
+.venv/bin/python -m pytest notes/thermal/tests -v
 ```
 
-It prints both the default and 70 °C creamer comparisons. The important thing
+The earlier `python -m pytest tests/thermal -v` command remains available as a
+compatibility entrypoint to the same co-located tests. The proof prints both
+the default and 70 °C creamer comparisons; it does not write output files.
+The important thing
 to preserve when adapting the model is the distinction between cooling before
 mixing, instantaneous mixing, and cooling after mixing. The temperatures are
 model outputs, not measured coffee temperatures.

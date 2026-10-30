@@ -39,6 +39,7 @@ class DependencyInfo:
 
     import_available: bool
     version: str | None
+####
 
 
 @dataclass(frozen=True)
@@ -49,6 +50,7 @@ class TimerInfo:
     monotonic: bool
     adjustable: bool
     resolution: float
+####
 
 
 @dataclass(frozen=True)
@@ -67,6 +69,7 @@ class Environment:
     optional_dependencies: dict[str, DependencyInfo]
     thread_environment: dict[str, str | None]
     timer: TimerInfo
+####
 
 
 def multiply_python(a: Sequence[float], b: Sequence[float]) -> tuple[float, float, float, float]:
@@ -74,6 +77,7 @@ def multiply_python(a: Sequence[float], b: Sequence[float]) -> tuple[float, floa
     W, X, Y, Z = b
     return (w*W-x*X-y*Y-z*Z, w*X+x*W+y*Z-z*Y,
             w*Y-x*Z+y*W+z*X, w*Z+x*Y-y*X+z*W)
+####
 
 
 def multiply_numpy(a: FloatArray, b: FloatArray) -> FloatArray:
@@ -81,6 +85,7 @@ def multiply_numpy(a: FloatArray, b: FloatArray) -> FloatArray:
     W, X, Y, Z = np.moveaxis(b, -1, 0)
     return np.stack((w*W-x*X-y*Y-z*Z, w*X+x*W+y*Z-z*Y,
                      w*Y-x*Z+y*W+z*X, w*Z+x*Y-y*X+z*W), axis=-1)
+####
 
 
 def rotate_python(q: Sequence[float], v: Sequence[float]) -> tuple[float, float, float]:
@@ -88,6 +93,7 @@ def rotate_python(q: Sequence[float], v: Sequence[float]) -> tuple[float, float,
     vx, vy, vz = v
     tx, ty, tz = 2*(y*vz-z*vy), 2*(z*vx-x*vz), 2*(x*vy-y*vx)
     return (vx+w*tx+y*tz-z*ty, vy+w*ty+z*tx-x*tz, vz+w*tz+x*ty-y*tx)
+####
 
 
 def rotate_numpy(q: FloatArray, v: FloatArray) -> FloatArray:
@@ -96,29 +102,36 @@ def rotate_numpy(q: FloatArray, v: FloatArray) -> FloatArray:
     tx, ty, tz = 2*(y*vz-z*vy), 2*(z*vx-x*vz), 2*(x*vy-y*vx)
     return np.stack((vx+w*tx+y*tz-z*ty, vy+w*ty+z*tx-x*tz,
                      vz+w*tz+x*ty-y*tx), axis=-1)
+####
 
 
 def python_batch(fn: PythonOperation, a: Sequence[Sequence[float]], b: Sequence[Sequence[float]]) -> list[tuple[float, ...]]:
     return [fn(x, y) for x, y in zip(a, b)]
+####
 
 
 def python_array(fn: PythonOperation, a: FloatArray, b: FloatArray, scalar: bool) -> FloatArray:
     if scalar:
         return np.asarray(fn(a.tolist(), b.tolist()))
+    ####
     return np.asarray(python_batch(fn, a.tolist(), b.tolist()))
+####
 
 
 def scipy_multiply_array(a: npt.ArrayLike, b: npt.ArrayLike) -> FloatArray:
     return (Rotation.from_quat(a, scalar_first=True) *
             Rotation.from_quat(b, scalar_first=True)).as_quat(scalar_first=True)
+####
 
 
 def scipy_rotate_array(q: npt.ArrayLike, v: npt.ArrayLike) -> FloatArray:
     return Rotation.from_quat(q, scalar_first=True).apply(v)
+####
 
 
 def qlib_multiply_array(a: npt.ArrayLike, b: npt.ArrayLike) -> FloatArray:
     return qlib.as_float_array(qlib.as_quat_array(a) * qlib.as_quat_array(b))
+####
 
 
 def qlib_rotate_prepared(
@@ -126,23 +139,28 @@ def qlib_rotate_prepared(
 ) -> FloatArray:
     # Paired operands, not rotate_vectors' Cartesian-product batch semantics.
     return qlib.as_vector_part(q * pure_v * q.conjugate())
+####
 
 
 def qlib_rotate_array(q: npt.ArrayLike, v: npt.ArrayLike) -> FloatArray:
     # Match the contiguous (N,3) output contract of the other array paths.
     return np.ascontiguousarray(qlib_rotate_prepared(qlib.as_quat_array(q), qlib.from_vector_part(v)))
+####
 
 
 def to_xyzw(q: FloatArray) -> FloatArray:
     return np.ascontiguousarray(q[..., [1, 2, 3, 0]])
+####
 
 
 def to_wxyz(q: FloatArray) -> FloatArray:
     return np.ascontiguousarray(q[..., [3, 0, 1, 2]])
+####
 
 
 def rowan_rotate_array(q: npt.ArrayLike, v: npt.ArrayLike) -> FloatArray:
     return np.ascontiguousarray(rowan.rotate(q, v))
+####
 
 
 def pylinalg_multiply_prepared(a: FloatArray, b: FloatArray) -> FloatArray:
@@ -150,25 +168,32 @@ def pylinalg_multiply_prepared(a: FloatArray, b: FloatArray) -> FloatArray:
     # vectorization for paired batch inputs. Native order is x,y,z,w.
     if a.ndim == 1:
         return pylinalg.quat_mul(a, b)
+    ####
     return np.stack([pylinalg.quat_mul(x, y) for x, y in zip(a, b)])
+####
 
 
 def pylinalg_rotate_prepared(q: FloatArray, v: FloatArray) -> FloatArray:
     if q.ndim == 1:
         return pylinalg.vec_transform_quat(v, q)
+    ####
     return np.stack([pylinalg.vec_transform_quat(x, a) for a, x in zip(q, v)])
+####
 
 
 def pylinalg_multiply_array(a: FloatArray, b: FloatArray) -> FloatArray:
     return to_wxyz(pylinalg_multiply_prepared(to_xyzw(a), to_xyzw(b)))
+####
 
 
 def pylinalg_rotate_array(q: FloatArray, v: FloatArray) -> FloatArray:
     return np.ascontiguousarray(pylinalg_rotate_prepared(to_xyzw(q), v))
+####
 
 
 def assert_close(actual: npt.ArrayLike, expected: npt.ArrayLike) -> None:
     np.testing.assert_allclose(np.asarray(actual), np.asarray(expected), rtol=2e-13, atol=2e-13)
+####
 
 
 def test_known_cases() -> None:
@@ -183,19 +208,24 @@ def test_known_cases() -> None:
     for fn in (rowan.multiply, pylinalg_multiply_array):
         assert_close(fn(qi, qj), qk)
         assert_close(fn(qj, qi), -qk)
+    ####
     if qlib is not None:
         assert_close(qlib_multiply_array(qi, qj), qk)
         assert_close(qlib_multiply_array(qj, qi), -qk)
+    ####
     qz90 = np.array([math.sqrt(.5), 0., 0., math.sqrt(.5)])
     vx = np.array([1., 0., 0.])
     vy = np.array([0., 1., 0.])
     functions = [rotate_python, rotate_numpy, scipy_rotate_array, rowan_rotate_array, pylinalg_rotate_array]
     if qlib is not None:
         functions.append(qlib_rotate_array)
+    ####
     for fn in functions:
         assert_close(fn(qz90, vx), vy)
         assert_close(fn(-qz90, vx), vy)
         assert_close(fn(identity, vx), vx)
+    ####
+####
 
 
 
@@ -204,14 +234,18 @@ def environment() -> Environment:
     config = io.StringIO()
     with contextlib.redirect_stdout(config):
         np.show_config()
+    ####
     cpu = 'unavailable'
     try:
         for line in pathlib.Path('/proc/cpuinfo').read_text().splitlines():
             if line.startswith('model name'):
                 cpu = line.split(':', 1)[1].strip()
                 break
+            ####
+        ####
     except OSError:
         pass
+    ####
     optional: dict[str, DependencyInfo] = {}
     for module, dist in (('quaternion', 'numpy-quaternion'), ('numba', 'numba'),
                          ('rowan', 'rowan'), ('pylinalg', 'pylinalg')):
@@ -220,7 +254,9 @@ def environment() -> Environment:
             version = importlib.metadata.version(dist)
         except importlib.metadata.PackageNotFoundError:
             version = None
+        ####
         optional[dist] = DependencyInfo(import_available=found, version=version)
+    ####
     clock = time.get_clock_info('perf_counter')
     return Environment(
         python=sys.version,
@@ -238,3 +274,4 @@ def environment() -> Environment:
         timer=TimerInfo(implementation=clock.implementation, monotonic=clock.monotonic,
                         adjustable=clock.adjustable, resolution=clock.resolution),
     )
+####

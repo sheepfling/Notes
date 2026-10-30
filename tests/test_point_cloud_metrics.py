@@ -1,0 +1,56 @@
+import numpy as np
+
+from notes_tools.point_cloud_registration.metrics import (
+    chamfer_distance,
+    random_special_orthogonal_matrix,
+    rmse,
+    rmse_nearest,
+    rotation_angle_degrees,
+)
+
+
+def test_point_cloud_metrics_have_expected_scales() -> None:
+    reference = np.asarray([[0.0, 0.0], [1.0, 0.0]])
+    candidate = np.asarray([[0.0, 0.0], [2.0, 0.0]])
+
+    assert rmse(reference, candidate) == np.sqrt(0.5)
+    assert rmse_nearest(reference, candidate) == np.sqrt(0.5)
+    assert chamfer_distance(reference, candidate) == 1.0
+####
+
+
+def test_nearest_rmse_with_unequal_point_counts() -> None:
+    reference = np.asarray([[0.0, 0.0, 0.0], [2.0, 0.0, 0.0]])
+    candidate = np.asarray([[0.0, 0.0, 0.0], [1.0, 0.0, 0.0], [4.0, 0.0, 0.0]])
+
+    # Squared nearest distances are [0, 1, 4] and [0, 1], respectively.
+    expected = np.sqrt(13.0 / 12.0)
+    np.testing.assert_allclose(rmse_nearest(reference, candidate), expected)
+    np.testing.assert_allclose(rmse_nearest(candidate, reference), expected)
+    np.testing.assert_allclose(rmse_nearest(reference, candidate, symmetric=False), np.sqrt(5.0 / 3.0))
+    np.testing.assert_allclose(rmse_nearest(candidate, reference, symmetric=False), np.sqrt(0.5))
+    np.testing.assert_allclose(chamfer_distance(reference, candidate), 13.0 / 6.0)
+####
+
+
+def test_rotation_generator_and_angle() -> None:
+    rng = np.random.default_rng(7)
+    rotation = random_special_orthogonal_matrix(3, rng=rng)
+
+    assert np.allclose(rotation.T @ rotation, np.eye(3))
+    np.testing.assert_allclose(np.linalg.det(rotation), 1.0)
+    np.testing.assert_allclose(rotation_angle_degrees(rotation, rotation), 0.0, atol=1e-5)
+####
+
+
+def test_invalid_point_cloud_inputs_are_rejected() -> None:
+    with np.testing.assert_raises(ValueError):
+        rmse(np.empty((0, 3)), np.empty((0, 3)))
+    ####
+    with np.testing.assert_raises(ValueError):
+        rmse(np.ones((2, 2)), np.ones((3, 2)))
+    ####
+    with np.testing.assert_raises(ValueError):
+        rotation_angle_degrees(np.eye(2), np.eye(2))
+    ####
+####

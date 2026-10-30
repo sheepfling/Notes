@@ -1,0 +1,1 @@
+"""Small vector-geometry helpers."""

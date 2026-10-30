@@ -1,0 +1,123 @@
+"""Vectorized inert-flow and generic reaction-diffusion experiments."""
+
+from converging_flow.backend import ArrayBackend, BackendName, get_array_backend
+from converging_flow.config import SimulationConfig
+from converging_flow.coupling import NormalizedWeightedCoupling
+from converging_flow.example_runtime import (
+    ArtifactPlan,
+    capture_times,
+    configure_backend_cache,
+)
+from converging_flow.experiment import (
+    RadialProfile,
+    SimulationResult,
+    VisualizationFrame,
+    run_simulation,
+)
+from converging_flow.geometry import (
+    axial_half_mask,
+    perforated_block_masks,
+    spherical_shell_mask,
+)
+from converging_flow.material_events import (
+    LinearRamp,
+    MaterialEventSchedule,
+    MaterialPropertyRamp,
+    MaterialReplacementEvent,
+)
+from converging_flow.radiant_wave import (
+    MaterialLayout,
+    MaterialProperties,
+    RadiantWaveBudget,
+    RadiantWaveConfig,
+    RadiantWaveFrame,
+    RadiantWaveResult,
+    run_radiant_wave,
+    wave_energy_components,
+)
+from converging_flow.reaction_diffusion import (
+    ReactionDiffusionConfig,
+    ReactionFrame,
+    ReactionResult,
+    run_reaction_diffusion,
+)
+from converging_flow.reactive_euler import ReactiveEulerConfig
+from converging_flow.recipes import (
+    CouplingParameters,
+    EulerNumericsParameters,
+    EventFootprintParameters,
+    EventValidationParameters,
+    InitialStateParameters,
+    PerforatedBlockEventParameters,
+    PerforatedBlockParameters,
+    PhaseThermalParameters,
+    PresentationParameters,
+    RadiantMaterialParameters,
+    RadiantMaterialSet,
+    RadiantSourceParameters,
+    ShellRelaxationParameters,
+    asymmetric_shell_config,
+    open_shell_relaxation_config,
+    perforated_block_event_parameters_from_file,
+    perforated_block_parameters_from_json,
+    perforated_block_regulation_config,
+    phase_impulse_config,
+    reactive_pressure_config,
+    shell_relaxation_parameters_from_json,
+)
+
+__all__ = [
+    "ArrayBackend",
+    "ArtifactPlan",
+    "BackendName",
+    "CouplingParameters",
+    "EulerNumericsParameters",
+    "EventFootprintParameters",
+    "EventValidationParameters",
+    "InitialStateParameters",
+    "LinearRamp",
+    "MaterialEventSchedule",
+    "MaterialLayout",
+    "MaterialProperties",
+    "MaterialPropertyRamp",
+    "MaterialReplacementEvent",
+    "NormalizedWeightedCoupling",
+    "PerforatedBlockEventParameters",
+    "PerforatedBlockParameters",
+    "PhaseThermalParameters",
+    "PresentationParameters",
+    "RadialProfile",
+    "RadiantMaterialParameters",
+    "RadiantMaterialSet",
+    "RadiantSourceParameters",
+    "RadiantWaveBudget",
+    "RadiantWaveConfig",
+    "RadiantWaveFrame",
+    "RadiantWaveResult",
+    "ReactionDiffusionConfig",
+    "ReactionFrame",
+    "ReactionResult",
+    "ReactiveEulerConfig",
+    "ShellRelaxationParameters",
+    "SimulationConfig",
+    "SimulationResult",
+    "VisualizationFrame",
+    "asymmetric_shell_config",
+    "axial_half_mask",
+    "capture_times",
+    "configure_backend_cache",
+    "get_array_backend",
+    "open_shell_relaxation_config",
+    "perforated_block_event_parameters_from_file",
+    "perforated_block_masks",
+    "perforated_block_parameters_from_json",
+    "perforated_block_regulation_config",
+    "phase_impulse_config",
+    "reactive_pressure_config",
+    "run_radiant_wave",
+    "run_reaction_diffusion",
+    "run_simulation",
+    "shell_relaxation_parameters_from_json",
+    "spherical_shell_mask",
+    "wave_energy_components",
+]

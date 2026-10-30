@@ -21,6 +21,7 @@ share/python-wheels/
 .installed.cfg
 *.egg
 .venv/
+.uv-cache/
 venv/
 env/
 ENV/
@@ -28,6 +29,7 @@ ENV/
 .env.*
 !.env.example
 .pytest_cache/
+.tmp/
 .mypy_cache/
 .ruff_cache/
 .tox/
@@ -130,6 +132,9 @@ $RECYCLE.BIN/
 
 # Generated artifacts at any depth
 artifacts/
+
+# Temporary ingestion scratchpad; durable material belongs under notes/
+inbox/
 
 # Default quaternion experiment outputs
 /notes/quaternions/benchmark/results.json

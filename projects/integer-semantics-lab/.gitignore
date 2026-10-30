@@ -1,0 +1,10 @@
+/build/
+/build-*/
+*.exe
+*.obj
+*.o
+*.pdb
+*.ilk
+*.dSYM/
+__pycache__/
+*.py[cod]
