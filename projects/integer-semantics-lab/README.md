@@ -141,6 +141,12 @@ odin run projects/integer-semantics-lab/odin -- --format=jsonl --catalog=all  > 
 
 ## Run both and compare
 
+The maintained Python modules are `notes_tools.integer_semantics.run_lab` and
+`notes_tools.integer_semantics.compare_reports`; the scripts below preserve
+their historical entry points. The build orchestrator requires this checkout
+and its C++ and Odin source files. The report comparator can also run from the
+installed package on supplied reports.
+
 ```
 python projects/integer-semantics-lab/scripts/run_lab.py
 ```
@@ -149,7 +155,7 @@ From the repository root, run the project-owned Python orchestration and
 report tests with:
 
 ```shell
-python -m pytest projects/integer-semantics-lab/tests
+python -m pytest tests/test_integer_semantics.py
 ```
 
 These tests use temporary paths and mock compiler invocations; they do not

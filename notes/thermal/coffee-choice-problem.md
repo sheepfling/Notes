@@ -91,8 +91,9 @@ cooling rate—while the simulation keeps both effects in view.
 
 ## Reproduce it
 
-The [small Python proof](coffee_choice.py) uses the original simulation's
-cooling and mixing equations and defaults. It was adapted from the local
+The [small Python proof](coffee_choice.py) forwards to the maintained
+`src/notes_tools/articles/coffee_choice.py` implementation, which uses the
+original simulation's cooling and mixing equations and defaults. It was adapted from the local
 `thermal-problems` repository at commit
 `d1927b95c5a69b947496c9d55b1a63a94da2bb19`; that repository has no configured
 remote. The proof needs Python 3.10 or later and only the standard library;
@@ -103,11 +104,11 @@ virtual environment and run:
 python3 -m venv .venv
 .venv/bin/python -m pip install pytest
 .venv/bin/python -m notes.thermal.coffee_choice
-.venv/bin/python -m pytest notes/thermal/tests -v
+.venv/bin/python -m pytest tests/thermal -v
 ```
 
-The earlier `python -m pytest tests/thermal -v` command remains available as a
-compatibility entrypoint to the same co-located tests. The proof prints both
+The earlier `python -m pytest notes/thermal/tests -v` command remains available
+as a compatibility entrypoint to the same tests. The proof prints both
 the default and 70 °C creamer comparisons; it does not write output files.
 The important thing
 to preserve when adapting the model is the distinction between cooling before

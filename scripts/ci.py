@@ -11,7 +11,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 PYTHON_PATHS = ("src", "scripts", "tests")
-ARTICLE_TEST_PATHS = (
+LEGACY_TEST_PATHS = (
     "notes/thermal/tests",
     "projects/scripts/altchar/tests",
     "projects/scripts/base64/tests",
@@ -29,13 +29,15 @@ ARTICLE_TEST_PATHS = (
 )
 RUFF_PATHS = (
     *PYTHON_PATHS,
-    *ARTICLE_TEST_PATHS,
+    "conftest.py",
+    *LEGACY_TEST_PATHS,
     "notes/thermal",
     "notes/quaternions/benchmark",
     "projects/scripts/toy-ciphers",
 )
 SCOPE_MARKER_PATHS = (
     *PYTHON_PATHS,
+    "conftest.py",
     "notes/thermal",
     "notes/quaternions/benchmark",
     "projects/converging-flow/examples",

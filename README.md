@@ -57,13 +57,23 @@ that depends on an older tool or event, `superseded` when another note replaces 
 
 ## Tests for notes and experiments
 
-For a self-contained article, keep its Markdown, article-specific Python and tests
-together in a subject folder. Place tests for shared packages or behavior spanning
-articles under `tests/<topic>/`. Use pytest for Python tests, make supporting code
-importable where needed, and add package markers when useful. Document dependencies
-and repository-root commands to reproduce the experiment and run its tests. Add
-co-located test directories to pytest discovery. Keep generated outputs in ignored
-`artifacts/` or a temporary test directory, not beside the source.
+Keep article Markdown in its subject folder, maintained Python implementation in
+the shared `src/` tree, and canonical Python tests under `tests/`. Group related
+code and tests by subject or project. Use pytest, make supporting code importable,
+and add package markers when useful. Preserve documented script and import entry
+points when moving implementations, without discovering compatibility tests a
+second time. Document dependencies and repository-root commands to reproduce the
+experiment and run its tests. Keep generated outputs in ignored `artifacts/` or
+a temporary test directory, not beside the source.
+
+The quaternion benchmark retains its separately pinned source, tests, and
+reproduction environment; changing that record requires revalidation.
+
+Code intended to run from an installed wheel should locate any packaged data
+through the installed package and declare it in the root package configuration.
+Keep examples and historical records in their project directories. If a tool
+requires those checkout files, document that boundary instead of assuming an
+editable checkout path exists in every installation.
 
 Each executable article or collection documents its dependencies and commands
 to run and test it from the repository root. The notes also identify generated
@@ -96,6 +106,13 @@ been tagged yet, so also browse categories or search their contents.
 ## Validation
 
 The repository is primarily Markdown, but source collections can have optional automated checks. Python tooling is declared in `pyproject.toml`; it is not required to read or edit notes.
+
+The root `pyproject.toml` is the common package and dependency definition.
+Select a project extra for its runtime dependencies and `testing` for focused
+pytest checks; the [project index](projects/README.md#find-the-tests-and-outputs)
+lists the available choices. The quaternion benchmark retains its separate
+pinned reproduction environment, and GPU or platform-specific tools remain
+optional. A bare install does not install every project's dependencies.
 
 Set up a development virtual environment with pip:
 
@@ -180,7 +197,13 @@ python -m pytest --cov --cov-report=term-missing
 The configured report threshold is an initial 45 percent floor. Batch files are covered by their
 behavioral tests; Python coverage tools do not measure `.bat` source lines.
 
-Add future Python test directories to `testpaths` and keep generated environments and caches out of version control. Generated Python outputs belong under the ignored `artifacts/` directory, not beside the notes or source.
+Put future Python tests under `tests/` for default discovery, and keep generated
+environments and caches out of version control. Generated Python outputs belong
+under the ignored `artifacts/` directory, not beside the notes or source.
+Historical test paths remain available when explicitly selected. Run a legacy
+path and its matching canonical path in separate pytest invocations: selecting
+both together can cause a duplicate-module import error with pytest's default
+import mode.
 
 ## Source hygiene
 
@@ -194,4 +217,8 @@ at runtime rather than recording those values in the repository.
 
 ## Collections
 
-Collections can contain a README, scripts, source files, tests, and supporting notes. The directory itself is the durable record; use `NOTES.md` for provenance, caveats, and validation history.
+Collections can contain a README, examples, compatibility entry points, and supporting
+notes. Maintained Python implementations and canonical tests normally live in the shared
+`src/` and `tests/` trees; the separately pinned quaternion benchmark is an exception.
+Preserve coherent boundaries for substantial standalone projects and non-Python source;
+use `NOTES.md` for provenance, caveats, and validation history.

@@ -1,4 +1,4 @@
-"""Check that article tests and maintained examples participate in CI."""
+"""Check that shared tests, legacy entry points and examples participate in CI."""
 
 import tomllib
 from pathlib import Path
@@ -6,7 +6,7 @@ from pathlib import Path
 from scripts.ci import ci_commands
 
 ROOT = Path(__file__).resolve().parents[1]
-ARTICLE_TEST_PATHS = {
+LEGACY_TEST_PATHS = {
     "notes/thermal/tests",
     "projects/scripts/altchar/tests",
     "projects/scripts/base64/tests",
@@ -23,17 +23,19 @@ ARTICLE_TEST_PATHS = {
     "projects/converging-flow/examples/backend_agnostic/tests",
 }
 SCOPE_PATHS = {
-    "src", "scripts", "tests", "notes/thermal", "notes/quaternions/benchmark", "projects/converging-flow/examples",
+    "src", "scripts", "tests", "conftest.py", "notes/thermal", "notes/quaternions/benchmark", "projects/converging-flow/examples",
     "projects/scripts", "projects/jorth", "projects/integer-semantics-lab", "projects/shaders/tests",
 }
 
 
-def test_article_tests_are_discovered_and_linted() -> None:
+def test_shared_tests_are_discovered_and_legacy_entry_points_are_linted() -> None:
     config = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
-    assert ARTICLE_TEST_PATHS <= set(config["tool"]["pytest"]["ini_options"]["testpaths"])
+    assert config["tool"]["pytest"]["ini_options"]["testpaths"] == ["tests"]
+    assert (ROOT / "tests/scripts/test_altchar.py").is_file()
+    assert (ROOT / "tests/converging_flow/test_gallery_paths.py").is_file()
     commands = ci_commands("python")
     ruff = next(command for command in commands if command[:4] == ("python", "-m", "ruff", "check"))
-    assert ARTICLE_TEST_PATHS <= set(ruff)
+    assert LEGACY_TEST_PATHS <= set(ruff)
     assert {"notes/thermal", "notes/quaternions/benchmark", "projects/scripts/toy-ciphers"} <= set(ruff)
 ####
 
@@ -46,6 +48,6 @@ def test_check_and_fix_commands_cover_the_same_scope() -> None:
     assert SCOPE_PATHS <= set(check)
     assert set(check[3:]) == set(fix[4:])
     ruff_fix = next(command for command in fix_commands if command[:5] == ("python", "-m", "ruff", "check", "--fix"))
-    assert ARTICLE_TEST_PATHS <= set(ruff_fix)
+    assert LEGACY_TEST_PATHS <= set(ruff_fix)
     assert ("python", "-m", "compileall", "-q", "src", "scripts", "tests") in check_commands
 ####

@@ -99,10 +99,10 @@ python projects/converging-flow/examples/backend_agnostic/reactive_pressure_demo
 python projects/converging-flow/examples/backend_agnostic/impulsive_phase_transition_demo.py --backend numpy --output artifacts/converging-flow/impulsive-phase-transition
 ```
 
-Run the co-located CLI and artifact-routing checks from the repository root:
+Run the CLI and artifact-routing checks from the repository root:
 
 ```shell
-python -m pytest projects/converging-flow/examples/backend_agnostic/tests
+python -m pytest tests/converging_flow/test_backend_runners.py
 ```
 
 These short checks exercise command routing without running the simulations.

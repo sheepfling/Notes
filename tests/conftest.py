@@ -4,6 +4,9 @@ from tempfile import TemporaryDirectory
 
 import pytest
 
+# Direct invocation remains available; ordinary discovery uses tests/scripts.
+collect_ignore = ["test_script_collection.py"]
+
 
 @pytest.fixture
 def tmp_dir() -> Iterator[Path]:

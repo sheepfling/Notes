@@ -14,7 +14,7 @@ From the repository root, inspect a file or run its focused tests:
 
 ```shell
 python projects/scripts/readlines/readlines.py input.txt
-python -m pytest projects/scripts/readlines/tests
+python -m pytest tests/scripts/test_readlines.py
 ```
 
 The helper writes its representation to standard output and creates no output files. The test

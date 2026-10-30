@@ -1,12 +1,8 @@
-"""Tests for the retained point-scatterer shader."""
+"""Compatibility entry point for the shared test suite."""
 
+import runpy
 from pathlib import Path
 
-
-def test_point_scatterer_shader_initializes_complex_accumulator() -> None:
-    shader = (Path(__file__).resolve().parents[1] / "point-scatterer-rcs-shader.glsl").read_text(
-        encoding="utf-8"
-    )
-    assert "vec2 total = vec2(0.0);" in shader
-    assert shader.count("{") == shader.count("}")
-####
+_root = next(path for path in Path(__file__).resolve().parents if (path / "pyproject.toml").is_file())
+_tests = runpy.run_path(str(_root / "tests/test_shader_collection.py"))
+globals().update({name: value for name, value in _tests.items() if name.startswith("test_")})

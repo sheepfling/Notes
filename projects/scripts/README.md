@@ -22,8 +22,18 @@ and safety boundary.
 The Windows batch files live beside the Python or archive workflow they support. This makes the
 fallback path discoverable without presenting all batch files as one unrelated toolkit.
 
+Maintained Python article implementations are in `src/notes_tools/articles/`.
+The documented historical Python script paths remain compatibility entry points
+and locate the shared source when run from this checkout. To use an installed
+module such as `python -m notes_tools.articles.altchar`, install the root project
+first; the `scripts` extra supplies pytest for the focused tests:
+
+```shell
+python -m pip install -e ".[scripts]"
+```
+
 Run the focused tests from the repository root:
 
 ```
-python -m pytest tests/test_script_collection.py tests/test_batch_collection.py projects/scripts/altchar/tests
+python -m pytest tests/scripts tests/test_batch_collection.py
 ```

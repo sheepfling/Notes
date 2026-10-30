@@ -48,10 +48,10 @@ it needs an explicit adapter before the gallery will render it.
 Run the collection's focused test from the repository root:
 
 ```shell
-python -m pytest projects/shaders/tests
+python -m pytest tests/test_shader_collection.py
 ```
 
-The historical `python -m pytest tests/test_shader_collection.py` entrypoint remains available.
+The historical `python -m pytest projects/shaders/tests` entry point remains available.
 
 ## Omitted source material
 

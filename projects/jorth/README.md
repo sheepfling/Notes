@@ -8,6 +8,12 @@ Jorth is a tiny, dependency-free Forth-like interpreter implemented in both
 JavaScript and Python. Both implementations intentionally share the same
 language and error behavior.
 
+The maintained Python modules are `notes_tools.jorth.interpreter` and
+`notes_tools.jorth.validation`; the scripts here preserve the documented
+commands. The interpreter can run from an installed package with an input
+file, while cross-language validation needs this checkout and its JavaScript
+implementation and examples.
+
 ## Run
 
 From this project directory:
@@ -35,7 +41,7 @@ checks their output and exit status.
 From the repository root, run the project-owned Python tests with:
 
 ```shell
-python -m pytest projects/jorth/tests
+python -m pytest tests/test_jorth.py
 ```
 
 The tests use temporary directories for any generated programs. The standalone

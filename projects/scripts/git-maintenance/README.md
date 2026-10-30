@@ -31,7 +31,7 @@ their outcomes in the log. A successful update or dry run exits zero.
 Run the focused tests from the repository root:
 
 ```shell
-python -m pytest projects/scripts/git-maintenance/tests
+python -m pytest tests/scripts/test_git_maintenance.py
 ```
 
 These tests create temporary directory fixtures and inspect generated commands; they do not run
