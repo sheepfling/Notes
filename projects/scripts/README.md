@@ -25,5 +25,5 @@ fallback path discoverable without presenting all batch files as one unrelated t
 Run the focused tests from the repository root:
 
 ```
-python -m pytest tests/test_script_collection.py tests/test_batch_collection.py
+python -m pytest tests/test_script_collection.py tests/test_batch_collection.py projects/scripts/altchar/tests
 ```

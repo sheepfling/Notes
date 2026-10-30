@@ -10,7 +10,6 @@ import pytest
 REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
 SCRIPT_ROOT = REPOSITORY_ROOT / "projects" / "scripts"
 SCRIPT_PATHS = {
-    "altchar.py": Path("altchar") / "altchar.py",
     "base64_cli.py": Path("base64") / "base64_cli.py",
     "find_and_pull_all_git.py": Path("git-maintenance") / "find_and_pull_all_git.py",
     "otp.py": Path("toy-ciphers") / "otp.py",
@@ -38,34 +37,6 @@ def load_script_module(name: str, filename: str):
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
-####
-
-
-def test_altchar_round_trip_for_single_line(tmp_dir: Path) -> None:
-    source = tmp_dir / "source.txt"
-    inserted = tmp_dir / "inserted.txt"
-    restored = tmp_dir / "restored.txt"
-    source.write_text("abcd", encoding="utf-8")
-
-    insert = run_script("altchar.py", "insert", str(source), "--char", "A", "--output", str(inserted))
-    remove = run_script("altchar.py", "remove", str(inserted), "--char", "A", "--output", str(restored))
-
-    assert insert.returncode == 0, insert.stderr
-    assert remove.returncode == 0, remove.stderr
-    assert inserted.read_text(encoding="utf-8") == "aAbAcAdA"
-    assert restored.read_text(encoding="utf-8") == source.read_text(encoding="utf-8")
-####
-
-
-def test_altchar_round_trip_for_multiline_input(tmp_dir: Path) -> None:
-    source = tmp_dir / "source.txt"
-    inserted = tmp_dir / "inserted.txt"
-    restored = tmp_dir / "restored.txt"
-    source.write_text("ab\ncd\n", encoding="utf-8")
-
-    assert run_script("altchar.py", "insert", str(source), "--char", "A", "--output", str(inserted)).returncode == 0
-    assert run_script("altchar.py", "remove", str(inserted), "--char", "A", "--output", str(restored)).returncode == 0
-    assert restored.read_text(encoding="utf-8") == source.read_text(encoding="utf-8")
 ####
 
 

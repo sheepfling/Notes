@@ -12,25 +12,33 @@ The implementation preserves newline characters, streams input line by line, and
 
 ## Usage
 
-Run the self-check:
+Commands below run from the repository root. Create an input text file, then
+run the self-check without writing output:
 
-```
-Set-Content -LiteralPath one-line.txt -Value 'abcd' -NoNewline
-python altchar.py test one-line.txt --char A
+```shell
+python projects/scripts/altchar/altchar.py test input.txt --char A
 ```
 
 The self-check now handles multi-line input: insertion skips newline characters and removal skips marker characters only after ordinary characters. Removal also checks that the expected marker is actually present instead of blindly discarding bytes.
 
-Insert a marker, writing the default `.a` output:
+Create an ignored artifact directory, then insert and remove the marker using
+distinct explicit output paths:
 
+```shell
+python -c "from pathlib import Path; Path('artifacts/altchar').mkdir(parents=True, exist_ok=True)"
+python projects/scripts/altchar/altchar.py insert input.txt --char A --output artifacts/altchar/inserted.txt
+python projects/scripts/altchar/altchar.py remove artifacts/altchar/inserted.txt --char A --output artifacts/altchar/restored.txt
 ```
-python altchar.py insert input.txt --char A
-```
 
-Remove it, writing the default `.rem` output:
+Both explicit and default output paths overwrite existing files. The output
+path **must differ from the input path**: the output is opened before input is
+read, so using the same path destroys the input. Without `--output`, insertion
+uses the input name plus `.a` and removal uses the input name plus `.rem`.
 
-```powershell
-python altchar.py remove input.txt.a --char A
+Run the co-located tests from the repository root:
+
+```shell
+python -m pytest projects/scripts/altchar/tests
 ```
 
 The transform is reversible only when the same marker string is used and the original text does not contain ambiguous marker sequences. It is text-only and is not compression, encryption, or a general binary-safe encoding.
