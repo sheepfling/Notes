@@ -27,6 +27,13 @@ and clear dependencies over duplicated or report-generating scripts. Include
 additional artifacts when the user explicitly requests them or they are necessary
 for the task.
 
+## Tests for notes and experiments
+
+Place tests for notes and their supporting code under `tests/<topic>/`,
+separate from note content and implementation. Use pytest for Python tests;
+make supporting code importable as a module, and document dependencies and
+repository-root commands to reproduce the experiment and run its tests.
+
 ## Living cross-project guidance
 
 This section is a public reference for work across projects, not an instruction
@@ -107,9 +114,8 @@ not claims that Rick explicitly requested a global rule.
 
 ### Project-specific decisions
 
-- **Notes:** Preserve the experiment guidance above. For Notes blog tests, use
-  pytest and a `tests/` directory, with package markers where needed, as requested
-  in [the review](https://github.com/sheepfling/Notes/pull/1#discussion_r4419902800)
+- **Notes:** Follow the experiment and test guidance above. Use package markers
+  where needed; see the [test review](https://github.com/sheepfling/Notes/pull/1#discussion_r4419902800)
   and its [package-marker follow-up](https://github.com/sheepfling/Notes/pull/1#discussion_r4419904929).
   Favor discoverable navigation and searchable tags when organizing a growing
   collection; see [navigation](https://github.com/sheepfling/Notes/pull/1#discussion_r4418947349)
