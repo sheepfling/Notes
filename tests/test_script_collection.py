@@ -1,22 +1,20 @@
-"""Compatibility entrypoint for the article-owned script tests.
+"""Compatibility entrypoint for the historical script-collection command.
 
-The tests live beside their notes. This module preserves the historical
-``python -m pytest tests/test_script_collection.py`` command while the
-co-located test directories are also collected by the aggregate suite.
+Canonical tests are collected individually from ``tests/scripts``.
 """
 
 import importlib.util
 from pathlib import Path
 
-SCRIPT_ROOT = Path(__file__).resolve().parents[1] / "projects" / "scripts"
+SCRIPT_ROOT = Path(__file__).resolve().parent / "scripts"
 ARTICLE_TESTS = (
-    "altchar/tests/test_altchar.py",
-    "base64/tests/test_base64_article.py",
-    "git-maintenance/tests/test_git_maintenance.py",
-    "power-diagnostics/tests/test_power_diagnostics.py",
-    "readlines/tests/test_readlines.py",
-    "textball/tests/test_textball_article.py",
-    "toy-ciphers/tests/test_toy_ciphers_article.py",
+    "test_altchar.py",
+    "test_base64_article.py",
+    "test_git_maintenance.py",
+    "test_power_diagnostics.py",
+    "test_readlines.py",
+    "test_textball_article.py",
+    "test_toy_ciphers_article.py",
 )
 
 

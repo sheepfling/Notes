@@ -4,6 +4,18 @@ This simulation is integrated into the Notes repository. Its maintained package 
 `src/converging_flow`, its tests live under `tests/converging_flow`, and generated runs belong in
 the ignored `artifacts/converging-flow/` directory.
 
+The gallery and backend-demo implementations live under
+`src/converging_flow/examples/`; the historical script paths in this collection
+remain supported entry points. Shared and example tests are both collected
+under `tests/converging_flow/`. After installing the root project with the
+`converging-flow` extra, modules can also be invoked with
+`python -m converging_flow.examples.<module>`. The sample parameter JSON files
+remain in this checkout; when using an installed wheel elsewhere, supply an
+accessible parameter file explicitly when a command needs one. Without a
+checkout, the gallery uses `.tmp/cupy-cache` under the current working
+directory for its default cache; output paths also remain relative to that
+directory unless specified explicitly.
+
 A coherent, vectorized set of **inert compressible-flow** experiments in 1D, 2D, and 3D.
 All three cases use the same conservative Euler equations, ideal-gas EOS, smooth inward
 velocity shell, Rusanov finite-volume flux, CFL controller, reflected boundaries,
@@ -154,7 +166,7 @@ Test the individual backend runners and comparison CLI paths without running
 the simulations:
 
 ```shell
-python -m pytest projects/converging-flow/examples/backend_agnostic/tests projects/converging-flow/examples/physics_diagnostics/tests
+python -m pytest tests/converging_flow/test_backend_runners.py tests/converging_flow/test_gallery_paths.py
 ```
 
 The reactive demo and pressure comparison now default to the ignored

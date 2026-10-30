@@ -19,7 +19,7 @@ import runpy
 import sys
 from pathlib import Path
 
-namespace = runpy.run_path(sys.argv[1], run_name="gallery_smoke")
+namespace = runpy.run_module("converging_flow.examples.run_gallery", run_name="gallery_smoke")
 main = namespace["main"]
 configure_cache = main.__globals__["configure_backend_cache"]
 main.__globals__["configure_backend_cache"] = lambda _root: configure_cache(Path(sys.argv[2]))
@@ -93,4 +93,19 @@ def test_gallery_generates_and_connects_artifacts(tmp_path: Path) -> None:
         assert image.width > 0 and image.height > 0
         image.verify()
     ####
+####
+
+
+def test_legacy_gallery_entrypoint_accepts_help_from_another_directory(tmp_path: Path) -> None:
+    result = subprocess.run(
+        [sys.executable, str(GALLERY), "--help"],
+        cwd=tmp_path,
+        capture_output=True,
+        text=True,
+        check=False,
+        timeout=20,
+    )
+    assert result.returncode == 0, result.stderr
+    assert "--output" in result.stdout
+    assert list(tmp_path.iterdir()) == []
 ####

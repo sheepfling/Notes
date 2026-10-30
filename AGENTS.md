@@ -29,14 +29,19 @@ for the task.
 
 ## Tests for notes and experiments
 
-For a self-contained article, keep its Markdown, article-specific Python and
-tests together in a subject folder. Place tests of shared packages or behavior
-spanning articles under `tests/<topic>/`. Use pytest for Python tests; make
-supporting code importable where needed, adding package markers when useful.
-Document dependencies and repository-root commands to reproduce the experiment
-and run its tests. Add co-located test directories to pytest discovery. Keep
+Keep Markdown in its subject folder, maintained Python implementation under the
+root `src/` tree, and canonical Python tests under `tests/`. Group related code
+and tests by subject or project, make the code importable, and add package
+markers when useful. Use pytest for Python tests. Preserve existing documented
+script and import entry points when moving implementations, and do not discover
+the same test twice through compatibility wrappers. Document dependencies and
+repository-root commands to reproduce the experiment and run its tests. Keep
 generated artifacts under the ignored `artifacts/` directory or a temporary
 test directory, not beside source files.
+
+The quaternion benchmark is a separately pinned reproduction: keep its source,
+tests, and recorded dependencies together unless its reproduction is deliberately
+updated and revalidated.
 
 For each executable article or collection, document its dependencies and
 repository-root run and test commands next to its note. Specify output paths

@@ -80,7 +80,7 @@ restored form only when its recorded size and checksum both match.
 Run the Python article tests from the repository root:
 
 ```shell
-python -m pytest projects/scripts/textball/tests
+python -m pytest tests/scripts/test_textball_article.py tests/scripts/test_textball_creation_safety.py
 ```
 
 They use temporary directories for packages and extracted files. The Windows

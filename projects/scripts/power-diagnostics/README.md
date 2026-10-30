@@ -70,7 +70,7 @@ logs. Administrator rights may be required for every event detail.
 Run the focused Python command-builder test from the repository root:
 
 ```shell
-python -m pytest projects/scripts/power-diagnostics/tests
+python -m pytest tests/scripts/test_power_diagnostics.py
 ```
 
 The test inspects arguments only; it does not run PowerShell or collect host

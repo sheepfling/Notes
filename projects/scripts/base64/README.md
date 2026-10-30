@@ -29,11 +29,11 @@ aliases, including existing symbolic and hard links, but overwrites a distinct
 existing destination. Decoding accepts whitespace-wrapped Base64 and rejects
 other invalid data before opening the destination.
 
-The runner uses the Python standard library. Run its co-located tests from the
+The runner uses the Python standard library. Run its focused tests from the
 repository root with pytest:
 
 ```shell
-python -m pytest projects/scripts/base64/tests
+python -m pytest tests/scripts/test_base64_article.py
 ```
 
 Tests use temporary paths for their generated files and preserve the source.

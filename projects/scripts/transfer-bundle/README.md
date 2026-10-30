@@ -68,7 +68,7 @@ merges less likely. Review archives from untrusted sources before extraction.
 From the repository root, run the transfer-bundle regression tests with:
 
 ```shell
-python -m pytest projects/scripts/transfer-bundle/tests
+python -m pytest tests/scripts/test_transfer_bundle.py
 ```
 
 The tests use temporary paths and require Windows command tooling; they are skipped on other

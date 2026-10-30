@@ -62,11 +62,11 @@ structure. The implementation also works on text only and does not authenticate 
 - Replaced permissive `parse_known_args` behavior with explicit command-line arguments.
 - Kept the old line-display helper as a separate [readlines project](../readlines/README.md).
 
-The runners use the Python standard library. Run the co-located pytest tests from the
+The runners use the Python standard library. Run the focused pytest tests from the
 repository root:
 
 ```shell
-python -m pytest projects/scripts/toy-ciphers/tests
+python -m pytest tests/scripts/test_toy_ciphers_article.py
 ```
 
 The tests cover printable and Unicode text, newlines, invalid keys and empty passphrases;

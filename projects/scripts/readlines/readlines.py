@@ -1,31 +1,11 @@
-"""Print a text file with zero-based line numbers and Python representations."""
+"""Compatibility entry point for the shared readlines implementation."""
 
-from __future__ import annotations
+from pathlib import Path as _CompatibilityPath
 
-import argparse
-from pathlib import Path
-
-
-def represented_lines(path: Path) -> list[str]:
-    """Return numbered ``repr`` strings, retaining newline characters visibly."""
-
-    with path.open("r", encoding="utf-8", newline="") as stream:
-        return [f"{index}: {line!r}" for index, line in enumerate(stream)]
-    ####
-####
-
-
-def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("input", type=Path)
-    args = parser.parse_args()
-    if not args.input.is_file():
-        parser.error(f"input file does not exist: {args.input}")
-    ####
-    print("\n".join(represented_lines(args.input)))
-####
-
-
-if __name__ == "__main__":
-    main()
-####
+# Run the trusted source from this checkout in the legacy module namespace.
+# This preserves __file__, imports, runpy, and callers patching module globals.
+_compatibility_source = (
+    _CompatibilityPath(__file__).resolve().parents[3]
+    / "src" / "notes_tools" / "articles" / "readlines.py"
+)
+exec(compile(_compatibility_source.read_bytes(), str(_compatibility_source), "exec"), globals())  # noqa: S102

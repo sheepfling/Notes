@@ -36,10 +36,10 @@ input file, including resolved path, symbolic-link, and hard-link aliases,
 before opening it for writing. Without `--output`, insertion uses the input
 name plus `.a` and removal uses the input name plus `.rem`.
 
-Run the co-located tests from the repository root:
+Run the focused tests from the repository root:
 
 ```shell
-python -m pytest projects/scripts/altchar/tests
+python -m pytest tests/scripts/test_altchar.py
 ```
 
 The transform is reversible only when the same marker string is used and the original text does not contain ambiguous marker sequences. It is text-only and is not compression, encryption, or a general binary-safe encoding.

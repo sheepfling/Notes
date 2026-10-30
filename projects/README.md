@@ -37,23 +37,25 @@ each project note documents outputs and platform limits.
 
 | Collection | Focused tests | Outputs and limits |
 | --- | --- | --- |
-| Converging Flow | `python -m pytest tests/converging_flow projects/converging-flow/examples/backend_agnostic/tests projects/converging-flow/examples/physics_diagnostics/tests` | Default outputs under `artifacts/converging-flow/`; GPU tests need CuPy and a device. |
-| Integer semantics lab | `python -m pytest projects/integer-semantics-lab/tests` | Python orchestration tests mock compiler runs; actual Odin and C++ execution needs their toolchains. |
-| Jorth | `python -m pytest projects/jorth/tests` | Interpreter and cross-language validation; JavaScript checks need Node.js. |
+| Converging Flow | `python -m pytest tests/converging_flow` | Default outputs under `artifacts/converging-flow/`; GPU tests need CuPy and a device. |
+| Integer semantics lab | `python -m pytest tests/test_integer_semantics.py` | Python orchestration tests mock compiler runs; actual Odin and C++ execution needs their toolchains. |
+| Jorth | `python -m pytest tests/test_jorth.py` | Interpreter and cross-language validation; JavaScript checks need Node.js. |
 | Mesh tools | `python -m pytest tests/test_mesh_tools.py` | Example mesh and images under `artifacts/`; headless rendering is supported. |
 | Point-cloud metrics | `python -m pytest tests/test_point_cloud_metrics.py` | Reusable library; no generated files required. |
 | Vector geometry | `python -m pytest tests/test_vector_geometry.py` | Reusable library; no generated files required. |
-| Script collection | `python -m pytest projects/scripts tests/test_batch_collection.py` | Each note describes its outputs; Windows batch tests require Windows tools. |
-| Shader experiments | `python -m pytest projects/shaders/tests tests/test_shader_gallery.py` | Local browser preview; no committed generated output. |
+| Script collection | `python -m pytest tests/scripts tests/test_batch_collection.py` | Each note describes its outputs; Windows batch tests require Windows tools. |
+| Shader experiments | `python -m pytest tests/test_shader_collection.py tests/test_shader_gallery.py` | Local browser preview; no committed generated output. |
 | GitLab Docker on macOS | See its [historical guide](gitlab-docker-macos/README.md) | Service setup is manual and is not run by the repository test suite. |
 
 The executable notes have focused commands too: [coffee](../notes/thermal/coffee-choice-problem.md)
-uses `python -m pytest notes/thermal/tests`, while the [quaternion benchmark](../notes/quaternions/quaternion-performance.md)
+uses `python -m pytest tests/thermal`, while the [quaternion benchmark](../notes/quaternions/quaternion-performance.md)
 uses a separate environment with the recorded dependency versions. Run the complete configured
 repository gate with `python -m scripts.ci`. Discovery never starts the historical GitLab service
 or the Git maintenance updater.
 
 ## Python packages
 
-Maintained reusable Python code is installed from `src/notes_tools`. Project directories contain the
-collection-specific source, examples, and historical context rather than acting as import packages.
+Maintained Python code is installed from the shared `src/` tree. Project directories contain
+examples, compatibility entry points, non-Python source, and historical context. Canonical
+Python tests live under `tests/`; supported historical test paths remain available explicitly,
+but the default test run collects each test once.
