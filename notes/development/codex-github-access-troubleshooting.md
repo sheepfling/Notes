@@ -53,7 +53,17 @@ permissions or universal fixes.
 
 ## Similar public reports
 
-A [Codex discussion](https://github.com/openai/codex/discussions/42402) describes a background worker reporting an invalid `gh` token while its shell could authenticate; the author attributed that particular worker's failure to unavailable DNS in its sandbox. A separate [issue report](https://github.com/openai/codex/issues/50119) describes a delegated executor reportedly not accepting authorization given in the main conversation. The latter is based on the reporter's evidence rather than independently retrieved approval-service logs. These are individual reports, not proof of the same cause in another task or of how often either problem occurs. Neither establishes that broadening network access or repeating approvals is a universal fix.
+A [Codex discussion](https://github.com/openai/codex/discussions/42402) describes
+a background worker reporting an invalid `gh` token while its shell could
+authenticate; the author attributed that particular worker's failure to
+unavailable DNS in its sandbox. A separate
+[issue report](https://github.com/openai/codex/issues/50119) describes a
+delegated executor reportedly not accepting authorization given in the main
+conversation. The latter is based on the reporter's evidence rather than
+independently retrieved approval-service logs. These are individual reports,
+not proof of the same cause in another task or of how often either problem
+occurs. Neither establishes that broadening network access or repeating approvals
+is a universal fix.
 
 ## Separate the routes
 
@@ -68,7 +78,10 @@ A [Codex discussion](https://github.com/openai/codex/discussions/42402) describe
 | Hooks, branch rules and CI | Local or remote checks on a particular change. | A diagnosis of credential failure. |
 
 Git can use `gh` as a credential helper when deliberately configured, so these
-routes can be coupled. Do not assume they are. See [Git credentials](https://git-scm.com/docs/gitcredentials), [GitHub CLI setup for Git](https://cli.github.com/manual/gh_auth_setup-git), and [Git commit usernames](https://docs.github.com/en/get-started/git-basics/setting-your-username-in-git).
+routes can be coupled. Do not assume they are. See
+[Git credentials](https://git-scm.com/docs/gitcredentials),
+[GitHub CLI setup for Git](https://cli.github.com/manual/gh_auth_setup-git), and
+[Git commit usernames](https://docs.github.com/en/get-started/git-basics/setting-your-username-in-git).
 
 ## Diagnose the first failing gate
 
@@ -109,7 +122,10 @@ routes can be coupled. Do not assume they are. See [Git credentials](https://git
 Codex sandbox permissions and approval review are separate controls; changing
 who reviews a request does not expand the sandbox. Local and cloud tasks may
 also have different tool, network and credential contexts. Check the actual
-product and session rather than assuming one mode applies everywhere. [Codex sandbox](https://learn.chatgpt.com/docs/sandboxing), [Codex auto-review](https://learn.chatgpt.com/docs/sandboxing/auto-review), [Codex cloud environments](https://learn.chatgpt.com/docs/environments/cloud-environments)
+product and session rather than assuming one mode applies everywhere.
+[Codex sandbox](https://learn.chatgpt.com/docs/sandboxing),
+[Codex auto-review](https://learn.chatgpt.com/docs/sandboxing/auto-review),
+[Codex cloud environments](https://learn.chatgpt.com/docs/environments/cloud-environments)
 
 ## Safe checks in the affected executor
 
@@ -125,7 +141,8 @@ gh --version
 git rev-parse --is-inside-work-tree
 
 # Show presence only; do not print values.
-for name in GH_TOKEN GITHUB_TOKEN GH_ENTERPRISE_TOKEN GITHUB_ENTERPRISE_TOKEN GH_HOST GH_REPO GH_CONFIG_DIR; do
+for name in GH_TOKEN GITHUB_TOKEN GH_ENTERPRISE_TOKEN GITHUB_ENTERPRISE_TOKEN \
+  GH_HOST GH_REPO GH_CONFIG_DIR; do
   if printenv "$name" >/dev/null 2>&1; then
     printf '%s is set\n' "$name"
   else
@@ -201,7 +218,9 @@ an approval. [OpenAI: AGENTS.md](https://learn.chatgpt.com/docs/agent-configurat
 - Keep personal and work accounts and commit identities distinct. For a new
   HTTPS setup, use a supported credential manager or deliberately configured
   `gh` helper; for SSH use appropriate keys and host selection. Grant only the
-  repository and operation access needed. [Multiple GitHub accounts](https://docs.github.com/en/account-and-profile/how-tos/account-management/managing-multiple-accounts), [credential caching](https://docs.github.com/en/get-started/git-basics/caching-your-github-credentials-in-git)
+  repository and operation access needed.
+  [Multiple GitHub accounts](https://docs.github.com/en/account-and-profile/how-tos/account-management/managing-multiple-accounts),
+  [credential caching](https://docs.github.com/en/get-started/git-basics/caching-your-github-credentials-in-git)
 - Configure the actual Codex cloud environment's repositories, services,
   network and credentials rather than assuming it inherits the workstation's
   Keychain, SSH agent, or `gh` session. Local implementation and tests can
