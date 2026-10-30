@@ -2,10 +2,10 @@
 
 > Type: reference
 > Status: needs-review
-> Updated: 2026-10-29
+> Updated: 2026-10-30
 > Tags: graphic-design, typography
 
-### A Practical Guide to Typefaces, Fonts, Letterforms, and Typesetting
+## A Practical Guide to Typefaces, Fonts, Letterforms, and Typesetting
 
 Typography terminology mixes centuries of printing tradition with
 modern digital font technology.

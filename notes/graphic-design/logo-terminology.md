@@ -2,10 +2,10 @@
 
 > Type: reference
 > Status: needs-review
-> Updated: 2026-10-29
+> Updated: 2026-10-30
 > Tags: graphic-design, logo
 
-### A Practical Guide to Marks, Wordmarks, Lockups, and Brand Assets
+## A Practical Guide to Marks, Wordmarks, Lockups, and Brand Assets
 
 Logo terminology is frequently used inconsistently, even among designers.
 This guide establishes a practical vocabulary for creating, discussing,

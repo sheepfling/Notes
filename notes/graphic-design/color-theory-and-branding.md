@@ -2,10 +2,10 @@
 
 > Type: reference
 > Status: needs-review
-> Updated: 2026-10-29
+> Updated: 2026-10-30
 > Tags: branding, color, graphic-design
 
-### A Practical Guide to Color, Harmony, Contrast, and Visual Identity
+## A Practical Guide to Color, Harmony, Contrast, and Visual Identity
 
 Color is one of the most recognizable components of visual identity.
 
