@@ -24,14 +24,10 @@ from typing import TypeAlias
 import numpy as np
 import numpy.typing as npt
 import pylinalg
+import quaternion as qlib
 import rowan
 import scipy
 from scipy.spatial.transform import Rotation
-
-try:
-    import quaternion as qlib
-except ImportError:
-    qlib = None
 
 FloatArray: TypeAlias = npt.NDArray[np.float64]
 PythonOperation: TypeAlias = Callable[[Sequence[float], Sequence[float]], tuple[float, ...]]
@@ -112,25 +108,27 @@ def python_array(fn: PythonOperation, a: FloatArray, b: FloatArray, scalar: bool
     return np.asarray(python_batch(fn, a.tolist(), b.tolist()))
 
 
-def scipy_multiply_array(a: FloatArray, b: FloatArray) -> FloatArray:
+def scipy_multiply_array(a: npt.ArrayLike, b: npt.ArrayLike) -> FloatArray:
     return (Rotation.from_quat(a, scalar_first=True) *
             Rotation.from_quat(b, scalar_first=True)).as_quat(scalar_first=True)
 
 
-def scipy_rotate_array(q: FloatArray, v: FloatArray) -> FloatArray:
+def scipy_rotate_array(q: npt.ArrayLike, v: npt.ArrayLike) -> FloatArray:
     return Rotation.from_quat(q, scalar_first=True).apply(v)
 
 
-def qlib_multiply_array(a: FloatArray, b: FloatArray) -> FloatArray:
+def qlib_multiply_array(a: npt.ArrayLike, b: npt.ArrayLike) -> FloatArray:
     return qlib.as_float_array(qlib.as_quat_array(a) * qlib.as_quat_array(b))
 
 
-def qlib_rotate_prepared(q: np.ndarray | np.generic, pure_v: np.ndarray | np.generic) -> FloatArray:
+def qlib_rotate_prepared(
+    q: qlib.quaternion | np.ndarray, pure_v: qlib.quaternion | np.ndarray
+) -> FloatArray:
     # Paired operands, not rotate_vectors' Cartesian-product batch semantics.
     return qlib.as_vector_part(q * pure_v * q.conjugate())
 
 
-def qlib_rotate_array(q: FloatArray, v: FloatArray) -> FloatArray:
+def qlib_rotate_array(q: npt.ArrayLike, v: npt.ArrayLike) -> FloatArray:
     # Match the contiguous (N,3) output contract of the other array paths.
     return np.ascontiguousarray(qlib_rotate_prepared(qlib.as_quat_array(q), qlib.from_vector_part(v)))
 
@@ -143,7 +141,7 @@ def to_wxyz(q: FloatArray) -> FloatArray:
     return np.ascontiguousarray(q[..., [3, 0, 1, 2]])
 
 
-def rowan_rotate_array(q: FloatArray, v: FloatArray) -> FloatArray:
+def rowan_rotate_array(q: npt.ArrayLike, v: npt.ArrayLike) -> FloatArray:
     return np.ascontiguousarray(rowan.rotate(q, v))
 
 
@@ -170,7 +168,7 @@ def pylinalg_rotate_array(q: FloatArray, v: FloatArray) -> FloatArray:
 
 
 def assert_close(actual: npt.ArrayLike, expected: npt.ArrayLike) -> None:
-    np.testing.assert_allclose(actual, expected, rtol=2e-13, atol=2e-13)
+    np.testing.assert_allclose(np.asarray(actual), np.asarray(expected), rtol=2e-13, atol=2e-13)
 
 
 def test_known_cases() -> None:

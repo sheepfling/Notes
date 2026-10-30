@@ -9,6 +9,7 @@ from collections.abc import Callable
 from dataclasses import asdict, dataclass, field
 
 import numpy as np
+import numpy.typing as npt
 import operations as b
 import pylinalg
 import rowan
@@ -19,7 +20,7 @@ class Capture:
     """Observed result of one untimed semantic probe."""
 
     status: str
-    value: object = None
+    value: npt.ArrayLike | None = None
     dtype: str | None = None
     shape: list[int] | None = None
     c_contiguous: bool | None = None
@@ -28,6 +29,12 @@ class Capture:
     warnings: list[str] = field(default_factory=list)
     correct: bool | None = None
     max_abs_error: float | None = None
+
+    def require_value(self) -> npt.ArrayLike:
+        """Return a captured value or fail when the backend returned an error."""
+        if self.value is None:
+            raise ValueError("probe did not return a value")
+        return self.value
 
     def to_dict(self) -> dict[str, object]:
         """Retain the original flat output schema while omitting unset fields."""
@@ -135,19 +142,19 @@ def main() -> None:
             result = capture(fn, q, vx)
             checks.append(ProbeRecord(result, test='rotation_norm_policy', input=label, implementation=name))
             if label == 'unit':
-                b.assert_close(result.value, [0, 1, 0])
+                b.assert_close(result.require_value(), [0, 1, 0])
             elif label == 'scaled_by_2':
                 expected = [-3, 4, 0] if name in ('python', 'numpy') else ([0, 1, 0] if name == 'scipy' else [0, 4, 0])
-                b.assert_close(result.value, expected)
+                b.assert_close(result.require_value(), expected)
             elif name == 'scipy':
                 assert result.status == 'error'
             else:
-                b.assert_close(result.value, vx if name in ('python', 'numpy') else [0, 0, 0])
+                b.assert_close(result.require_value(), vx if name in ('python', 'numpy') else [0, 0, 0])
     qi, qj, qk = np.eye(4)[1:]
     for name, fn in implementations('multiply').items():
         result = capture(fn, 2*qi, 3*qj)
         expected = qk if name == 'scipy' else 6*qk
-        b.assert_close(result.value, expected)
+        b.assert_close(result.require_value(), expected)
         checks.append(ProbeRecord(result, test='nonunit_multiply', implementation=name,
                                   expected_policy='normalized_rotations' if name == 'scipy' else 'raw_Hamilton_product'))
     b.test_known_cases()
@@ -166,7 +173,7 @@ def main() -> None:
             result = capture(fn)
             result.correct = False
             if result.status == 'returned':
-                value = np.asarray(result.value)
+                value = np.asarray(result.require_value())
                 result.max_abs_error = float(np.max(np.abs(value-expected)))
                 result.correct = bool(value.shape == expected.shape and np.allclose(value, expected, atol=2e-13, rtol=2e-13))
             assert not result.correct

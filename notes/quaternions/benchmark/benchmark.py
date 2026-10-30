@@ -183,7 +183,7 @@ def preprocess_raw_lists(operation: str, left: npt.ArrayLike, right: npt.ArrayLi
     return q, rhs
 
 
-def run_array(name: str, operation: str, a: npt.ArrayLike, b: npt.ArrayLike) -> np.ndarray:
+def run_array(name: str, operation: str, a: o.FloatArray, b: o.FloatArray) -> o.FloatArray:
     """Array-origin operation boundary reused after common preprocessing."""
     if name == 'python':
         fn = o.multiply_python if operation == 'multiply' else o.rotate_python
@@ -209,7 +209,7 @@ def run_unit_lists(name: str, operation: str, a: npt.ArrayLike, b: npt.ArrayLike
     """
     if name == 'python':
         fn = o.multiply_python if operation == 'multiply' else o.rotate_python
-        return np.asarray(fn(a, b) if scalar else o.python_batch(fn, a, b), dtype=np.float64)
+        return np.asarray(fn(a, b) if scalar else o.python_batch(fn, a, b), dtype=np.float64)  # pyright: ignore[reportArgumentType]
     if name == 'numpy':
         fn = o.multiply_numpy if operation == 'multiply' else o.rotate_numpy
         return fn(np.asarray(a, dtype=np.float64), np.asarray(b, dtype=np.float64))
@@ -236,7 +236,7 @@ def prepared_callable(name: str, operation: str, q: np.ndarray, rhs: np.ndarray)
         fn = o.multiply_python if operation == 'multiply' else o.rotate_python
         a, b = q.tolist(), rhs.tolist()
         a, b = (tuple(a), tuple(b)) if scalar else ([tuple(x) for x in a], [tuple(x) for x in b])
-        return lambda: np.asarray(fn(a, b) if scalar else o.python_batch(fn, a, b), dtype=np.float64)
+        return lambda: np.asarray(fn(a, b) if scalar else o.python_batch(fn, a, b), dtype=np.float64)  # pyright: ignore[reportArgumentType]
     if name == 'numpy':
         return lambda: run_array(name, operation, q, rhs)
     if name == 'rowan':
