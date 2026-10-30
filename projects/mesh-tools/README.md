@@ -78,7 +78,7 @@ faces:
 ```
 
 Every face contains exactly three zero-based vertex indices. The loader checks
-array shapes, finite coordinates, index bounds, repeated indices, and
+array shapes, finite coordinates, finite integral indices, index bounds, repeated indices, and
 degenerate triangles.
 
 ## OBJ input

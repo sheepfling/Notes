@@ -34,31 +34,68 @@ class TriangularMesh:
 
     def __post_init__(self) -> None:
         vertices = np.array(self.vertices, dtype=np.float64, copy=True)
-        faces = np.array(self.faces, dtype=np.int64, copy=True)
+        try:
+            # Preserve mixed Python scalar types instead of coercing floats
+            # and strings to a common string dtype before validation.
+            raw_faces = np.asarray(
+                self.faces, dtype=None if isinstance(self.faces, np.ndarray) else object
+            )
+        except (TypeError, ValueError) as error:
+            raise MeshError(f"faces contain invalid indices: {error}") from error
+        ####
 
         if vertices.ndim != 2 or vertices.shape[1] != 3:
             raise MeshError(
                 f"vertices must have shape [vertex_count, 3], got {vertices.shape}."
             )
         ####
-        if faces.ndim != 2 or faces.shape[1] != 3:
+        if raw_faces.ndim != 2 or raw_faces.shape[1] != 3:
             raise MeshError(
-                f"faces must have shape [face_count, 3], got {faces.shape}."
+                f"faces must have shape [face_count, 3], got {raw_faces.shape}."
             )
         ####
         if vertices.shape[0] < 3:
             raise MeshError("A triangular mesh requires at least three vertices.")
         ####
-        if faces.shape[0] < 1:
+        if raw_faces.shape[0] < 1:
             raise MeshError("A triangular mesh requires at least one face.")
         ####
         if not np.isfinite(vertices).all():
             raise MeshError("vertices contain NaN or infinite coordinates.")
         ####
-        if np.any(faces < 0) or np.any(faces >= vertices.shape[0]):
-            raise MeshError("faces contain an index outside the vertex array.")
+        # Validate before int64 conversion: casting floats first silently
+        # truncates fractional indices and may overflow on large values.
+        if raw_faces.dtype.kind in "biuf":
+            if raw_faces.dtype.kind == "f" and (
+                not np.isfinite(raw_faces).all()
+                or np.any(raw_faces != np.trunc(raw_faces))
+            ):
+                raise MeshError("faces must contain finite integral indices.")
+            ####
+            if np.any(raw_faces < 0) or np.any(raw_faces >= vertices.shape[0]):
+                raise MeshError("faces contain an index outside the vertex array.")
+            ####
+            faces = np.array(raw_faces, dtype=np.int64, copy=True)
+        else:
+            # Preserve integer-string and object-array inputs accepted by the
+            # old conversion, while rejecting values that would be truncated.
+            indices: list[int] = []
+            for value in raw_faces.flat:
+                try:
+                    index = int(value)
+                    if not isinstance(value, (str, bytes)) and value != index:
+                        raise ValueError("index is not integral")
+                    ####
+                except (TypeError, ValueError, OverflowError) as error:
+                    raise MeshError("faces must contain finite integral indices.") from error
+                ####
+                if index < 0 or index >= vertices.shape[0]:
+                    raise MeshError("faces contain an index outside the vertex array.")
+                ####
+                indices.append(index)
+            ####
+            faces = np.asarray(indices, dtype=np.int64).reshape(raw_faces.shape)
         ####
-
         repeated_indices = (
             (faces[:, 0] == faces[:, 1])
             | (faces[:, 1] == faces[:, 2])
@@ -118,7 +155,7 @@ class TriangularMesh:
         try:
             return cls(
                 vertices=np.asarray(vertices, dtype=np.float64),
-                faces=np.asarray(faces, dtype=np.int64),
+                faces=np.asarray(faces, dtype=object),
             )
         except (TypeError, ValueError) as error:
             raise MeshError(f"Mesh arrays contain invalid values: {error}") from error

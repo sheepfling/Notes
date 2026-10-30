@@ -44,6 +44,14 @@ uv run python scripts/serve_shader_gallery.py
 
 Then open the URL printed by the server. A future shader appears in the source list automatically;
 it needs an explicit adapter before the gallery will render it.
+The server only serves the gallery assets, linked project notes, and `.glsl`
+files under `notes/` or `projects/shaders/`. Hidden, ignored, symlinked and
+hard-linked paths are excluded, and directory listings are disabled.
+Serving files requires Python to support descriptor-relative opens with
+`O_DIRECTORY`, `O_NOFOLLOW`, and `O_NONBLOCK`; without those capabilities the
+server fails closed and will not serve gallery files or shaders. Python's
+descriptor-relative opens are unavailable on Windows, so use a supported Unix
+environment for this server; a native Windows implementation remains unverified.
 
 Run the collection's focused test from the repository root:
 

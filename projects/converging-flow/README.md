@@ -346,8 +346,8 @@ converging-flow radiant-wave-run --dim 3 --n 48 --final-time 1.0 --backend auto 
 ```
 
 Available array backends are `numpy`, `cupy`, and `auto`. State arrays remain on the
-selected device throughout the timestep loop. Only saved frames, diagnostics, and final
-results are transferred back to NumPy.
+selected device throughout the timestep loop. Saved frames, diagnostics, final results,
+and scalar reductions used for timestep selection are transferred to the host.
 
 Activity and heat diffusion support:
 
@@ -359,6 +359,11 @@ Activity and heat diffusion support:
 The matrix-free form applies the same conservative variable-coefficient face operator on
 CPU and GPU and avoids assembling a prohibitively large 3D sparse matrix. Wave propagation
 remains explicitly CFL-limited even when diffusion is implicit.
+When material events or legacy insertions change properties, the timestep and `auto`
+diffusion selection are recalculated for the effective fields used by each step. The
+result's `resolved_diffusion_method` reports the method used by the last step. Coefficients
+are sampled at step boundaries, so a stable step is not by itself an accuracy guarantee;
+compare against a smaller maximum timestep for rapidly varying events.
 
 The default first-axis material layout is:
 

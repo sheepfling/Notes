@@ -1,8 +1,15 @@
 from pathlib import Path
 
-from scripts.serve_shader_gallery import is_blocked_request, shader_catalog
+import pytest
+
+from scripts.serve_shader_gallery import (
+    is_blocked_request,
+    shader_catalog,
+    supports_secure_open,
+)
 
 
+@pytest.mark.skipif(not supports_secure_open(), reason="secure descriptor-relative opens unavailable")
 def test_shader_catalog_discovers_durable_glsl_and_skips_scratch(tmp_dir: Path) -> None:
     (tmp_dir / "notes" / "aerospace").mkdir(parents=True)
     (tmp_dir / "notes" / "aerospace" / "example.glsl").write_text("void main() {}", encoding="utf-8")
@@ -30,6 +37,7 @@ def test_shader_catalog_discovers_durable_glsl_and_skips_scratch(tmp_dir: Path) 
 ####
 
 
+@pytest.mark.skipif(not supports_secure_open(), reason="secure descriptor-relative opens unavailable")
 def test_catalog_includes_retained_point_scatterer() -> None:
     root = Path(__file__).resolve().parents[1]
     assert any(

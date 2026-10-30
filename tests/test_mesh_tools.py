@@ -168,6 +168,44 @@ def test_invalid_face_index_is_rejected() -> None:
 ####
 
 
+@pytest.mark.parametrize(
+    "faces",
+    [
+        [[0.9, 1.9, 2.9]],
+        [[-0.1, 1.0, 2.0]],
+        [[0.0, 1.0, float("nan")]],
+        [[0.0, 1.0, float("inf")]],
+        np.asarray([[0, 1, 2**63]], dtype=np.uint64),
+        np.asarray([[0, 1, 1.5]], dtype=object),
+    ],
+)
+def test_invalid_face_values_rejected_before_integer_conversion(faces: object) -> None:
+    vertices = [[0.0, 0.0, 0.0], [1.0, 0.0, 0.0], [0.0, 1.0, 0.0]]
+    with pytest.raises(MeshError):
+        TriangularMesh(vertices=np.asarray(vertices), faces=np.asarray(faces))
+    ####
+    with pytest.raises(MeshError):
+        TriangularMesh.from_yaml_data(
+            {"format": "triangular_mesh", "version": 1, "vertices": vertices, "faces": faces}
+        )
+    ####
+####
+
+
+@pytest.mark.parametrize("faces", [[[0, 1, 2]], [[0.0, 1.0, 2.0]], [["0", "1", "2"]], [[0.0, "1", 2]]])
+def test_integral_faces_keep_existing_conversion_behavior(faces: list[list[object]]) -> None:
+    data = {
+        "format": "triangular_mesh",
+        "version": 1,
+        "vertices": [[0.0, 0.0, 0.0], [1.0, 0.0, 0.0], [0.0, 1.0, 0.0]],
+        "faces": faces,
+    }
+    mesh = TriangularMesh.from_yaml_data(data)
+    assert mesh.faces.dtype == np.int64
+    assert mesh.faces.tolist() == [[0, 1, 2]]
+####
+
+
 def test_obj_loader_handles_slash_negative_indices_and_polygon_fan(tmp_dir: Path) -> None:
     obj_path = tmp_dir / "quad.obj"
     obj_path.write_text(

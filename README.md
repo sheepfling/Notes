@@ -101,8 +101,6 @@ Set up a development virtual environment with pip:
 
 ```
 python -m venv .venv
-python -m pip install --upgrade pip
-python -m pip install -e ".[dev]"
 ```
 
 Activate it using the shell-specific command for your environment:
@@ -113,6 +111,13 @@ Activate it using the shell-specific command for your environment:
 
 ```bash
 source .venv/bin/activate
+```
+
+With the virtual environment active, install the development dependencies:
+
+```shell
+python -m pip install --upgrade pip
+python -m pip install -e ".[dev]"
 ```
 
 The equivalent setup with uv is:
