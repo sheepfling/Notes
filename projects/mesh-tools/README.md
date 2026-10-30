@@ -17,25 +17,33 @@ The maintained test entry point is `tests/test_mesh_tools.py` from the repositor
 The scripts use generic Cartesian `X`, `Y`, and `Z` coordinates and one
 documented input schema.
 
-## Run with `uv`
+## Setup and run
 
-Run these commands from the repository root. Both executable scripts include PEP 723 dependency metadata:
+Run these commands from the repository root. The module commands need the
+`dev` extra for PyYAML and Shapely. Although the source files include PEP 723
+metadata, `python -m` does not use that metadata to install dependencies.
+With `uv`, select the extra explicitly:
 
-```console
-uv run python -m notes_tools.mesh_tools.triangulate_polygon projects/mesh-tools/examples/example_polygon.yaml artifacts/example_mesh.yaml
-uv run python -m notes_tools.mesh_tools.display_mesh artifacts/example_mesh.yaml --wireframe --vertices
+```shell
+uv run --extra dev python -m notes_tools.mesh_tools.triangulate_polygon projects/mesh-tools/examples/example_polygon.yaml artifacts/example_mesh.yaml
+uv run --extra dev python -m notes_tools.mesh_tools.display_mesh artifacts/example_mesh.yaml --wireframe --vertices
 ```
 
 Render without opening a window:
 
-```console
-uv run python -m notes_tools.mesh_tools.display_mesh artifacts/example_mesh.yaml \
+```bash
+uv run --extra dev python -m notes_tools.mesh_tools.display_mesh artifacts/example_mesh.yaml \
   --wireframe \
   --save-dir artifacts/mesh-tools/rendered \
   --no-show
 ```
 
-When dependencies are already installed, replace `uv run` with `python`.
+Alternatively, activate a Python 3.12 virtual environment and install the
+repository with `python -m pip install -e ".[dev]"`; then replace
+`uv run --extra dev python` with `python` in the commands above. The
+[repository setup](../../README.md#validation) includes environment setup.
+The tools refuse to replace existing mesh or image files unless `--overwrite`
+is supplied. Outputs shown above stay in the ignored `artifacts/` directory.
 
 ## Polygon YAML
 
@@ -79,18 +87,23 @@ and fan-triangulates polygon faces. It intentionally ignores materials,
 groups, and non-polygon geometry. Use it when the goal is a small validated mesh
 or a GLSL declaration rather than a complete OBJ round trip:
 
-```console
-python -m notes_tools.mesh_tools.obj_to_glsl model.obj --output model.glsl
+```shell
+python -m notes_tools.mesh_tools.obj_to_glsl model.obj --output artifacts/mesh-tools/model.glsl
 ```
+
+The OBJ converter overwrites an existing output file; omit `--output` to print
+the declarations instead. Check the destination before running it.
 
 The old scratch viewer combined OBJ parsing with Open3D, PyVista, and Trimesh.
 Those GUI and optional-library integrations remain outside the validated core.
 
 ## Tests
 
-```console
+```shell
 python -m pytest tests/test_mesh_tools.py
 ```
+
+With `uv`, use `uv run --extra dev python -m pytest tests/test_mesh_tools.py`.
 
 The test suite covers polygon validation, winding normalization, concave
 polygons, holes, mesh round-tripping, generic axis labels, both command-line

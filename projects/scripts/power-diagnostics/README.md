@@ -13,21 +13,17 @@ cross-platform and delegates to Windows PowerShell or PowerShell 7, so the
 same command works from a Python virtual environment and can fail clearly on
 systems without PowerShell.
 
-Create a complete timestamped report bundle with one command:
-
-```powershell
-Set-ExecutionPolicy -Scope Process Bypass
-```
-
-From the repository root, use an explicit ignored output directory:
+From the repository root, create a timestamped report bundle in the ignored
+artifact directory:
 
 ```shell
-python projects/scripts/power-diagnostics/power_history.py --report --output-directory artifacts/power-diagnostics
+python projects/scripts/power-diagnostics/power_history.py --report
 ```
 
 This creates `artifacts/power-diagnostics/YYYYMMDD-HHmmss/` containing JSON,
-Markdown, and HTML reports. If the destination is omitted, the launcher uses
-`power-reports` relative to the current directory. To choose a history window:
+Markdown, and HTML reports. The default is relative to the current working
+directory; from the repository root it is ignored by Git. To choose another
+destination or history window:
 
 ```shell
 python projects/scripts/power-diagnostics/power_history.py --report --days 7 --output-directory artifacts/power-diagnostics
@@ -46,7 +42,7 @@ the report still includes all event-log results and records the permission
 message for that individual query. Use `--skip-powercfg` when only event
 history is needed.
 
-For a single output format, use the collector directly:
+For console output or a single file format, use the Python launcher:
 
 ```shell
 python projects/scripts/power-diagnostics/power_history.py --max-events 50
@@ -54,7 +50,20 @@ python projects/scripts/power-diagnostics/power_history.py --format Html --outpu
 python projects/scripts/power-diagnostics/power_history.py --format Json --output-directory artifacts/power-diagnostics --report-name incident
 ```
 
-Use `-Since (Get-Date).AddDays(-7)`, `-Json`, or `-SkipPowerCfg` as needed.
+The Python flags `--since`, `--format Json`, and `--skip-powercfg` select a
+start time, JSON output, or event-only collection. For direct PowerShell use,
+the equivalent collector flags are `-Since`, `-Json`, and `-SkipPowerCfg`:
+
+```powershell
+.\projects\scripts\power-diagnostics\Get-PowerHistory.ps1 -Since (Get-Date).AddDays(-7) -SkipPowerCfg
+.\projects\scripts\power-diagnostics\Get-PowerHistory.ps1 -Json -OutputDirectory artifacts/power-diagnostics
+.\projects\scripts\power-diagnostics\New-PowerReport.ps1 -Days 7 -OutputDirectory artifacts/power-diagnostics
+```
+
+The direct report script uses the same `artifacts/power-diagnostics` default
+relative to the current working directory. The direct collector requires
+`-OutputDirectory` for file formats. Existing `--output-directory` and
+`-OutputDirectory` arguments continue to select an explicit destination.
 The script does not change power plans, timers, wake permissions, or event
 logs. Administrator rights may be required for every event detail.
 

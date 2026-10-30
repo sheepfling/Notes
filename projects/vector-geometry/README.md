@@ -28,3 +28,17 @@ The original December snippet attempted to construct an answer by permuting and 
 components. That can be useful for special shapes, but it had ambiguous behavior for scalars,
 empty inputs, zero vectors, and higher-dimensional arrays. The replacement states those cases in
 the API and raises `ValueError` rather than returning a misleading result.
+
+## Run and test
+
+After installing the repository's development dependencies as described in the
+[setup instructions](../../README.md#validation), run these from the repository
+root:
+
+```shell
+python -m notes_tools.vector_geometry.orthogonal_vector
+python -m pytest tests/test_vector_geometry.py
+```
+
+The example prints a vector and its checks; it does not generate files. The
+tests stay centralized because they cover the reusable `notes_tools` package.

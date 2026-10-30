@@ -118,12 +118,10 @@ def extract_tarball(
     output_dirpath: Path,
     verbose: bool = False,
     allow_legacy: bool = False,
+    protected_source: Path | None = None,
 ) -> None:
     """Extract the files from the tarball to the specified output directory."""
     output_dirpath = Path(output_dirpath)
-
-    # Open the tarball for reading
-    bad_files = []
 
     line_number = 0
     first_line = tar.readline()
@@ -187,49 +185,63 @@ def extract_tarball(
                 f'File: {str(current_filepath)!r} did not have all the expected lines. Expected: {num_lines}, Got: {len(lines)}')
         ####
         output_filepath = _safe_output_path(output_dirpath, str(current_filepath))
+        if protected_source is not None:
+            aliases_source = output_filepath == protected_source.resolve()
+            if not aliases_source:
+                try:
+                    aliases_source = output_filepath.samefile(protected_source)
+                except FileNotFoundError:
+                    pass
+                ####
+            ####
+            if aliases_source:
+                raise RuntimeError(f'Output aliases the input textball: {str(current_filepath)!r}')
+            ####
+        ####
+        txt_data = ''.join(lines)
+        if is_base64:
+            candidates = [base64.b64decode(''.join(txt_data.splitlines()))]
+        else:
+            # Older Windows archives may have translated their framing and
+            # member newlines while writing. Accept a variant only when both
+            # the original size and checksum identify it unambiguously.
+            variants = [txt_data]
+            if not has_trailing_newline and txt_data:
+                variants = [txt_data[:-1]]
+                if txt_data.endswith('\r\n'):
+                    variants.append(txt_data[:-2])
+                ####
+            ####
+            variants.extend(value.replace('\r\n', '\n') for value in tuple(variants))
+            candidates = []
+            for value in variants:
+                buffer = io.BytesIO()
+                with io.TextIOWrapper(buffer, newline='\n') as writer:
+                    writer.write(value)
+                    writer.flush()
+                    candidates.append(buffer.getvalue())
+                ####
+            ####
+        ####
+        matching_size = [value for value in candidates if len(value) == expected_size]
+        if not matching_size:
+            raise RuntimeError(
+                f'Invalid size for {str(current_filepath)!r}: expected {expected_size}, got {len(candidates[0])}'
+            )
+        ####
+        payload = next((value for value in matching_size if hashlib.md5(value).hexdigest() == expected_md5), None)
+        if payload is None:
+            raise RuntimeError(f'Checksum mismatch for {str(current_filepath)!r}')
+        ####
+        if verbose > 1:
+            print(' -- Size and checksum match')
+        ####
         output_dirpath.mkdir(parents=True, exist_ok=True)
         output_filepath.parent.mkdir(parents=True, exist_ok=True)
-        txt_data = ''.join(lines)
-        if not has_trailing_newline:
-            txt_data = txt_data[:-1]
-        ####
-        if is_base64:
-            with open(output_filepath, 'wb') as fout:
-                # Remove newlines
-                txt_data = ''.join(txt_data.splitlines())
-                fout.write(base64.b64decode(txt_data))
-            ####
-        else:
-            with open(output_filepath, 'w', newline='\n') as fout:
-                fout.write(txt_data)
-            ####
-        ####
-        got_file_size = os.stat(output_filepath).st_size
-        had_error = False
-        if got_file_size != expected_size:
-            print(f'Expected size: {expected_size}, Got:{got_file_size}')
-            had_error = True
-        else:
-            if verbose > 1:
-                print(f' -- Sizes match')
-            ####
-        ####
-        got_md5_hash = get_md5_hash(output_filepath)
-        if got_md5_hash != expected_md5:
-            print(f'Hashes did not match')
-            had_error = True
-        else:
-            if verbose > 1:
-                print(f' -- Hashes match')
-            ####
-        ####
-        if had_error:
-            bad_files.append(output_filepath)
+        with open(output_filepath, 'wb') as fout:
+            fout.write(payload)
         ####
         line = None
-    ####
-    if bad_files:
-        print(f'The following files had errors: {", ".join(str(x) for x in bad_files)}')
     ####
 ####
 
@@ -311,17 +323,14 @@ def main():
             ####
         ####
         out_filepath.parent.mkdir(parents=True, exist_ok=True)
-        with open(out_filepath, 'w') as fout:
+        with open(out_filepath, 'w', newline='\n') as fout:
             fout.write(text)
         ####
         print(f'Wrote {str(out_filepath)!r} ' + ('as encoded' if encode else ''))
     elif args.action == 'extract':
         tarball_path = Path(args.tarball_filename)
-        if tarball_path.is_file():
-            log.warning(f'Output file {str(tarball_path)!r} already exists. Overwriting.')
-        ####
         decode = bool(args.decode)
-        with open(tarball_path, 'r') as fin:
+        with open(tarball_path, 'r', newline='') as fin:
             data = fin.read()
         ####
         if decode:
@@ -329,7 +338,10 @@ def main():
             data = base64.b64decode(data.encode()).decode()
         ####
         output_dirpath = Path(args.output_directory)
-        extract_tarball(io.StringIO(data), output_dirpath, verbose=verbose, allow_legacy=args.legacy)
+        extract_tarball(
+            io.StringIO(data), output_dirpath, verbose=verbose,
+            allow_legacy=args.legacy, protected_source=tarball_path,
+        )
         print(f"Tarball {str(tarball_path)!r} extracted to {str(output_dirpath)!r}.")
     else:
         raise RuntimeError(f'Invalid action: {args.action}')

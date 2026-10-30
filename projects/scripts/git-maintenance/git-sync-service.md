@@ -17,10 +17,13 @@ working repositories:
 1. Fetch remote refs, tags, and pruned branches.
 2. Run `git pull --ff-only` without resetting, cleaning, or changing branches.
 
-Uncommitted changes or a non-fast-forward situation therefore cause a repository update to fail
-instead of silently deleting local work. Read the log before deciding how to resolve it. The tool
-still performs network operations and changes repositories, so test it against a small directory
-before scheduling it broadly.
+Git can reject a pull that would conflict with uncommitted changes or is not a fast-forward, but
+the script does not check for a clean working tree and some pulls can succeed while other local
+changes remain. Inspect each target's status first and read the log afterward. The tool
+still performs network operations and changes repositories. First use `--dry-run` on the proposed
+root to list targets without running Git or writing a log; then test an actual update against a
+small disposable directory before scheduling it broadly. Directory symlinks and linked worktrees
+or submodules with a `.git` file are intentionally skipped.
 
 ## Create a user service
 

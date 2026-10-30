@@ -9,6 +9,7 @@ import sys
 from pathlib import Path
 
 SCRIPT_DIRECTORY = Path(__file__).resolve().parent
+DEFAULT_OUTPUT_DIRECTORY = Path("artifacts") / "power-diagnostics"
 
 
 def powershell_executable() -> str:
@@ -31,7 +32,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--since", type=str, help="PowerShell-compatible start time, such as 2026-08-19T00:00:00")
     parser.add_argument("--max-events", type=int, default=100)
     parser.add_argument("--format", choices=("Console", "Json", "Markdown", "Html", "All"), default="Console")
-    parser.add_argument("--output-directory", type=Path, default=Path("power-reports"))
+    parser.add_argument("--output-directory", type=Path, default=DEFAULT_OUTPUT_DIRECTORY)
     parser.add_argument("--report-name", default="power-history")
     parser.add_argument("--skip-powercfg", action="store_true")
     return parser
@@ -49,7 +50,7 @@ def collector_command(arguments: argparse.Namespace, executable: str) -> list[st
         if arguments.since:
             command.extend(["-Since", arguments.since])
         ####
-        if arguments.output_directory != Path("power-reports") or arguments.format != "Console":
+        if arguments.output_directory != DEFAULT_OUTPUT_DIRECTORY or arguments.format != "Console":
             command.extend(["-OutputDirectory", str(arguments.output_directory)])
         ####
         command.extend(["-ReportName", arguments.report_name])

@@ -12,9 +12,18 @@ commands across them.
 - [`find-and-pull-all-git.md`](find-and-pull-all-git.md) documents the discovery/update workflow.
 - [`git-sync-service.md`](git-sync-service.md) records the scheduled-service idea.
 
-Inspect the command construction and target root before running it. Even a fast-forward-only pull
-changes repository state, and discovery across a broad directory can affect more repositories
-than intended.
+Preview the target list from the repository root before updating anything:
+
+```shell
+python projects/scripts/git-maintenance/find_and_pull_all_git.py <search-root> --dry-run
+```
+
+The preview does not run Git or write a log. Discovery does not follow directory
+symlinks and skips linked worktrees and submodules represented by a `.git` file.
+It does discover nested ordinary repositories inside an ordinary worktree, so
+review the entire target list. Choose a narrow search root: an actual update
+fetches and prunes remote refs and then fast-forwards ordinary repositories,
+which changes repository state.
 
 Run the focused tests from the repository root:
 
@@ -23,7 +32,6 @@ python -m pytest projects/scripts/git-maintenance/tests
 ```
 
 These tests create temporary directory fixtures and inspect generated commands; they do not run
-fetch or pull. The updater itself writes `git_update.log` under its search root. Its current bare
-repository discovery checks for a lowercase `head` file, so it can miss normal bare repositories
-on case-sensitive filesystems; it also does not discover linked worktrees represented by a `.git`
-file. Review its target list and output location before using it.
+fetch or pull. An actual update writes `git_update.log` under its search root. Bare repositories
+are identified using their `HEAD`, `config`, `objects` and `refs` entries. Linked worktrees and
+submodules represented by a `.git` file are intentionally excluded; update those separately.

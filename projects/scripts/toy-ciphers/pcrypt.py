@@ -65,6 +65,19 @@ def sub_passphrase(source: str, passphrase: str) -> str:
 ####
 
 
+def _same_file(first: Path, second: Path) -> bool:
+    """Detect path and existing hard-link aliases before writing output."""
+    if first.resolve() == second.resolve():
+        return True
+    ####
+    try:
+        return first.samefile(second)
+    except FileNotFoundError:
+        return False
+    ####
+####
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     subparsers = parser.add_subparsers(dest="action", required=True)
@@ -92,6 +105,9 @@ def main() -> None:
 
     if not args.input.is_file():
         parser.error(f"input file does not exist: {args.input}")
+    ####
+    if _same_file(args.input, args.output):
+        parser.error("input and output must refer to different files")
     ####
 
     with args.input.open("r", encoding="utf-8", newline="") as stream:

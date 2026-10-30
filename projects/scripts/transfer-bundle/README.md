@@ -16,11 +16,11 @@ running them.
 
 When the receiving side has only the Windows command prompt, built-in `tar.exe`, and
 `certutil.exe`, pack the directory once and transfer the generated `.b64.txt` file together with
-its `.sha256` sidecar:
+its `.sha256` sidecar. From the repository root in Windows Command Prompt:
 
 ```bat
-pack-transfer.bat <input-directory> <output-prefix>
-unpack-transfer.bat <output-prefix>.tar.gz.b64.txt <new-output-directory>
+.\projects\scripts\transfer-bundle\pack-transfer.bat <input-directory> <output-prefix>
+.\projects\scripts\transfer-bundle\unpack-transfer.bat <output-prefix>.tar.gz.b64.txt <new-output-directory>
 ```
 
 For example, an output prefix of `payload` creates:
@@ -32,7 +32,9 @@ For example, an output prefix of `payload` creates:
 
 The output prefix should be outside the input directory. The receiving directory must not already
 exist. New bundles require the manifest before unpacking; historical bundles can be handled with
-`unpack-transfer.bat <encoded-file> <output-directory> --legacy`. The archive should still be
+`.\projects\scripts\transfer-bundle\unpack-transfer.bat <encoded-file> <output-directory> --legacy`.
+The bare script names remain valid when the transfer-bundle directory is the current directory
+or on `PATH`. The archive should still be
 treated as trusted input; the hash verifies transfer integrity, not sender identity or archive safety.
 
 ## Tar packing and unpacking
@@ -40,14 +42,14 @@ treated as trusted input; the hash verifies transfer integrity, not sender ident
 `tar.exe` is required. Pack a directory into an ordinary tar archive:
 
 ```bat
-pack-tar.bat <input-directory> <output.tar>
+.\projects\scripts\transfer-bundle\pack-tar.bat <input-directory> <output.tar>
 ```
 
 List an archive before extraction, then extract it into a new directory:
 
 ```bat
-verify-tar.bat <input.tar>
-unpack-tar.bat <input.tar> <new-output-directory>
+.\projects\scripts\transfer-bundle\verify-tar.bat <input.tar>
+.\projects\scripts\transfer-bundle\unpack-tar.bat <input.tar> <new-output-directory>
 ```
 
 The verification step confirms that `tar` can read the archive and prints its entries. It is not
@@ -55,7 +57,7 @@ a cryptographic signature or a complete content-integrity proof. For a stronger 
 also save the SHA-256 digest:
 
 ```bat
-hash-sha256.bat <input.tar>
+.\projects\scripts\transfer-bundle\hash-sha256.bat <input.tar>
 ```
 
 The wrappers intentionally refuse to extract into an existing directory, which makes accidental

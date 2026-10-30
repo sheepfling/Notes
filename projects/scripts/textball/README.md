@@ -44,10 +44,17 @@ Extract the encoded package into a new directory:
 python projects/scripts/textball/textball.py extract artifacts/textball/package.txt.b64 artifacts/textball/extracted --decode
 ```
 
-The checksums and sizes are checked after extraction, so corruption should be visible.
-Extraction can overwrite existing files before validation, so use a new, empty
+Each member's size and checksum are checked before its destination is opened;
+invalid members stop extraction without replacing their destination. Valid
+members may still overwrite existing files, but a member cannot overwrite the
+input textball itself, even through a symbolic or hard link. Extraction is not transactional:
+members written before a later error remain in place. Use a new, empty
 destination and retain the original inputs. Creation can also overwrite an
 existing output package.
+
+Text members preserve their original line endings through the CLI. For older
+archives whose Windows output translated line endings, extraction accepts a
+restored form only when its recorded size and checksum both match.
 
 Run the Python article tests from the repository root:
 

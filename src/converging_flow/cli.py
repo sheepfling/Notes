@@ -95,7 +95,7 @@ def _build_parser() -> argparse.ArgumentParser:
         default="auto",
         help="array backend; auto prefers a usable CUDA device",
     )
-    run_parser.add_argument("--output", type=Path, default=Path("outputs/run"))
+    run_parser.add_argument("--output", type=Path, default=Path("artifacts/converging-flow/run"))
     _add_visualization_arguments(run_parser)
 
     suite_parser = subparsers.add_parser("suite", help="run 1D, 2D, and 3D")
@@ -110,7 +110,7 @@ def _build_parser() -> argparse.ArgumentParser:
         default="auto",
         help="array backend; auto prefers a usable CUDA device",
     )
-    suite_parser.add_argument("--output", type=Path, default=Path("outputs/suite"))
+    suite_parser.add_argument("--output", type=Path, default=Path("artifacts/converging-flow/suite"))
     _add_visualization_arguments(suite_parser)
 
     reaction_run_parser = subparsers.add_parser(
@@ -129,7 +129,7 @@ def _build_parser() -> argparse.ArgumentParser:
         help="numerical backend; numba has one-time compilation cost",
     )
     reaction_run_parser.add_argument(
-        "--output", type=Path, default=Path("outputs/reaction-run")
+        "--output", type=Path, default=Path("artifacts/converging-flow/reaction-run")
     )
     _add_visualization_arguments(reaction_run_parser)
 
@@ -148,7 +148,7 @@ def _build_parser() -> argparse.ArgumentParser:
         help="numerical backend; numba has one-time compilation cost per dimension",
     )
     reaction_suite_parser.add_argument(
-        "--output", type=Path, default=Path("outputs/reaction-suite")
+        "--output", type=Path, default=Path("artifacts/converging-flow/reaction-suite")
     )
     _add_visualization_arguments(reaction_suite_parser)
 
@@ -177,7 +177,7 @@ def _build_parser() -> argparse.ArgumentParser:
         help="activity/heat diffusion integrator",
     )
     radiant_parser.add_argument(
-        "--output", type=Path, default=Path("outputs/radiant-wave-run")
+        "--output", type=Path, default=Path("artifacts/converging-flow/radiant-wave-run")
     )
     _add_visualization_arguments(radiant_parser)
     return parser

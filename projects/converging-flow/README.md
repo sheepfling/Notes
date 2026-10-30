@@ -249,6 +249,12 @@ multiphysics material law.
 
 ## Run one case
 
+The `run`, `suite`, `reaction-run`, `reaction-suite`, and `radiant-wave-run`
+commands default to separate directories under `artifacts/converging-flow/`,
+relative to the current working directory. The repository ignores those generated
+files. Pass `--output` to choose another directory, including an older `outputs/`
+location; files with the same names in the chosen directory may be overwritten.
+
 ```
 converging-flow run --dim 2 --n 192 --final-time 0.18 --backend auto --output artifacts/converging-flow/2d
 ```

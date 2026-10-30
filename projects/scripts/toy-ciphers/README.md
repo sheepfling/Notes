@@ -22,8 +22,9 @@ python projects/scripts/toy-ciphers/otp.py test
 ```
 
 From the repository root, create an ignored artifact directory and use distinct
-output paths. The commands overwrite existing destination files, so check paths
-first and do not reuse the input or key path as an output:
+output paths. The commands reject aliases between an input and its outputs;
+OTP encryption also rejects aliases between ciphertext and key outputs.
+Distinct existing destination files are overwritten, so check paths first:
 
 ```shell
 python -c "from pathlib import Path; Path('artifacts/toy-ciphers').mkdir(parents=True, exist_ok=True)"

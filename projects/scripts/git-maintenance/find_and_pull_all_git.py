@@ -14,7 +14,7 @@ log = getLogger(__name__)
 
 
 def get_git_dir(path: Path) -> Path | None:
-    if not path.is_dir():
+    if path.is_symlink() or not path.is_dir():
         return None
     ####
     if path.name == ".git":
@@ -22,7 +22,12 @@ def get_git_dir(path: Path) -> Path | None:
         log.debug(f'Found possible non-bare repo? {str(path.parent)!r}')
         return path.parent
     ####
-    if path.suffix == '.git' and (path / 'config').is_file() and (path / 'head').is_file():
+    if (
+        (path / 'config').is_file()
+        and (path / 'HEAD').is_file()
+        and (path / 'objects').is_dir()
+        and (path / 'refs').is_dir()
+    ):
         log.debug(f'Found possible bare repo? {str(path)!r}')
         return path
     ####
@@ -31,31 +36,44 @@ def get_git_dir(path: Path) -> Path | None:
 
 
 
-def find_git_repos(base_dir: Path) -> Generator[Path, None, None]:
-    """Recursively find all Git repositories under base_dir."""
-    for path in base_dir.rglob("*"):
-        if (git_dir := get_git_dir(path)) is not None:
-            yield git_dir
+def _find_git_repos(base_dir: Path, *, randomized: bool) -> Generator[Path, None, None]:
+    """Discover repositories without following symlinks or entering linked worktrees."""
+    if base_dir.is_symlink() or not base_dir.is_dir():
+        return
+    ####
+    # A gitfile represents a linked worktree or submodule. Do not update it,
+    # or discover nested repositories through it, as part of a broad scan.
+    if (base_dir / ".git").is_file():
+        return
+    ####
+    if (git_dir := get_git_dir(base_dir)) is not None:
+        yield git_dir
+        return
+    ####
+    paths = sorted(base_dir.iterdir())
+    if randomized:
+        shuffle(paths)
+    ####
+    for path in paths:
+        if path.is_symlink() or not path.is_dir():
+            continue
         ####
+        yield from _find_git_repos(path, randomized=randomized)
     ####
 ####
 
 
 
+def find_git_repos(base_dir: Path) -> Generator[Path, None, None]:
+    """Recursively find Git repositories in deterministic order."""
+    yield from _find_git_repos(base_dir, randomized=False)
+####
+
+
+
 def find_git_repos_semi_random(base_dir: Path) -> Generator[Path, None, None]:
-    """Recursively find all Git repositories under base_dir."""
-    dirs = list(base_dir.iterdir())
-    shuffle(dirs)
-    for path in dirs:
-        if not path.is_dir():
-            continue
-        ####
-        if (git_dir := get_git_dir(path)) is not None:
-            yield git_dir
-            continue
-        ####
-        yield from find_git_repos_semi_random(path)
-    ####
+    """Discover repositories in a shuffled order for parallel updates."""
+    yield from _find_git_repos(base_dir, randomized=True)
 ####
 
 
@@ -129,6 +147,7 @@ def main() -> None:
     parser.add_argument('--stdout', action='store_true', help='Logs output to stdout as well')
     parser.add_argument('--log-level', type=int, default=logging.INFO, help='Logging level')
     parser.add_argument('--num-workers', type=int, default=8, help='Number of workers to pull')
+    parser.add_argument('--dry-run', action='store_true', help='List targets without running Git or writing a log')
 
     args = parser.parse_args()
 
@@ -137,6 +156,17 @@ def main() -> None:
     if not search_dir.is_dir():
         print(f"Error: {search_dir} is not a valid directory")
         sys.exit(1)
+    ####
+
+    if search_dir.is_symlink():
+        parser.error("search root must not be a symbolic link")
+    ####
+
+    if args.dry_run:
+        for repo in find_git_repos(search_dir):
+            print(repo)
+        ####
+        return
     ####
 
     # Log file

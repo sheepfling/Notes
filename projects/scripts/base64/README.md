@@ -23,7 +23,11 @@ Decode it again:
 python projects/scripts/base64/base64_cli.py decode artifacts/base64/output.b64 artifacts/base64/restored.bin
 ```
 
-The right validation is a byte-for-byte comparison of `input.bin` and the restored file, not visual inspection of the encoded text. Choose distinct paths: this tool overwrites an existing destination.
+The right validation is a byte-for-byte comparison of `input.bin` and the restored
+file, not visual inspection of the encoded text. The tool rejects input/output
+aliases, including existing symbolic and hard links, but overwrites a distinct
+existing destination. Decoding accepts whitespace-wrapped Base64 and rejects
+other invalid data before opening the destination.
 
 The runner uses the Python standard library. Run its co-located tests from the
 repository root with pytest:

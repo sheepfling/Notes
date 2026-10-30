@@ -31,3 +31,17 @@ under ignored `artifacts/`, and report whether the comparison uses full or dropp
 The old driver also mixed registration output with truth data and plotting. Keeping metrics
 independent makes it easier to test failures such as unequal shapes, empty clouds, non-finite
 coordinates, and an estimated matrix that is not a valid 3-D rotation.
+
+## Run and test the metrics
+
+After installing the repository's development dependencies as described in the
+[setup instructions](../../README.md#validation), run the following from the
+repository root to check a small example and the shared-package tests:
+
+```shell
+python -c "import numpy as np; from notes_tools.point_cloud_registration.metrics import rmse; print(rmse(np.array([[0., 0., 0.]]), np.array([[1., 0., 0.]])))"
+python -m pytest tests/test_point_cloud_metrics.py
+```
+
+The example prints the RMSE and writes no files. The historical CPD driver is
+not included; the command above exercises the retained reusable metrics.

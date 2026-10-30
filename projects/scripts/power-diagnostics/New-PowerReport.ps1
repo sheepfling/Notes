@@ -2,7 +2,7 @@
 param(
     [int]$Days = 3,
     [int]$MaxEvents = 100,
-    [string]$OutputDirectory = (Join-Path (Get-Location) 'power-reports'),
+    [string]$OutputDirectory = (Join-Path (Join-Path (Get-Location) 'artifacts') 'power-diagnostics'),
     [switch]$SkipPowerCfg
 )
 

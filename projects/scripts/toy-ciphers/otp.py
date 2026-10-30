@@ -81,6 +81,19 @@ def _write(path: Path, data: str) -> None:
 ####
 
 
+def _same_file(first: Path, second: Path) -> bool:
+    """Detect path and existing hard-link aliases before writing output."""
+    if first.resolve() == second.resolve():
+        return True
+    ####
+    try:
+        return first.samefile(second)
+    except FileNotFoundError:
+        return False
+    ####
+####
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     subparsers = parser.add_subparsers(dest="action", required=True)
@@ -111,6 +124,11 @@ def main() -> None:
     ####
 
     if args.action == "encrypt":
+        if (_same_file(args.input, args.output)
+                or _same_file(args.input, args.key_output)
+                or _same_file(args.output, args.key_output)):
+            parser.error("input, output, and key output must be different files")
+        ####
         data = _read(args.input)
         key = make_otp(len(data))
         _write(args.output, add_otp(data, key))
@@ -118,6 +136,9 @@ def main() -> None:
     else:
         if not args.key.is_file():
             parser.error(f"key file does not exist: {args.key}")
+        ####
+        if _same_file(args.output, args.input) or _same_file(args.output, args.key):
+            parser.error("output must differ from the input and key files")
         ####
         _write(args.output, sub_otp(_read(args.input), _read(args.key)))
     ####

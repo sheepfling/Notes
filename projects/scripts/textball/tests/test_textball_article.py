@@ -1,8 +1,11 @@
 """Exercise the Textball note's CLI and trusted-input safeguards."""
 
+import ast
 import base64
+import hashlib
 import importlib.util
 import io
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -81,10 +84,12 @@ def test_textball_rejects_unknown_format_and_traversal(tmp_path: Path) -> None:
 
 def test_textball_legacy_requires_explicit_opt_in(tmp_path: Path) -> None:
     module = load_textball("textball_legacy")
+    digest = hashlib.md5(b"legacy\n").hexdigest()
     legacy = (
         "'legacy.txt'\t1\t0\t1\t"
         "{'path': 'legacy.txt', 'num_lines': 1, 'is_base64': False, "
-        "'has_trailing_newline': True, 'file_size': 7, 'md5': 'invalid'}\n"
+        "'has_trailing_newline': True, 'file_size': 7, "
+        f"'md5': '{digest}'}}\n"
         "legacy\n"
     )
     with pytest.raises(RuntimeError, match="Unsupported textball format"):
@@ -92,4 +97,168 @@ def test_textball_legacy_requires_explicit_opt_in(tmp_path: Path) -> None:
     ####
     module.extract_tarball(io.StringIO(legacy), tmp_path / "accepted", allow_legacy=True)
     assert (tmp_path / "accepted" / "legacy.txt").read_text(encoding="utf-8") == "legacy\n"
+####
+
+
+@pytest.mark.parametrize("encoded", [False, True])
+@pytest.mark.parametrize("corruption", ["payload", "size"])
+def test_corrupt_member_never_overwrites_existing_destination(
+    tmp_path: Path, encoded: bool, corruption: str
+) -> None:
+    module = load_textball("textball_corruption")
+    source_dir = tmp_path / "source"
+    source_dir.mkdir()
+    source = source_dir / "member.txt"
+    source.write_bytes(b"hello\n")
+    stream = io.StringIO()
+    module.write_tarball(source_dir, stream, encode_all=encoded)
+    lines = stream.getvalue().splitlines(keepends=True)
+    if corruption == "payload":
+        lines[2] = ("A" if lines[2][0] != "A" else "B") + lines[2][1:]
+    else:
+        header = lines[1].split("\t")
+        metadata = ast.literal_eval(header[4])
+        metadata["file_size"] += 1
+        header[4] = repr(metadata) + "\n"
+        lines[1] = "\t".join(header)
+    ####
+    package = tmp_path / "corrupt.txt"
+    package.write_text("".join(lines), encoding="utf-8")
+    target = tmp_path / "output" / source_dir.name / source.name
+    target.parent.mkdir(parents=True)
+    target.write_bytes(b"preserve existing output")
+
+    result = run_textball(tmp_path, "extract", str(package), str(target.parents[1]))
+
+    assert result.returncode != 0
+    assert ("Checksum mismatch" if corruption == "payload" else "Invalid size") in result.stderr
+    assert "extracted to" not in result.stdout
+    assert target.read_bytes() == b"preserve existing output"
+    assert source.read_bytes() == b"hello\n"
+####
+
+
+@pytest.mark.parametrize("encoded", [False, True])
+def test_valid_member_can_overwrite_distinct_existing_destination(tmp_path: Path, encoded: bool) -> None:
+    module = load_textball("textball_valid_overwrite")
+    source_dir = tmp_path / "source"
+    source_dir.mkdir()
+    (source_dir / "member.txt").write_bytes(b"hello\n")
+    stream = io.StringIO()
+    module.write_tarball(source_dir, stream, encode_all=encoded)
+    output = tmp_path / "output"
+    target = output / "source" / "member.txt"
+    target.parent.mkdir(parents=True)
+    target.write_bytes(b"old contents")
+
+    module.extract_tarball(io.StringIO(stream.getvalue()), output)
+
+    assert target.read_bytes() == b"hello\n"
+####
+
+
+def test_text_extraction_preserves_unicode_and_crlf_bytes(tmp_path: Path) -> None:
+    module = load_textball("textball_text_newlines")
+    source_dir = tmp_path / "source"
+    source_dir.mkdir()
+    content = "café\r\nnext line\r\n".encode()
+    (source_dir / "member.txt").write_bytes(content)
+    stream = io.StringIO()
+    module.write_tarball(source_dir, stream, encode_all=False)
+
+    output = tmp_path / "output"
+    module.extract_tarball(io.StringIO(stream.getvalue()), output)
+
+    assert (output / "source" / "member.txt").read_bytes() == content
+####
+
+
+@pytest.mark.parametrize("encoded", [False, True])
+@pytest.mark.parametrize(
+    "content",
+    [b"first\r\nsecond\r\n", b"first\r\nsecond", b"ends in carriage return\r", b"\x00\xff\x80\r\n\x03"],
+)
+def test_cli_text_round_trip_preserves_newlines(tmp_path: Path, encoded: bool, content: bytes) -> None:
+    source = tmp_path / "source"
+    source.mkdir()
+    (source / "member.txt").write_bytes(content)
+    package = tmp_path / "package.txt"
+    package.touch()
+    create_args = ["create", str(source), str(package), "--text"]
+    if encoded:
+        create_args.append("--encode")
+    ####
+    created = run_textball(tmp_path, *create_args)
+    actual_package = Path(str(package) + ".b64") if encoded else package
+    output = tmp_path / "output"
+    extract_args = ["extract", str(actual_package), str(output)]
+    if encoded:
+        extract_args.append("--decode")
+    ####
+    extracted = run_textball(tmp_path, *extract_args)
+
+    assert created.returncode == 0, created.stderr
+    assert extracted.returncode == 0, extracted.stderr
+    assert (output / "source" / "member.txt").read_bytes() == content
+    assert (source / "member.txt").read_bytes() == content
+####
+
+
+@pytest.mark.parametrize("content", [b"first\nsecond", b"first\r\nsecond\r\n", b"ends in carriage return\r"])
+def test_cli_accepts_matching_historical_windows_newlines(tmp_path: Path, content: bytes) -> None:
+    module = load_textball("textball_windows_archive")
+    source = tmp_path / "source"
+    source.mkdir()
+    (source / "member.txt").write_bytes(content)
+    stream = io.StringIO()
+    module.write_tarball(source, stream, encode_all=False)
+    package = tmp_path / "legacy-windows.txt"
+    package.write_bytes(stream.getvalue().replace("\n", "\r\n").encode())
+    output = tmp_path / "output"
+
+    result = run_textball(tmp_path, "extract", str(package), str(output))
+
+    assert result.returncode == 0, result.stderr
+    assert (output / "source" / "member.txt").read_bytes() == content
+####
+
+
+@pytest.mark.parametrize("alias_kind", ["same", "symlink", "hardlink"])
+def test_cli_never_overwrites_its_input_archive(tmp_path: Path, alias_kind: str) -> None:
+    payload = b"replacement\n"
+    digest = hashlib.md5(payload).hexdigest()
+    member_name = "package.txt" if alias_kind == "same" else "alias.txt"
+    metadata = {
+        "path": member_name,
+        "num_lines": 1,
+        "is_base64": False,
+        "has_trailing_newline": True,
+        "file_size": len(payload),
+        "md5": digest,
+    }
+    package = tmp_path / "package.txt"
+    package.write_text(
+        "NOTES-TEXTBALL/1\n"
+        + f"{member_name!r}\t1\t0\t1\t{metadata!r}\n"
+        + payload.decode(),
+        encoding="utf-8",
+    )
+    before = package.read_bytes()
+    alias = tmp_path / "alias.txt"
+    try:
+        if alias_kind == "symlink":
+            alias.symlink_to(package)
+        elif alias_kind == "hardlink":
+            os.link(package, alias)
+        ####
+    except OSError as error:
+        pytest.skip(f"{alias_kind} unavailable: {error}")
+    ####
+
+    result = run_textball(tmp_path, "extract", str(package), str(tmp_path))
+
+    assert result.returncode != 0
+    assert "Output aliases the input textball" in result.stderr
+    assert "extracted to" not in result.stdout
+    assert package.read_bytes() == before
 ####
