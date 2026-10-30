@@ -148,16 +148,28 @@ The test uses small CPU simulations and a temporary directory for generated arti
 and caches. It checks that the stages produce usable outputs; it is not a validation
 of the physical model.
 
+Test the individual backend runners and comparison CLI paths without running
+the simulations:
+
+```shell
+python -m pytest projects/converging-flow/examples/backend_agnostic/tests projects/converging-flow/examples/physics_diagnostics/tests
+```
+
+The reactive demo and pressure comparison now default to the ignored
+`artifacts/converging-flow/physics-gallery/` directory. Existing scripts or
+retained results using the older `examples/` locations can still be selected
+with the explicit `--output`, `--radiant-state`, and `--reactive-state` flags.
+
 Generate the reactive-Euler pressure/acceleration gallery:
 
 ```
-python examples/backend_agnostic/reactive_pressure_demo.py --backend auto --resolution 128 --final-time 0.04 --frames 9 --output artifacts/converging-flow/physics-diagnostics/reactive_pressure
+python projects/converging-flow/examples/backend_agnostic/reactive_pressure_demo.py --backend auto --resolution 128 --final-time 0.04 --frames 9 --output artifacts/converging-flow/physics-diagnostics/reactive_pressure
 ```
 
 Generate the finite-source, pressure-wave, and phase-transition demonstration:
 
 ```
-python examples/backend_agnostic/impulsive_phase_transition_demo.py --backend auto --resolution 768 --final-time 0.18 --frames 121 --fps 18 --output artifacts/converging-flow/impulsive-phase-transition
+python projects/converging-flow/examples/backend_agnostic/impulsive_phase_transition_demo.py --backend auto --resolution 768 --final-time 0.18 --frames 121 --fps 18 --output artifacts/converging-flow/impulsive-phase-transition
 ```
 
 This separate normalized Euler model starts with a localized finite positive-feedback
@@ -182,7 +194,7 @@ stores the values in `radiant_wave_state.npz` and `radiant_wave_summary.json`.
 To exercise a timed generic loss-material insertion and relaxation run:
 
 ```
-python examples/physics_diagnostics/run_absorber_relaxation.py --backend auto --resolution 48 --final-time 0.06 --insertion-time 0.03 --frames 121 --fps 16 --output artifacts/converging-flow/absorber-relaxation
+python projects/converging-flow/examples/physics_diagnostics/run_absorber_relaxation.py --backend auto --resolution 48 --final-time 0.06 --insertion-time 0.03 --frames 121 --fps 16 --output artifacts/converging-flow/absorber-relaxation
 ```
 
 The `--frames` value should be an integer (for example `81`). The run starts with an open
@@ -201,7 +213,7 @@ To animate a perforated generic reactive block with a 6×4 grid of axial open ch
 a reflective outer shell, and loss rods moving to 50% channel depth:
 
 ```
-python examples/physics_diagnostics/run_channel_block_regulation.py --backend auto --resolution 56 --final-time 0.24 --rod-start 0.05 --rod-end 0.12 --rod-fraction 0.50 --frames 141 --fps 18 --output artifacts/converging-flow/channel-block-regulation
+python projects/converging-flow/examples/physics_diagnostics/run_channel_block_regulation.py --backend auto --resolution 56 --final-time 0.24 --rod-start 0.05 --rod-end 0.12 --rod-fraction 0.50 --frames 141 --fps 18 --output artifacts/converging-flow/channel-block-regulation
 ```
 
 This is a normalized heat-producing and damped-wave visualization only. It uses illustrative
@@ -213,7 +225,7 @@ To run that settled channel-block stage followed by a two-dimensional finite imp
 pressure-wave, and phase-transition event:
 
 ```
-python examples/physics_diagnostics/run_channel_block_impulsive_event.py --backend auto --resolution 48 --final-time 0.16 --frames 101 --fps 16 --output artifacts/converging-flow/channel-block-impulsive-event
+python projects/converging-flow/examples/physics_diagnostics/run_channel_block_impulsive_event.py --backend auto --resolution 48 --final-time 0.16 --frames 101 --fps 16 --output artifacts/converging-flow/channel-block-impulsive-event
 ```
 
 The precursor's final activity, heat, and channel occupancy form a normalized 2D
@@ -225,7 +237,7 @@ To keep the full perforated-block geometry and run the finite event in 3D at a
 chosen side/corner after regulation:
 
 ```
-python examples/physics_diagnostics/run_perforated_block_3d_event.py --backend cupy --resolution 48 --final-time 0.16 --event-time 0.035 --event-center -0.50 0.52 -0.30 --frames 101 --fps 16 --output artifacts/converging-flow/perforated-block-3d-event
+python projects/converging-flow/examples/physics_diagnostics/run_perforated_block_3d_event.py --backend cupy --resolution 48 --final-time 0.16 --event-time 0.035 --event-center -0.50 0.52 -0.30 --frames 101 --fps 16 --output artifacts/converging-flow/perforated-block-3d-event
 ```
 
 This one driver first completes the scheduled 3D material regulation stage,
@@ -310,13 +322,10 @@ to repeatedly distributing values to neighbors. The NumPy backend provides the r
 reference implementation. The Numba backend fuses the three Laplacians, local source
 terms, clipping, and both midpoint stages into two compiled grid passes.
 
-Run the included benchmark with:
-
-```
-PYTHONPATH=src python benchmarks/benchmark_reaction_backends.py
-```
-
-The committed example timings are machine-specific and exclude one-time Numba compilation.
+The [historical benchmark record](examples/performance/BENCHMARKS.md) retains
+machine-specific example timings that exclude one-time Numba compilation. Its
+original benchmark harness is not present in this repository, so the recorded
+command cannot currently be reproduced from this checkout.
 
 ## Radiant-wave autocatalytic experiment
 
@@ -391,7 +400,7 @@ mechanism; `-grad(p)` must not be added again as a body force.
 Run the included normalized demonstration with:
 
 ```
-PYTHONPATH=src python examples/backend_agnostic/reactive_pressure_demo.py --backend auto --output artifacts/converging-flow/reactive-pressure-demo
+PYTHONPATH=src python projects/converging-flow/examples/backend_agnostic/reactive_pressure_demo.py --backend auto --output artifacts/converging-flow/reactive-pressure-demo
 ```
 
 This demonstration uses a prescribed generic progress-rate profile. It is numerical

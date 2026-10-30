@@ -34,14 +34,19 @@ class Capture:
         """Return a captured value or fail when the backend returned an error."""
         if self.value is None:
             raise ValueError("probe did not return a value")
+        ####
         return self.value
+    ####
 
     def to_dict(self) -> dict[str, object]:
         """Retain the original flat output schema while omitting unset fields."""
         result = {key: value for key, value in asdict(self).items() if value is not None}
         if "error_type" in result:
             result["type"] = result.pop("error_type")
+        ####
         return result
+    ####
+####
 
 
 @dataclass
@@ -64,6 +69,8 @@ class ProbeRecord:
         context = {key: value for key, value in asdict(self).items()
                    if key != "capture" and value is not None}
         return context | self.capture.to_dict()
+    ####
+####
 
 
 @dataclass
@@ -88,6 +95,8 @@ class SemanticReport:
         output['pylinalg_native_batch_probes'] = [record.to_dict() for record in self.pylinalg_native_batch_probes]
         output['layouts'] = [record.to_dict() for record in self.layouts]
         return output
+    ####
+####
 
 
 def implementations(op: str) -> dict[str, Callable[..., object]]:
@@ -96,10 +105,12 @@ def implementations(op: str) -> dict[str, Callable[..., object]]:
                 'numpy': b.multiply_numpy, 'numpy_quaternion': b.qlib_multiply_array,
                 'scipy': b.scipy_multiply_array, 'rowan': rowan.multiply,
                 'pylinalg': b.pylinalg_multiply_array}
+    ####
     return {'python': lambda q, v: b.python_array(b.rotate_python, q, v, q.ndim == 1),
             'numpy': b.rotate_numpy, 'numpy_quaternion': b.qlib_rotate_array,
             'scipy': b.scipy_rotate_array, 'rowan': b.rowan_rotate_array,
             'pylinalg': b.pylinalg_rotate_array}
+####
 
 
 def capture(fn: Callable[..., object], *args: object) -> Capture:
@@ -111,8 +122,11 @@ def capture(fn: Callable[..., object], *args: object) -> Capture:
                              shape=list(x.shape), c_contiguous=bool(x.flags.c_contiguous))
         except Exception as e:  # noqa: BLE001 - probes must record backend errors
             result = Capture(status='error', error_type=type(e).__name__, message=str(e))
+        ####
         result.warnings = [str(w.message) for w in caught]
         return result
+    ####
+####
 
 
 def main() -> None:
@@ -126,6 +140,9 @@ def main() -> None:
                 assert result.status == 'returned'
                 checks.append(ProbeRecord(result, test='dtype', input_dtype=np.dtype(dtype).name,
                                           operation=op, implementation=name))
+            ####
+        ####
+    ####
     # Separate explicit output dtype options: not timed in the float64 benchmark.
     a = np.array([.5, .5, .5, .5], dtype=np.float32)
     v = np.array([1, 2, 3], dtype=np.float32)
@@ -134,6 +151,7 @@ def main() -> None:
         result = capture(fn)
         assert result.dtype == 'float32'
         checks.append(ProbeRecord(result, test='explicit_pylinalg_output_dtype', operation=name))
+    ####
 
     qz = np.array([np.sqrt(.5), 0., 0., np.sqrt(.5)])
     vx = np.array([1., 0., 0.])
@@ -150,6 +168,9 @@ def main() -> None:
                 assert result.status == 'error'
             else:
                 b.assert_close(result.require_value(), vx if name in ('python', 'numpy') else [0, 0, 0])
+            ####
+        ####
+    ####
     qi, qj, qk = np.eye(4)[1:]
     for name, fn in implementations('multiply').items():
         result = capture(fn, 2*qi, 3*qj)
@@ -157,6 +178,7 @@ def main() -> None:
         b.assert_close(result.require_value(), expected)
         checks.append(ProbeRecord(result, test='nonunit_multiply', implementation=name,
                                   expected_policy='normalized_rotations' if name == 'scipy' else 'raw_Hamilton_product'))
+    ####
     b.test_known_cases()
 
     # Probe small shapes only: large unsupported rotation inputs can broadcast
@@ -176,8 +198,11 @@ def main() -> None:
                 value = np.asarray(result.require_value())
                 result.max_abs_error = float(np.max(np.abs(value-expected)))
                 result.correct = bool(value.shape == expected.shape and np.allclose(value, expected, atol=2e-13, rtol=2e-13))
+            ####
             assert not result.correct
             probes.append(ProbeRecord(result, n=n, operation=op, native_order='xyzw'))
+        ####
+    ####
     # Layout: common contract versus raw/native view for each implementation.
     layouts = []
     q = np.tile(qz, (5, 1)); v = np.tile(vx, (5, 1))
@@ -186,15 +211,19 @@ def main() -> None:
             result = capture(fn, q, q if op == 'multiply' else v)
             assert result.status == 'returned' and result.c_contiguous
             layouts.append(ProbeRecord(result, path='array_to_array', operation=op, implementation=name))
+        ####
+    ####
     for name, fn in [('rowan', lambda: rowan.rotate(q, v)),
                      ('numpy_quaternion', lambda: b.qlib_rotate_prepared(b.qlib.as_quat_array(q), b.qlib.from_vector_part(v)))]:
         result = capture(fn)
         assert not result.c_contiguous
         layouts.append(ProbeRecord(result, path='prepared', operation='rotate', implementation=name))
+    ####
     source_hashes = {}
     for fn in [rowan.multiply, rowan.rotate, pylinalg.quat_mul, pylinalg.vec_transform_quat]:
         source = inspect.getsource(fn)
         source_hashes[fn.__module__+'.'+fn.__name__] = hashlib.sha256(source.encode()).hexdigest()
+    ####
     report = SemanticReport(
         passed=True,
         versions={d: importlib.metadata.version(d) for d in ['numpy', 'scipy', 'numpy-quaternion', 'rowan', 'pylinalg']},
@@ -208,7 +237,9 @@ def main() -> None:
     )
     pathlib.Path('semantics.json').write_text(json.dumps(report.to_dict(), indent=2)+'\n')
     print('Semantic probes passed, including observed non-parity; saved semantics.json.')
+####
 
 
 if __name__ == '__main__':
     main()
+####

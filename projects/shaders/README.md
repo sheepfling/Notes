@@ -33,9 +33,10 @@ case. Do not interpret the display as a calibrated measurement.
 
 ## Browser preview
 
-The [GLSL shader gallery](shader-gallery/index.html) discovers every `.glsl` file under `notes/` and displays
-its source. The retained point-scatterer helper also has a small WebGL2 adapter so its interference
-pattern can be viewed interactively:
+The [GLSL shader gallery](shader-gallery/index.html) discovers durable `.glsl` files under
+`notes/` and `projects/shaders/` and displays their source. The retained point-scatterer helper
+also has a small WebGL2 adapter so its interference pattern can be viewed interactively.
+From the repository root, start the local server:
 
 ```
 uv run python scripts/serve_shader_gallery.py
@@ -43,6 +44,14 @@ uv run python scripts/serve_shader_gallery.py
 
 Then open the URL printed by the server. A future shader appears in the source list automatically;
 it needs an explicit adapter before the gallery will render it.
+
+Run the collection's focused test from the repository root:
+
+```shell
+python -m pytest projects/shaders/tests
+```
+
+The historical `python -m pytest tests/test_shader_collection.py` entrypoint remains available.
 
 ## Omitted source material
 

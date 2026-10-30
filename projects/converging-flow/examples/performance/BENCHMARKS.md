@@ -23,9 +23,15 @@ length. Small one-off simulations may favor NumPy because Numba must compile onc
 spatial dimensionality. Repeated runs and larger 2D/3D grids benefit most from the fused
 backend.
 
-Reproduce with:
+## Historical command and reproduction status
 
-```bash
+The original record listed the command below. It is retained for provenance,
+but `benchmarks/benchmark_reaction_backends.py` is not present in this
+repository, so the command cannot be reproduced from this checkout. The listed
+output path is also outside the ignored artifact directory. Do not run it as
+written.
+
+```text
 PYTHONPATH=src python benchmarks/benchmark_reaction_backends.py \
   --n1 4096 \
   --n2 256 \
@@ -33,3 +39,8 @@ PYTHONPATH=src python benchmarks/benchmark_reaction_backends.py \
   --repetitions 30 \
   --output examples/performance/reaction_backend_benchmark.json
 ```
+
+If the original harness is recovered, review it and direct any regenerated
+reports under the ignored `artifacts/converging-flow/` directory rather than
+the source tree. The timings above remain historical observations until the
+harness and its environment can be independently verified.

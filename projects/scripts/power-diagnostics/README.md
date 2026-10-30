@@ -19,23 +19,26 @@ Create a complete timestamped report bundle with one command:
 Set-ExecutionPolicy -Scope Process Bypass
 ```
 
-```
-python power_history.py --report
+From the repository root, use an explicit ignored output directory:
+
+```shell
+python projects/scripts/power-diagnostics/power_history.py --report --output-directory artifacts/power-diagnostics
 ```
 
-This creates `power-reports\YYYYMMDD-HHmmss\` containing JSON, Markdown, and
-HTML reports. To choose a destination or history window:
+This creates `artifacts/power-diagnostics/YYYYMMDD-HHmmss/` containing JSON,
+Markdown, and HTML reports. If the destination is omitted, the launcher uses
+`power-reports` relative to the current directory. To choose a history window:
 
-```
-python power_history.py --report --days 7 --output-directory power-reports
+```shell
+python projects/scripts/power-diagnostics/power_history.py --report --days 7 --output-directory artifacts/power-diagnostics
 ```
 
 Longer windows are supported, subject to the retention limits of the Windows
 event logs:
 
-```
-python power_history.py --report --days 30 --max-events 200
-python power_history.py --report --days 365 --max-events 500
+```shell
+python projects/scripts/power-diagnostics/power_history.py --report --days 30 --max-events 200 --output-directory artifacts/power-diagnostics
+python projects/scripts/power-diagnostics/power_history.py --report --days 365 --max-events 500 --output-directory artifacts/power-diagnostics
 ```
 
 Some `powercfg` queries require elevated PowerShell rights. If one is denied,
@@ -45,15 +48,24 @@ history is needed.
 
 For a single output format, use the collector directly:
 
-```
-python power_history.py --max-events 50
-python power_history.py --format Html --output-directory .\power-reports --report-name incident
-python power_history.py --format Json --output-directory .\power-reports --report-name incident
+```shell
+python projects/scripts/power-diagnostics/power_history.py --max-events 50
+python projects/scripts/power-diagnostics/power_history.py --format Html --output-directory artifacts/power-diagnostics --report-name incident
+python projects/scripts/power-diagnostics/power_history.py --format Json --output-directory artifacts/power-diagnostics --report-name incident
 ```
 
 Use `-Since (Get-Date).AddDays(-7)`, `-Json`, or `-SkipPowerCfg` as needed.
 The script does not change power plans, timers, wake permissions, or event
 logs. Administrator rights may be required for every event detail.
+
+Run the focused Python command-builder test from the repository root:
+
+```shell
+python -m pytest projects/scripts/power-diagnostics/tests
+```
+
+The test inspects arguments only; it does not run PowerShell or collect host
+events. Actual event collection remains a Windows-specific operation.
 
 | Event | Meaning |
 |---|---|

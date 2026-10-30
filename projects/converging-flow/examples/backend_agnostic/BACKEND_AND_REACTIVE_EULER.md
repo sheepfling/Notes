@@ -90,6 +90,25 @@ converging-flow radiant-wave-run \
   --no-plots
 ```
 
+From the repository root, the two article runners keep generated results under
+the ignored `artifacts/` tree by default. Explicit `--output` paths remain
+available for existing workflows:
+
+```shell
+python projects/converging-flow/examples/backend_agnostic/reactive_pressure_demo.py --backend numpy --output artifacts/converging-flow/physics-gallery/reactive_pressure
+python projects/converging-flow/examples/backend_agnostic/impulsive_phase_transition_demo.py --backend numpy --output artifacts/converging-flow/impulsive-phase-transition
+```
+
+Run the co-located CLI and artifact-routing checks from the repository root:
+
+```shell
+python -m pytest projects/converging-flow/examples/backend_agnostic/tests
+```
+
+These short checks exercise command routing without running the simulations.
+The real gallery orchestration smoke test is documented in the project README;
+shared solver tests remain under `tests/converging_flow/`.
+
 ## Validation status
 
 The available environment had NumPy/SciPy but no CuPy or CUDA device. CPU execution,

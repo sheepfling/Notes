@@ -65,6 +65,11 @@ and repository-root commands to reproduce the experiment and run its tests. Add
 co-located test directories to pytest discovery. Keep generated outputs in ignored
 `artifacts/` or a temporary test directory, not beside the source.
 
+Each executable article or collection documents its dependencies and commands
+to run and test it from the repository root. The notes also identify generated
+outputs, overwrite behavior, and platform limitations where relevant. Historical
+maintenance scripts remain explicit tools; discovering articles does not run them.
+
 ## Finding a note
 
 Use the category directories above, or search filenames and note contents from the repository root. For example, in PowerShell:

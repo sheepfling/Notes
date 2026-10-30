@@ -18,7 +18,10 @@ def powershell_executable() -> str:
         executable = shutil.which(candidate)
         if executable:
             return executable
+        ####
+    ####
     raise RuntimeError("PowerShell was not found; install PowerShell 7 or run on Windows.")
+####
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -32,6 +35,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--report-name", default="power-history")
     parser.add_argument("--skip-powercfg", action="store_true")
     return parser
+####
 
 
 def collector_command(arguments: argparse.Namespace, executable: str) -> list[str]:
@@ -44,25 +48,34 @@ def collector_command(arguments: argparse.Namespace, executable: str) -> list[st
         command.extend(["-MaxEvents", str(arguments.max_events), "-Format", arguments.format])
         if arguments.since:
             command.extend(["-Since", arguments.since])
+        ####
         if arguments.output_directory != Path("power-reports") or arguments.format != "Console":
             command.extend(["-OutputDirectory", str(arguments.output_directory)])
+        ####
         command.extend(["-ReportName", arguments.report_name])
+    ####
     if arguments.skip_powercfg:
         command.append("-SkipPowerCfg")
+    ####
     return command
+####
 
 
 def main(argv: list[str] | None = None) -> int:
     arguments = build_parser().parse_args(argv)
     if arguments.days < 1 or arguments.max_events < 1:
         raise SystemExit("--days and --max-events must be positive")
+    ####
     try:
         executable = powershell_executable()
         return subprocess.run(collector_command(arguments, executable), check=False).returncode
     except RuntimeError as error:
         print(f"power-history: {error}", file=sys.stderr)
         return 2
+    ####
+####
 
 
 if __name__ == "__main__":
     raise SystemExit(main())
+####

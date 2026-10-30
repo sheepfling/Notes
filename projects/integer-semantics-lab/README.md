@@ -145,6 +145,16 @@ odin run projects/integer-semantics-lab/odin -- --format=jsonl --catalog=all  > 
 python projects/integer-semantics-lab/scripts/run_lab.py
 ```
 
+From the repository root, run the project-owned Python orchestration and
+report tests with:
+
+```shell
+python -m pytest projects/integer-semantics-lab/tests
+```
+
+These tests use temporary paths and mock compiler invocations; they do not
+replace the C++ or Odin build and test commands above.
+
 On a machine without Odin, validate only C++ with:
 
 ```

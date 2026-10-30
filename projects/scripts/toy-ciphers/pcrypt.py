@@ -94,7 +94,9 @@ def main() -> None:
         parser.error(f"input file does not exist: {args.input}")
     ####
 
-    data = args.input.read_text(encoding="utf-8", newline="")
+    with args.input.open("r", encoding="utf-8", newline="") as stream:
+        data = stream.read()
+    ####
     if args.action == "encrypt":
         result = add_passphrase(data, args.passphrase)
     else:

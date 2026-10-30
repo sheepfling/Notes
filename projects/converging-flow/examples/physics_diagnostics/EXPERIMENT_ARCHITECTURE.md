@@ -53,7 +53,7 @@ The two scalar-wave drivers also accept complete JSON documents with
 [`parameter_sets`](parameter_sets). For example:
 
 ```
-python examples/physics_diagnostics/run_channel_block_regulation.py --parameters examples/physics_diagnostics/parameter_sets/perforated_block_default.json --frames 181 --fps 24
+python projects/converging-flow/examples/physics_diagnostics/run_channel_block_regulation.py --parameters projects/converging-flow/examples/physics_diagnostics/parameter_sets/perforated_block_default.json --frames 181 --fps 24
 ```
 
 `PhaseThermalParameters` supplies specific heat, gas constant, released energy
@@ -74,7 +74,7 @@ It is the complete document form: `precursor`, `initial_state`, `event`,
 `coupling`, `phase`, `numerics`, `validation`, and `presentation`.
 
 ```
-python examples/physics_diagnostics/run_perforated_block_3d_event.py --parameters examples/physics_diagnostics/parameter_sets/perforated_block_3d_event_default.json
+python projects/converging-flow/examples/physics_diagnostics/run_perforated_block_3d_event.py --parameters projects/converging-flow/examples/physics_diagnostics/parameter_sets/perforated_block_3d_event_default.json
 ```
 
 Use `.json` for portable, dependency-free execution. `.yaml` and `.yml` are

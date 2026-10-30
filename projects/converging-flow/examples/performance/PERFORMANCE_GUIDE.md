@@ -97,5 +97,7 @@ tests.
 
 A standalone Laplacian benchmark can be misleading. The important unit is a complete time
 step including all fields, source terms, clipping, boundary handling, and integration
-stages. The included benchmark measures that complete operation and excludes only the
-one-time Numba compilation call.
+stages. The [historical benchmark record](BENCHMARKS.md) describes a measurement
+of that complete operation excluding one-time Numba compilation. Its harness is
+not present in this repository, so the recorded command cannot currently be
+reproduced from this checkout.

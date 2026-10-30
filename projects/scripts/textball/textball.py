@@ -103,10 +103,12 @@ def _safe_output_path(output_dirpath: Path, stored_path: str) -> Path:
     relative_path = Path(stored_path)
     if relative_path.is_absolute() or relative_path.drive or '..' in relative_path.parts:
         raise RuntimeError(f'Unsafe path in textball header: {stored_path!r}')
+    ####
     output_root = output_dirpath.resolve()
     output_path = (output_root / relative_path).resolve()
     if output_path != output_root and output_root not in output_path.parents:
         raise RuntimeError(f'Unsafe path in textball header: {stored_path!r}')
+    ####
     return output_path
 ####
 
@@ -132,6 +134,7 @@ def extract_tarball(
                 f'Unsupported textball format: expected {FORMAT_MAGIC!r}; '
                 'pass --legacy only for trusted historical files'
             )
+        ####
         line = first_line
     else:
         line = None
@@ -142,6 +145,7 @@ def extract_tarball(
             line = tar.readline()
             if line:
                 line_number += 1
+            ####
         ####
         if not line:
             break

@@ -18,14 +18,17 @@ each source character.
 Run the self-test:
 
 ```
-uv run python projects/scripts/toy-ciphers/otp.py test
+python projects/scripts/toy-ciphers/otp.py test
 ```
 
-For a file, provide explicit output paths so an experiment cannot silently overwrite the input:
+From the repository root, create an ignored artifact directory and use distinct
+output paths. The commands overwrite existing destination files, so check paths
+first and do not reuse the input or key path as an output:
 
-```
-uv run python projects/scripts/toy-ciphers/otp.py encrypt input.txt encrypted.txt key.txt
-uv run python projects/scripts/toy-ciphers/otp.py decrypt encrypted.txt key.txt restored.txt
+```shell
+python -c "from pathlib import Path; Path('artifacts/toy-ciphers').mkdir(parents=True, exist_ok=True)"
+python projects/scripts/toy-ciphers/otp.py encrypt input.txt artifacts/toy-ciphers/encrypted.txt artifacts/toy-ciphers/key.txt
+python projects/scripts/toy-ciphers/otp.py decrypt artifacts/toy-ciphers/encrypted.txt artifacts/toy-ciphers/key.txt artifacts/toy-ciphers/restored.txt
 ```
 
 Despite its name, this is not a complete one-time pad system. It has no authenticated format,
@@ -38,10 +41,11 @@ Use a vetted authenticated-encryption library for real data.
 Vigenere-like exercise, not encryption. The cleaned version rejects empty or non-printable
 passphrases and fails clearly instead of silently producing an empty or truncated result.
 
-```
-uv run python projects/scripts/toy-ciphers/pcrypt.py test
-uv run python projects/scripts/toy-ciphers/pcrypt.py encrypt input.txt passphrase transformed.txt
-uv run python projects/scripts/toy-ciphers/pcrypt.py decrypt transformed.txt passphrase restored.txt
+```shell
+python -c "from pathlib import Path; Path('artifacts/toy-ciphers').mkdir(parents=True, exist_ok=True)"
+python projects/scripts/toy-ciphers/pcrypt.py test
+python projects/scripts/toy-ciphers/pcrypt.py encrypt input.txt passphrase artifacts/toy-ciphers/transformed.txt
+python projects/scripts/toy-ciphers/pcrypt.py decrypt artifacts/toy-ciphers/transformed.txt passphrase artifacts/toy-ciphers/restored.txt
 ```
 
 Repeating keys are especially unsuitable for confidentiality because they create predictable
@@ -57,5 +61,12 @@ structure. The implementation also works on text only and does not authenticate 
 - Replaced permissive `parse_known_args` behavior with explicit command-line arguments.
 - Kept the old line-display helper as a separate [readlines project](../readlines/README.md).
 
-The focused tests cover printable and Unicode text, newlines, invalid keys, empty passphrases,
-and the line-display helper. They test reversibility, not security.
+The runners use the Python standard library. Run the co-located pytest tests from the
+repository root:
+
+```shell
+python -m pytest projects/scripts/toy-ciphers/tests
+```
+
+The tests cover printable and Unicode text, newlines, invalid keys and empty passphrases;
+their generated outputs stay in temporary directories. They test reversibility, not security.

@@ -211,7 +211,7 @@ async function start() {
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const shaders = await response.json();
     elements.shaderCount.textContent = `${shaders.length} file${shaders.length === 1 ? "" : "s"}`;
-    elements.indexStatus.textContent = "Discovered from notes/";
+    elements.indexStatus.textContent = "Discovered from notes/ and projects/shaders/";
     shaders.forEach(addShaderButton);
     if (shaders.length > 0) await loadShader(shaders[0]);
   } catch (error) {

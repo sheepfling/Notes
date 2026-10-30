@@ -70,7 +70,9 @@ def sub_otp(source: str, key: str) -> str:
 
 
 def _read(path: Path) -> str:
-    return path.read_text(encoding="utf-8", newline="")
+    with path.open("r", encoding="utf-8", newline="") as stream:
+        return stream.read()
+    ####
 ####
 
 

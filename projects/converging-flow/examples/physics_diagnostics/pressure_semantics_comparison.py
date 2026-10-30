@@ -86,20 +86,20 @@ def main() -> int:
     parser.add_argument(
         "--radiant-state",
         type=Path,
-        default=Path("examples/physics_diagnostics/radiant_1d/radiant_wave_state.npz"),
+        default=Path("artifacts/converging-flow/physics-gallery/radiant_1d/radiant_wave_state.npz"),
     )
     parser.add_argument(
         "--reactive-state",
         type=Path,
         default=Path(
-            "examples/physics_diagnostics/reactive_pressure/reactive_pressure_state.npz"
+            "artifacts/converging-flow/physics-gallery/reactive_pressure/reactive_pressure_state.npz"
         ),
     )
     parser.add_argument(
         "--output",
         type=Path,
         default=Path(
-            "examples/physics_diagnostics/pressure_semantics_comparison.png"
+            "artifacts/converging-flow/physics-gallery/pressure_semantics_comparison.png"
         ),
     )
     arguments = parser.parse_args()

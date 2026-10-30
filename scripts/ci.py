@@ -11,11 +11,38 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 PYTHON_PATHS = ("src", "scripts", "tests")
-RUFF_PATHS = (*PYTHON_PATHS, "projects/scripts/altchar/tests")
+ARTICLE_TEST_PATHS = (
+    "notes/thermal/tests",
+    "projects/scripts/altchar/tests",
+    "projects/scripts/base64/tests",
+    "projects/scripts/git-maintenance/tests",
+    "projects/scripts/power-diagnostics/tests",
+    "projects/scripts/readlines/tests",
+    "projects/scripts/textball/tests",
+    "projects/scripts/toy-ciphers/tests",
+    "projects/scripts/transfer-bundle/tests",
+    "projects/jorth/tests",
+    "projects/integer-semantics-lab/tests",
+    "projects/shaders/tests",
+    "projects/converging-flow/examples/physics_diagnostics/tests",
+    "projects/converging-flow/examples/backend_agnostic/tests",
+)
+RUFF_PATHS = (
+    *PYTHON_PATHS,
+    *ARTICLE_TEST_PATHS,
+    "notes/thermal",
+    "notes/quaternions/benchmark",
+    "projects/scripts/toy-ciphers",
+)
 SCOPE_MARKER_PATHS = (
     *PYTHON_PATHS,
+    "notes/thermal",
+    "notes/quaternions/benchmark",
     "projects/converging-flow/examples",
-    "projects/scripts/altchar",
+    "projects/scripts",
+    "projects/jorth",
+    "projects/integer-semantics-lab",
+    "projects/shaders/tests",
 )
 
 

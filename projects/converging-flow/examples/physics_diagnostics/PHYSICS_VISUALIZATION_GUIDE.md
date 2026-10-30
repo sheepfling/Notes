@@ -247,13 +247,23 @@ than interpolation between only the initial and final fields.
 
 ## Reproducing the gallery
 
+From the repository root, first run the complete gallery to generate the 1D
+radiant and reactive states used by the comparison. These commands keep output
+under the ignored `artifacts/` directory:
+
+```shell
+python projects/converging-flow/examples/physics_diagnostics/run_gallery.py --backend auto --output artifacts/converging-flow/physics-gallery
+converging-flow radiant-wave-run --dim 3 --n 32 --final-time 0.6 --backend auto --diffusion auto --frames 25 --fps 10 --output artifacts/converging-flow/physics-diagnostics/radiant_3d
+python projects/converging-flow/examples/backend_agnostic/reactive_pressure_demo.py --backend auto --resolution 512 --final-time 0.08 --frames 25 --fps 10 --output artifacts/converging-flow/physics-gallery/reactive_pressure
+python projects/converging-flow/examples/backend_agnostic/impulsive_phase_transition_demo.py --backend auto --resolution 768 --final-time 0.18 --frames 121 --fps 18 --output artifacts/converging-flow/physics-diagnostics/impulsive_phase_transition
+python projects/converging-flow/examples/physics_diagnostics/pressure_semantics_comparison.py
+python projects/converging-flow/examples/physics_diagnostics/run_channel_block_impulsive_event.py --backend auto --resolution 48 --final-time 0.16 --frames 101 --fps 16 --output artifacts/converging-flow/physics-diagnostics/channel_block_impulsive_event
 ```
-converging-flow radiant-wave-run --dim 3 --n 32 --final-time 0.6 --backend auto --diffusion auto --frames 25 --fps 10 --output examples/physics_diagnostics/radiant_3d
-python examples/backend_agnostic/reactive_pressure_demo.py --backend auto --resolution 512 --final-time 0.08 --frames 25 --fps 10 --output examples/physics_diagnostics/reactive_pressure
-python examples/backend_agnostic/impulsive_phase_transition_demo.py --backend auto --resolution 768 --final-time 0.18 --frames 121 --fps 18 --output examples/physics_diagnostics/impulsive_phase_transition
-python examples/physics_diagnostics/pressure_semantics_comparison.py
-python examples/physics_diagnostics/run_channel_block_impulsive_event.py --backend auto --resolution 48 --final-time 0.16 --frames 101 --fps 16 --output examples/physics_diagnostics/channel_block_impulsive_event
-```
+
+The reactive demo and comparison now default to the `physics-gallery` artifact
+directory. Existing calls using explicit `--output`, `--radiant-state`, or
+`--reactive-state` paths retain their behavior; pass those flags to reuse older
+outputs under `examples/` without moving them.
 
 The committed `radiant_1d` interface study uses 512 cells, 61 captured frames, a final time
 of 1.2, and Crank–Nicolson diffusion. It intentionally omits GIF generation because its

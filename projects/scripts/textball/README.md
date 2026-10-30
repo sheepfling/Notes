@@ -16,28 +16,48 @@ This is useful when the transport accepts text but not an ordinary archive. It i
 
 ## Create and extract
 
-Create a text package:
+From the repository root, create an ignored artifact directory and an empty
+package placeholder, then create a text package from an existing input directory:
 
-```
-New-Item package.txt -ItemType File
-python textball.py create input-directory package.txt --encode
+```shell
+python -c "from pathlib import Path; Path('artifacts/textball').mkdir(parents=True, exist_ok=True); Path('artifacts/textball/package.txt').touch()"
+python projects/scripts/textball/textball.py create input-directory artifacts/textball/package.txt --encode
 ```
 
-The current implementation expects the output path to already exist before it creates the package; that is a small usability bug worth fixing in a future revision.
+The current implementation expects the package placeholder to exist before
+creation. With `--encode`, it writes `package.txt.b64` beside that placeholder.
+Keep the artifact directory outside the input directory to avoid including the
+output in its own package.
 
 The encoded form can optionally insert harmless non-Base64 characters:
 
-```
-python textball.py create input-directory package.txt --encode --obfuscate 5
+```shell
+python projects/scripts/textball/textball.py create input-directory artifacts/textball/package.txt --encode --obfuscate 5
 ```
 
-Extract it into a new directory:
+The obfuscated output is written as `package.txt.b64.obs`; pass that path to
+the extractor with `--decode` when using this option.
 
-```powershell
-python textball.py extract package.txt extracted-directory --decode
+Extract the encoded package into a new directory:
+
+```shell
+python projects/scripts/textball/textball.py extract artifacts/textball/package.txt.b64 artifacts/textball/extracted --decode
 ```
 
 The checksums and sizes are checked after extraction, so corruption should be visible.
+Extraction can overwrite existing files before validation, so use a new, empty
+destination and retain the original inputs. Creation can also overwrite an
+existing output package.
+
+Run the Python article tests from the repository root:
+
+```shell
+python -m pytest projects/scripts/textball/tests
+```
+
+They use temporary directories for packages and extracted files. The Windows
+batch extractor shares the cross-project batch checks in
+`tests/test_batch_collection.py` and requires Windows tooling for execution.
 
 ## Caveats before trusting it
 

@@ -61,6 +61,18 @@ hash-sha256.bat <input.tar>
 The wrappers intentionally refuse to extract into an existing directory, which makes accidental
 merges less likely. Review archives from untrusted sources before extraction.
 
+## Focused tests
+
+From the repository root, run the transfer-bundle regression tests with:
+
+```shell
+python -m pytest projects/scripts/transfer-bundle/tests
+```
+
+The tests use temporary paths and require Windows command tooling; they are skipped on other
+platforms. The hash-failure test injects a failure into a temporary copy of the unpacker and
+checks that an existing decoded archive is preserved while a newly decoded archive is cleaned up.
+
 ## Related fallback projects
 
 The `certutil.exe` Base64 scripts now live in the [Base64 project](../base64/README.md). The

@@ -10,6 +10,8 @@ language and error behavior.
 
 ## Run
 
+From this project directory:
+
 ```console
 node jorth.js example.jorth
 python jorth.py example.jorth
@@ -29,6 +31,16 @@ python validate.py
 
 The validator runs the same success and failure cases through both CLIs and
 checks their output and exit status.
+
+From the repository root, run the project-owned Python tests with:
+
+```shell
+python -m pytest projects/jorth/tests
+```
+
+The tests use temporary directories for any generated programs. The standalone
+validator also requires Node.js; the Python tests exercise its orchestration
+without requiring Node.js or running unrelated project scripts.
 
 ## Language
 

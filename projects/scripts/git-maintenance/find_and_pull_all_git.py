@@ -10,7 +10,6 @@ from pathlib import Path
 from random import shuffle
 from typing import Generator
 
-#########################################
 log = getLogger(__name__)
 
 

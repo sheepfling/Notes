@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Serve the local GLSL gallery and discover shaders under notes/."""
+"""Serve the local GLSL gallery and discover note and project shaders."""
 
 from __future__ import annotations
 
@@ -16,9 +16,9 @@ SKIP_PARTS = {".git", ".venv", ".uv-cache", ".pytest_cache", "artifacts", "inbox
 def shader_catalog(repository_root: Path) -> list[dict[str, str]]:
     """Return every durable GLSL source file as browser-friendly metadata."""
 
-    notes_root = repository_root / "notes"
+    shader_roots = (repository_root / "notes", repository_root / "projects" / "shaders")
     shaders = []
-    for path in sorted(notes_root.rglob("*.glsl")):
+    for path in sorted(path for root in shader_roots for path in root.rglob("*.glsl")):
         relative = path.relative_to(repository_root)
         if any(part in SKIP_PARTS for part in relative.parts):
             continue

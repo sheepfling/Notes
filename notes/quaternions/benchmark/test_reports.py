@@ -30,6 +30,7 @@ class ReportTests(unittest.TestCase):
                                      message='invalid'), test='bad_input')
         self.assertEqual(failed.to_dict()['type'], 'ValueError')
         self.assertNotIn('error_type', failed.to_dict())
+    ####
 
     def test_smoke_reports_are_parseable_and_complete(self) -> None:
         env = os.environ | {'OPENBLAS_NUM_THREADS': '1', 'OMP_NUM_THREADS': '1',
@@ -54,7 +55,11 @@ class ReportTests(unittest.TestCase):
             self.assertIn('| operation |', run.stdout)
             self.assertIn('| median us/call |', run.stdout)
             self.assertEqual(json.loads(json.dumps(report)), report)
+        ####
+    ####
+####
 
 
 if __name__ == '__main__':
     unittest.main()
+####

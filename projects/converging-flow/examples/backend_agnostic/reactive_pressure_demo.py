@@ -559,7 +559,7 @@ def main() -> int:
     parser.add_argument(
         "--output",
         type=Path,
-        default=Path("examples/backend_agnostic/reactive_pressure_run"),
+        default=Path("artifacts/converging-flow/physics-gallery/reactive_pressure"),
     )
     arguments = parser.parse_args()
     run_demo(

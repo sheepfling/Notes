@@ -78,7 +78,7 @@ set "ACTUAL_HASH="
 for /f "skip=1 tokens=*" %%H in ('certutil.exe -hashfile "%ARCHIVE%" SHA256') do if not defined ACTUAL_HASH set "ACTUAL_HASH=%%H"
 if not defined ACTUAL_HASH (
     echo SHA-256 calculation failed.
-    if exist "%ARCHIVE%" del /q "%ARCHIVE%"
+    if "!DECODED_HERE!"=="1" if exist "%ARCHIVE%" del /q "%ARCHIVE%"
     exit /b 1
 )
 

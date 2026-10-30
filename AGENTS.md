@@ -37,3 +37,8 @@ Document dependencies and repository-root commands to reproduce the experiment
 and run its tests. Add co-located test directories to pytest discovery. Keep
 generated artifacts under the ignored `artifacts/` directory or a temporary
 test directory, not beside source files.
+
+For each executable article or collection, document its dependencies and
+repository-root run and test commands next to its note. Specify output paths
+and any overwrite or platform limitations. Do not run historical or
+cross-project maintenance scripts automatically as part of article discovery.

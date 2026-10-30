@@ -10,19 +10,29 @@
 
 ## Usage
 
-Encode a file:
+From the repository root, create an ignored artifact directory and encode a file:
 
-```
-python base64_cli.py encode input.bin output.b64
+```shell
+python -c "from pathlib import Path; Path('artifacts/base64').mkdir(parents=True, exist_ok=True)"
+python projects/scripts/base64/base64_cli.py encode input.bin artifacts/base64/output.b64
 ```
 
 Decode it again:
 
-```
-python base64_cli.py decode output.b64 restored.bin
+```shell
+python projects/scripts/base64/base64_cli.py decode artifacts/base64/output.b64 artifacts/base64/restored.bin
 ```
 
-The right validation is a byte-for-byte comparison of `input.bin` and `restored.bin`, not visual inspection of the encoded text.
+The right validation is a byte-for-byte comparison of `input.bin` and the restored file, not visual inspection of the encoded text. Choose distinct paths: this tool overwrites an existing destination.
+
+The runner uses the Python standard library. Run its co-located tests from the
+repository root with pytest:
+
+```shell
+python -m pytest projects/scripts/base64/tests
+```
+
+Tests use temporary paths for their generated files and preserve the source.
 
 ## Boundaries
 

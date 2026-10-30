@@ -102,6 +102,10 @@ python3.12 -m venv .venv
   numpy-quaternion==2024.0.13 rowan==1.3.2 pylinalg==0.6.8 snakemd==2.4.1
 ```
 
+The same pinned versions are listed in [benchmark/requirements.txt](benchmark/requirements.txt).
+The dedicated quaternion CI job installs that list in a separate Python 3.12 environment and runs
+the article's tests without changing the repository's general development dependencies.
+
 Check report serialization and a small smoke run without committing generated evidence:
 
 ```shell
