@@ -26,6 +26,14 @@ routes and boundaries, not permanent permissions or universal fixes.
   later terminal reported a healthy `gh` login. Neither observation establishes
   the state of `gh` in every other executor, and no credential repair mechanism
   was verified.
+- **Private collaborator access:** In one case, an authenticated collaborator
+  account used `gh` on a Mac to read a private repository owned by someone else;
+  GitHub reported that account's `viewerPermission` as `WRITE`. The default
+  sandbox separately failed DNS resolution, while a connector returned `404`
+  and a task reader returned an error. Those failures did not establish that
+  the collaborator lacked repository access, or that the `404` was caused by
+  the sandbox. The successful read and reported permission apply only to the
+  tested account and route at that time; they do not prove every write will pass.
 - **Approval is not authentication:** An approval review rejected a proposed
   push before execution; a separate approval handoff failed before its action
   ran. Neither event is a GitHub credential response or evidence of a remote
@@ -141,6 +149,20 @@ use `--no-refresh` if supported and a non-refreshing check is required. Do not
 use `--show-token`. With `--json`, the command can return zero despite an
 authentication issue, so inspect the output. `GH_TOKEN` and `GITHUB_TOKEN` can
 override stored `gh` credentials. [CLI status](https://cli.github.com/manual/gh_auth_status), [CLI environment](https://cli.github.com/manual/gh_help_environment)
+
+For a known private repository, after confirming the active account and an
+approved network route, a read-only check can report that account's repository
+permission. Replace the placeholders locally and keep the output private:
+
+```sh
+gh repo view OWNER/REPO --json viewerPermission --jq .viewerPermission
+```
+
+This reports the permission for the account and route used by that command; it
+does not establish connector or task-reader visibility, or guarantee that a
+particular write will pass branch rules and required approvals. A `404` alone
+does not identify which access or visibility condition failed. Use supported
+network and executor controls, and never reroute an action to evade a denial.
 
 Inspect remotes with a redacting diagnostic before displaying them: URLs can
 contain user-info, query parameters or other secrets. Once the effective target
