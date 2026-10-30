@@ -325,12 +325,29 @@ of attractive or effective palettes.
 
 A palette derived primarily from one hue.
 
-Variation comes from changes in:
+The following illustrative chips approximate their stated values at 8-bit sRGB
+precision. Variation comes from changes in:
 
 - Lightness.
+  - Low → high, with the same HSL hue and saturation:
+    ![Low lightness](https://placehold.co/15x15/804000/804000.png)
+    ![Medium lightness](https://placehold.co/15x15/FF8000/FF8000.png)
+    ![High lightness](https://placehold.co/15x15/FFBF80/FFBF80.png)
 - Chroma.
+  - Low → high, with the same OKLCH lightness and hue:
+    ![Low chroma](https://placehold.co/15x15/AE9A8D/AE9A8D.png)
+    ![Medium chroma](https://placehold.co/15x15/C6916E/C6916E.png)
+    ![High chroma](https://placehold.co/15x15/DC8748/DC8748.png)
 - Saturation.
+  - Low → high, with the same HSL hue and lightness:
+    ![Low saturation](https://placehold.co/15x15/808080/808080.png)
+    ![Medium saturation](https://placehold.co/15x15/BF8040/BF8040.png)
+    ![High saturation](https://placehold.co/15x15/FF8000/FF8000.png)
 - Opacity.
+  - Low → high, composited over white:
+    ![Low opacity on white](https://placehold.co/15x15/FFDFBF/FFDFBF.png)
+    ![Medium opacity on white](https://placehold.co/15x15/FFBF80/FFBF80.png)
+    ![Full opacity](https://placehold.co/15x15/FF8000/FF8000.png)
 
 **Advantages:**
 
@@ -403,6 +420,13 @@ of its approximate complement.
 This can preserve visual contrast while allowing
 more nuanced relationships.
 
+Illustrative HSL example (hues 0°, 150°, and 210°):
+
+- Split-complementary:
+  ![Red, hue 0°](https://placehold.co/15x15/FF0000/FF0000.png)
+  ![Spring green, hue 150°](https://placehold.co/15x15/00FF80/00FF80.png)
+  ![Azure, hue 210°](https://placehold.co/15x15/0080FF/0080FF.png)
+
 ### Triadic
 
 Three hues distributed approximately evenly
@@ -415,6 +439,13 @@ around a color wheel.
 Triadic palettes offer variety but require careful
 control of saturation, lightness, and visual emphasis.
 
+Illustrative HSL example (hues 0°, 120°, and 240°):
+
+- Triadic:
+  ![Red, hue 0°](https://placehold.co/15x15/FF0000/FF0000.png)
+  ![Green, hue 120°](https://placehold.co/15x15/00FF00/00FF00.png)
+  ![Blue, hue 240°](https://placehold.co/15x15/0000FF/0000FF.png)
+
 ### Tetradic
 
 Four hues commonly arranged as two complementary pairs.
@@ -423,6 +454,19 @@ A tetradic scheme is often represented as a rectangle
 or square on the color wheel.
 
 The square arrangement uses approximately 90-degree intervals.
+
+Illustrative HSL examples:
+
+- Rectangle, hues 0°, 60°, 180°, and 240°:
+  ![Red, hue 0°](https://placehold.co/15x15/FF0000/FF0000.png)
+  ![Yellow, hue 60°](https://placehold.co/15x15/FFFF00/FFFF00.png)
+  ![Cyan, hue 180°](https://placehold.co/15x15/00FFFF/00FFFF.png)
+  ![Blue, hue 240°](https://placehold.co/15x15/0000FF/0000FF.png)
+- Square, hues 0°, 90°, 180°, and 270°:
+  ![Red, hue 0°](https://placehold.co/15x15/FF0000/FF0000.png)
+  ![Chartreuse, hue 90°](https://placehold.co/15x15/80FF00/80FF00.png)
+  ![Cyan, hue 180°](https://placehold.co/15x15/00FFFF/00FFFF.png)
+  ![Violet, hue 270°](https://placehold.co/15x15/8000FF/8000FF.png)
 
 ### Hexadic
 
@@ -433,6 +477,23 @@ In a regular six-hue arrangement:
 ```text
 360° / 6 = 60°
 ```
+
+Illustrative HSL examples, each spaced by 60°:
+
+- Starting at hue 0°:
+  ![Red, hue 0°](https://placehold.co/15x15/FF0000/FF0000.png)
+  ![Yellow, hue 60°](https://placehold.co/15x15/FFFF00/FFFF00.png)
+  ![Green, hue 120°](https://placehold.co/15x15/00FF00/00FF00.png)
+  ![Cyan, hue 180°](https://placehold.co/15x15/00FFFF/00FFFF.png)
+  ![Blue, hue 240°](https://placehold.co/15x15/0000FF/0000FF.png)
+  ![Magenta, hue 300°](https://placehold.co/15x15/FF00FF/FF00FF.png)
+- Starting at hue 30°:
+  ![Orange, hue 30°](https://placehold.co/15x15/FF8000/FF8000.png)
+  ![Chartreuse, hue 90°](https://placehold.co/15x15/80FF00/80FF00.png)
+  ![Spring green, hue 150°](https://placehold.co/15x15/00FF80/00FF80.png)
+  ![Azure, hue 210°](https://placehold.co/15x15/0080FF/0080FF.png)
+  ![Violet, hue 270°](https://placehold.co/15x15/8000FF/8000FF.png)
+  ![Rose, hue 330°](https://placehold.co/15x15/FF0080/FF0080.png)
 
 Hexadic palettes provide substantial variety and may be useful
 for multi-product identities, data visualization, or complex
