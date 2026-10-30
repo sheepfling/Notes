@@ -17,15 +17,31 @@ This guide establishes a practical vocabulary for understanding,
 selecting, evaluating, and maintaining color systems in graphic design
 and branding.
 
-### Illustrative color-family swatches
+### Illustrative color-family examples
 
-![Named-color examples for red, orange, yellow, green, cyan, blue, violet, magenta, teal, black, white, gray, blue-green, yellow-green, reddish violet, bluish violet, warm off-white, and cool charcoal.](swatches/named-color-examples.svg)
+These CSS named-color values are examples, not unique definitions of broad
+color families. Actual shades, mixtures, and appearances depend on context.
 
-The swatches use CSS named-color values as illustrations, not unique
-definitions of these broad color families. The qualified examples use
-`darkcyan`, `yellowgreen`, `mediumvioletred`, `blueviolet`, `floralwhite`,
-and `darkslategray`, respectively. Actual shades, mixtures, and appearances
-depend on the color model and context.
+| Color family   | CSS color       | Hex value |
+| -------------- | --------------- | --------- |
+| Red            | red             | `#FF0000` |
+| Orange         | orange          | `#FFA500` |
+| Yellow         | yellow          | `#FFFF00` |
+| Green          | green           | `#008000` |
+| Cyan           | cyan            | `#00FFFF` |
+| Blue           | blue            | `#0000FF` |
+| Violet         | violet          | `#EE82EE` |
+| Magenta        | magenta         | `#FF00FF` |
+| Teal           | teal            | `#008080` |
+| Black          | black           | `#000000` |
+| White          | white           | `#FFFFFF` |
+| Gray           | gray            | `#808080` |
+| Blue-green     | darkcyan        | `#008B8B` |
+| Yellow-green   | yellowgreen     | `#9ACD32` |
+| Reddish violet | mediumvioletred | `#C71585` |
+| Bluish violet  | blueviolet      | `#8A2BE2` |
+| Warm off-white | floralwhite     | `#FFFAF0` |
+| Cool charcoal  | darkslategray   | `#2F4F4F` |
 
 ---
 
@@ -933,7 +949,7 @@ Example:
 #FF8000
 ```
 
-![Orange color swatch](swatches/ff8000.svg) `#FF8000`
+Orange example: `#FF8000`.
 
 This represents:
 
@@ -960,7 +976,7 @@ Example:
 color: hsl(30 100% 50%);
 ```
 
-![HSL orange color swatch](swatches/ff8000.svg) `hsl(30 100% 50%)`
+Orange example: `hsl(30 100% 50%)`.
 
 HSL is intuitive for manipulating hues,
 but its lightness and saturation are not perceptually uniform.
@@ -1014,7 +1030,7 @@ Example:
 color: oklch(70% 0.18 55);
 ```
 
-![OKLCH orange color swatch](swatches/oklch-70-018-55.svg) `oklch(70% 0.18 55)`
+Orange example: `oklch(70% 0.18 55)`.
 
 This example is outside the sRGB gamut, so its displayed appearance depends
 on the display and browser's gamut mapping.
@@ -1320,9 +1336,8 @@ For example:
 }
 ```
 
-Example palette swatches: ![Orange](swatches/e87524.svg) `#E87524`,
-![Dark neutral](swatches/141414.svg) `#141414`,
-![White surface](swatches/ffffff.svg) `#FFFFFF`.
+Example palette colors: orange `#E87524`, dark neutral `#141414`, and white
+surface `#FFFFFF`.
 
 The example values are illustrative,
 not a validated accessible palette.
