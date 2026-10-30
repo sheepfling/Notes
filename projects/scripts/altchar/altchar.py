@@ -139,11 +139,28 @@ def main() -> None:
     else:
         raise RuntimeError(f'Invalid action: {action}')
     ####
-    if not output_file:
+    default_output = output_file is None
+    if output_file is None:
         output_file = input_file.parent / (input_file.name + out_suffix)
-        if output_file.exists():
-            print(f'Output file {str(output_file)!r} already exists. Overwriting.')
+    ####
+
+    # The input stream is lazy, so reject aliases before opening the output.
+    if input_file.resolve() == output_file.resolve():
+        parser.error("input and output must refer to different files")
+    ####
+    input_file.stat()
+    try:
+        output_file.stat()
+    except FileNotFoundError:
+        pass
+    else:
+        if input_file.samefile(output_file):
+            parser.error("input and output must refer to different files")
         ####
+    ####
+
+    if default_output and output_file.exists():
+        print(f'Output file {str(output_file)!r} already exists. Overwriting.')
     ####
     with open(output_file, 'w') as fout:
         for i, s in enumerate(in_stream):

@@ -30,10 +30,11 @@ python projects/scripts/altchar/altchar.py insert input.txt --char A --output ar
 python projects/scripts/altchar/altchar.py remove artifacts/altchar/inserted.txt --char A --output artifacts/altchar/restored.txt
 ```
 
-Both explicit and default output paths overwrite existing files. The output
-path **must differ from the input path**: the output is opened before input is
-read, so using the same path destroys the input. Without `--output`, insertion
-uses the input name plus `.a` and removal uses the input name plus `.rem`.
+Both explicit and default output paths overwrite existing files when they are
+distinct from the input. The command rejects an output that refers to the
+input file, including resolved path, symbolic-link, and hard-link aliases,
+before opening it for writing. Without `--output`, insertion uses the input
+name plus `.a` and removal uses the input name plus `.rem`.
 
 Run the co-located tests from the repository root:
 
