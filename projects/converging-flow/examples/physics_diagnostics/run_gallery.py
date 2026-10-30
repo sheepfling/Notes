@@ -22,13 +22,17 @@ def _repository_root() -> Path:
     for parent in Path(__file__).resolve().parents:
         if (parent / "pyproject.toml").is_file():
             return parent
+        ####
+    ####
     raise RuntimeError("could not locate the repository pyproject.toml")
+####
 
 
 def _run_script(script: Path, arguments: list[str], env: dict[str, str]) -> None:
     command = [sys.executable, str(script), *arguments]
     print("Running: " + " ".join(command), flush=True)
     subprocess.run(command, check=True, env=env)
+####
 
 
 def _build_parser() -> argparse.ArgumentParser:
@@ -53,6 +57,7 @@ def _build_parser() -> argparse.ArgumentParser:
         default=Path("artifacts") / "converging-flow" / "physics-gallery",
     )
     return parser
+####
 
 
 def _run_spherical_shell(
@@ -81,12 +86,14 @@ def _run_spherical_shell(
         f"frames={len(result.frames)}",
         flush=True,
     )
+####
 
 
 def main(argv: Sequence[str] | None = None) -> int:
     arguments = _build_parser().parse_args(argv)
     if arguments.frames < 2:
         raise SystemExit("--frames must be at least two")
+    ####
 
     repository_root = _repository_root()
     output_root = arguments.output
@@ -160,7 +167,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
     print(f"Physics visualization gallery written under {output_root}")
     return 0
+####
 
 
 if __name__ == "__main__":
     raise SystemExit(main())
+####

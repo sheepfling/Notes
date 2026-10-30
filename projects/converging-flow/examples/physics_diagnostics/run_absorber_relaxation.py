@@ -60,10 +60,13 @@ def main(argv: Sequence[str] | None = None) -> int:
     arguments = parser.parse_args(argv)
     if arguments.frames < 2:
         raise SystemExit("--frames must be at least two")
+    ####
     if arguments.fps < 1:
         raise SystemExit("--fps must be positive")
+    ####
     if arguments.source_scale <= 0.0 or arguments.absorber_scale <= 0.0:
         raise SystemExit("source and absorber scales must be positive")
+    ####
 
     configure_backend_cache()
     parameters = (
@@ -85,7 +88,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
     print(f"Absorber-relaxation artifacts written under {arguments.output}")
     return 0
+####
 
 
 if __name__ == "__main__":
     raise SystemExit(main())
+####

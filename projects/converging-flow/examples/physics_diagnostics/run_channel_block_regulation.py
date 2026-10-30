@@ -60,8 +60,10 @@ def main(argv: Sequence[str] | None = None) -> int:
     arguments = parser.parse_args(argv)
     if arguments.resolution < 24:
         raise SystemExit("--resolution must be at least 24 for the 6×4 channel grid")
+    ####
     if arguments.frames < 2 or arguments.fps < 1:
         raise SystemExit("--frames must be at least two and --fps must be positive")
+    ####
     if (
         arguments.source_scale <= 0.0
         or arguments.loss_scale <= 0.0
@@ -70,8 +72,10 @@ def main(argv: Sequence[str] | None = None) -> int:
         raise SystemExit(
             "source/loss scales must be positive and exchange non-negative"
         )
+    ####
     if not 0.0 <= arguments.rod_fraction <= 1.0:
         raise SystemExit("--rod-fraction must lie between zero and one")
+    ####
 
     configure_backend_cache()
     parameters = (
@@ -96,7 +100,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
     print(f"Channel-block artifacts written under {arguments.output}")
     return 0
+####
 
 
 if __name__ == "__main__":
     raise SystemExit(main())
+####

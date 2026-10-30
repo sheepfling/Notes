@@ -51,6 +51,7 @@ class EventFrame:
     pressure: FloatArray
     activity: FloatArray
     phase_fraction: FloatArray
+####
 
 
 def _channel_block_config(resolution: int, backend: BackendName) -> RadiantWaveConfig:
@@ -60,6 +61,7 @@ def _channel_block_config(resolution: int, backend: BackendName) -> RadiantWaveC
         final_time=0.24,
         source_scale=0.5,
     )
+####
 
 
 def _capture_frame(
@@ -79,6 +81,7 @@ def _capture_frame(
         activity=backend.to_numpy(activity),
         phase_fraction=backend.to_numpy(phase_fraction),
     )
+####
 
 
 def _event_handoff(
@@ -105,6 +108,7 @@ def _event_handoff(
         envelope=central_impulse * active_fraction,
     )
     return active_fraction, channel_fraction, activity, heat, source_permission
+####
 
 
 def _save_handoff(
@@ -136,10 +140,12 @@ def _save_handoff(
         axes.set_xlabel("x")
         axes.set_ylabel("y")
         figure.colorbar(image, ax=axes, shrink=0.82)
+    ####
     axes_grid.flat[-1].axis("off")
     figure.suptitle("Settled 3D channel-block state → 2D Euler impulse handoff")
     figure.savefig(output_directory / "channel_event_handoff.png", dpi=180)
     plt.close(figure)
+####
 
 
 def _save_final_fields(
@@ -170,11 +176,13 @@ def _save_final_fields(
         axes.set_xlabel("x")
         axes.set_ylabel("y")
         figure.colorbar(image, ax=axes, shrink=0.82)
+    ####
     figure.suptitle(
         f"2D impulsive event after channel-block regulation | t = {frame.time:.4f}"
     )
     figure.savefig(output_directory / "channel_event_final_fields.png", dpi=180)
     plt.close(figure)
+####
 
 
 def _save_animation(
@@ -231,6 +239,7 @@ def _save_animation(
         axes.set_ylabel("y")
         figure.colorbar(image, ax=axes, shrink=0.80)
         images.append(image)
+    ####
 
     def update(index: int) -> tuple[AxesImage, ...]:
         images[1].set_data(pressure[index].T)
@@ -241,6 +250,7 @@ def _save_animation(
             f"Channel-shaped 2D impulsive event | t = {frames[index].time:.4f}"
         )
         return tuple(images)
+    ####
 
     animation = FuncAnimation(
         figure, update, frames=len(frames), interval=1000 / fps, blit=False
@@ -251,6 +261,7 @@ def _save_animation(
         dpi=110,
     )
     plt.close(figure)
+####
 
 
 def _event_validation(frames: tuple[EventFrame, ...]) -> dict[str, bool | float]:
@@ -286,6 +297,7 @@ def _event_validation(frames: tuple[EventFrame, ...]) -> dict[str, bool | float]
         "maximum_phase_fraction": phase_peak,
         "maximum_speed": maximum_speed,
     }
+####
 
 
 def run_demo(
@@ -299,10 +311,12 @@ def run_demo(
 ) -> None:
     if precursor_resolution < 24 or event_resolution < 24:
         raise ValueError("both resolutions must be at least 24")
+    ####
     if frames < 2 or fps < 1 or event_final_time <= 0.0:
         raise ValueError(
             "event time must be positive, with at least two frames and positive fps"
         )
+    ####
     output_directory.mkdir(parents=True, exist_ok=True)
     active_fraction, channel_fraction, activity, heat, source_permission = (
         _event_handoff(
@@ -319,6 +333,7 @@ def run_demo(
         raise ValueError(
             "use equal precursor and event resolutions for the direct 2D handoff"
         )
+    ####
     _save_handoff(
         coordinate,
         active_fraction,
@@ -369,6 +384,8 @@ def run_demo(
         while next_target < frames and time >= target_times[next_target] - 1.0e-14:
             captured.append(_capture_frame(time, state, config, backend))
             next_target += 1
+        ####
+    ####
     backend.synchronize()
     frame_tuple = tuple(captured)
     validation = _event_validation(frame_tuple)
@@ -376,6 +393,7 @@ def run_demo(
         raise RuntimeError(
             f"channel-block impulsive event validation failed: {validation}"
         )
+    ####
     final_frame = frame_tuple[-1]
     _save_final_fields(coordinate, final_frame, source_permission, output_directory)
     _save_animation(coordinate, frame_tuple, source_permission, output_directory, fps)
@@ -403,6 +421,7 @@ def run_demo(
         "model_note": "A settled scalar channel-block state shapes the 2D Euler source field. The Euler continuum remains homogeneous and normalized; the handoff is illustrative rather than a calibrated material coupling.",
     }
     write_summary(output_directory / "channel_event_summary.json", summary)
+####
 
 
 def main() -> int:
@@ -435,7 +454,9 @@ def main() -> int:
         arguments.fps,
     )
     return 0
+####
 
 
 if __name__ == "__main__":
     raise SystemExit(main())
+####

@@ -130,8 +130,12 @@ $RECYCLE.BIN/
 *.sqlite
 *.sqlite3
 
-# Generated artifacts
+# Generated artifacts at any depth
 artifacts/
 
 # Temporary ingestion scratchpad; durable material belongs under notes/
 inbox/
+
+# Default quaternion experiment outputs
+/notes/quaternions/benchmark/results.json
+/notes/quaternions/benchmark/semantics.json

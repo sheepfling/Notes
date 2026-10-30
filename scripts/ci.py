@@ -11,6 +11,12 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 PYTHON_PATHS = ("src", "scripts", "tests")
+RUFF_PATHS = (*PYTHON_PATHS, "projects/scripts/altchar/tests")
+SCOPE_MARKER_PATHS = (
+    *PYTHON_PATHS,
+    "projects/converging-flow/examples",
+    "projects/scripts/altchar",
+)
 
 
 def ci_commands(
@@ -29,16 +35,16 @@ def ci_commands(
         # Scope-marker insertion must happen after Ruff has finished editing.
         commands.extend(
             [
-                (*ruff, "--fix", *PYTHON_PATHS),
-                (*scope_markers, "--fix", *PYTHON_PATHS),
+                (*ruff, "--fix", *RUFF_PATHS),
+                (*scope_markers, "--fix", *SCOPE_MARKER_PATHS),
                 (*rumdl, "--fix"),
             ]
         )
     ####
     commands.extend(
         [
-            (*ruff, *PYTHON_PATHS),
-            (*scope_markers, *PYTHON_PATHS),
+            (*ruff, *RUFF_PATHS),
+            (*scope_markers, *SCOPE_MARKER_PATHS),
             (python, "-m", "pytest", "-q"),
             (*rumdl,),
             (python, "-m", "mdrepo", "check", "."),

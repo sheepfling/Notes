@@ -43,6 +43,7 @@ class PhaseFrame:
     phase_target: FloatArray
     phase_drive: FloatArray
     source_rate: FloatArray
+####
 
 
 def _capture_frame(
@@ -77,6 +78,7 @@ def _capture_frame(
         phase_drive=backend.to_numpy(phase_drive),
         source_rate=backend.to_numpy(source_rate),
     )
+####
 
 
 def _temperature(
@@ -85,6 +87,7 @@ def _temperature(
 ) -> FloatArray:
     gas_constant = 1.0 if config is None else config.gas_constant
     return frame.pressure / (frame.density * gas_constant)
+####
 
 
 def _pressure_acceleration(
@@ -94,6 +97,7 @@ def _pressure_acceleration(
     """Return the Euler pressure-gradient acceleration diagnostic ``-∂p/∂x / ρ``."""
     spacing = float(coordinate[1] - coordinate[0])
     return -np.gradient(frame.pressure, spacing, edge_order=1) / frame.density
+####
 
 
 def _save_final_profiles(
@@ -116,14 +120,17 @@ def _save_final_profiles(
         axes.set_title(label)
         axes.set_ylabel(label)
         axes.grid(True, alpha=0.25)
+    ####
     for axes in axes_grid[-1, :]:
         axes.set_xlabel("position")
+    ####
     figure.suptitle(
         "Impulsive source → thermal energy → EOS pressure → motion → phase transition"
     )
     figure.tight_layout()
     figure.savefig(output_directory / "impulsive_phase_profiles.png", dpi=180)
     plt.close(figure)
+####
 
 
 def _save_space_time(
@@ -177,6 +184,7 @@ def _save_space_time(
         if label == "material velocity":
             bound = max(abs(float(np.min(values))), abs(float(np.max(values))))
             lower, upper = -bound, bound
+        ####
         image = axes.imshow(
             values,
             origin="lower",
@@ -188,11 +196,13 @@ def _save_space_time(
         axes.set_ylabel("time")
         axes.set_title(label)
         figure.colorbar(image, ax=axes, label=label)
+    ####
     axes_grid[-1].set_xlabel("position")
     figure.suptitle("Generic impulsive event through space and time")
     figure.tight_layout()
     figure.savefig(output_directory / "impulsive_phase_space_time.png", dpi=180)
     plt.close(figure)
+####
 
 
 def _save_phase_response(
@@ -241,10 +251,12 @@ def _save_phase_response(
     axes_grid[1, 1].set_xlabel("position")
     for axes in axes_grid.flat:
         axes.grid(True, alpha=0.25)
+    ####
     figure.suptitle(f"Phase-transition response near peak drive | t = {frame.time:.4f}")
     figure.tight_layout()
     figure.savefig(output_directory / "impulsive_phase_response.png", dpi=180)
     plt.close(figure)
+####
 
 
 def _save_pressure_wave_diagnostics(
@@ -270,12 +282,14 @@ def _save_pressure_wave_diagnostics(
     axes_grid[2].set_xlabel("position")
     for axes in axes_grid:
         axes.grid(True, alpha=0.25)
+    ####
     figure.suptitle(
         f"Pressure-wave mechanics near peak pressure | t = {frame.time:.4f}"
     )
     figure.tight_layout()
     figure.savefig(output_directory / "impulsive_pressure_mechanics.png", dpi=180)
     plt.close(figure)
+####
 
 
 def _save_budgets(
@@ -345,10 +359,12 @@ def _save_budgets(
     axes_grid[1, 1].set_xlabel("time")
     for axes in axes_grid.flat:
         axes.grid(True, alpha=0.25)
+    ####
     figure.suptitle("Impulsive event and phase-transition budgets")
     figure.tight_layout()
     figure.savefig(output_directory / "impulsive_phase_budget.png", dpi=180)
     plt.close(figure)
+####
 
 
 def _save_animation(
@@ -395,6 +411,7 @@ def _save_animation(
         axes.set_ylabel(label)
         axes.set_ylim(*limits)
         axes.grid(True, alpha=0.25)
+    ####
     axes_grid[-1].set_xlabel("position")
 
     def update(index: int) -> tuple[object, ...]:
@@ -407,6 +424,7 @@ def _save_animation(
         lines[5].set_ydata(frame.velocity)
         figure.suptitle(f"Generic impulsive phase transition | t = {frame.time:.4f}")
         return lines
+    ####
 
     animation = FuncAnimation(
         figure, update, frames=len(frames), interval=1000 / fps, blit=False
@@ -418,6 +436,7 @@ def _save_animation(
         dpi=120,
     )
     plt.close(figure)
+####
 
 
 def _save_pressure_wave_animation(
@@ -452,6 +471,7 @@ def _save_pressure_wave_animation(
         axes.set_ylabel(label)
         axes.set_ylim(*bounds)
         axes.grid(True, alpha=0.25)
+    ####
     axes_grid[-1].set_xlabel("position")
 
     def update(index: int) -> tuple[object, ...]:
@@ -460,6 +480,7 @@ def _save_pressure_wave_animation(
         lines[2].set_ydata(velocity[index])
         figure.suptitle(f"EOS pressure-wave mechanics | t = {frames[index].time:.4f}")
         return lines
+    ####
 
     animation = FuncAnimation(
         figure, update, frames=len(frames), interval=1000 / fps, blit=False
@@ -471,6 +492,7 @@ def _save_pressure_wave_animation(
         dpi=120,
     )
     plt.close(figure)
+####
 
 
 def run_demo(
@@ -485,10 +507,13 @@ def run_demo(
 ) -> None:
     if resolution < 16:
         raise ValueError("resolution must be at least 16")
+    ####
     if final_time <= 0.0:
         raise ValueError("final_time must be positive")
+    ####
     if snapshot_count < 2:
         raise ValueError("snapshot_count must be at least two")
+    ####
     backend = get_array_backend(requested_backend)
     config = phase_impulse_config(thermal_parameters)
     half_extent = 1.0
@@ -547,6 +572,8 @@ def run_demo(
         ):
             frames.append(_capture_frame(time, state, source_profile, config, backend))
             next_target += 1
+        ####
+    ####
 
     backend.synchronize()
     frame_tuple = tuple(frames)
@@ -566,6 +593,7 @@ def run_demo(
             "impulsive phase-transition scenario did not meet its expected "
             f"validation checks: {validation}"
         )
+    ####
     output_directory.mkdir(parents=True, exist_ok=True)
     np.savez_compressed(
         output_directory / "impulsive_phase_state.npz",
@@ -617,6 +645,7 @@ def run_demo(
         ),
     }
     write_summary(output_directory / "impulsive_phase_summary.json", summary)
+####
 
 
 def main() -> int:
@@ -661,7 +690,9 @@ def main() -> int:
         source_width=arguments.source_width,
     )
     return 0
+####
 
 
 if __name__ == "__main__":
     raise SystemExit(main())
+####

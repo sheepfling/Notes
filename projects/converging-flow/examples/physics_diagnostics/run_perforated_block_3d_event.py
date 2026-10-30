@@ -66,10 +66,12 @@ class EventPlaneFrame:
     maximum_temperature: float
     maximum_phase_fraction: float
     maximum_speed: float
+####
 
 
 def _normalized(values: FloatArray) -> FloatArray:
     return values / max(float(np.max(np.abs(values))), 1.0e-12)
+####
 
 
 def _event_permission(
@@ -80,6 +82,7 @@ def _event_permission(
 ) -> FloatArray:
     if width <= 0.0:
         raise ValueError("event width must be positive")
+    ####
     x, y, z = np.meshgrid(*precursor.coordinates, indexing="ij", sparse=True)
     footprint = np.exp(
         -0.5
@@ -102,10 +105,12 @@ def _event_permission(
         },
         envelope=footprint * active_medium,
     )
+####
 
 
 def _event_plane_index(permission: FloatArray) -> int:
     return int(np.unravel_index(int(np.argmax(permission)), permission.shape)[2])
+####
 
 
 def _capture_plane_frame(
@@ -133,6 +138,7 @@ def _capture_plane_frame(
         maximum_phase_fraction=backend.scalar(backend.xp.max(phase_fraction)),
         maximum_speed=backend.scalar(backend.xp.max(speed)),
     )
+####
 
 
 def _extent(coordinate: FloatArray) -> tuple[float, float, float, float]:
@@ -142,6 +148,7 @@ def _extent(coordinate: FloatArray) -> tuple[float, float, float, float]:
         float(coordinate[0]),
         float(coordinate[-1]),
     )
+####
 
 
 def _save_handoff(
@@ -173,12 +180,14 @@ def _save_handoff(
         axes.set_xlabel("x")
         axes.set_ylabel("y")
         figure.colorbar(image, ax=axes, shrink=0.82)
+    ####
     figure.suptitle(
         "Settled 3D perforated-block state → localized 3D Euler event "
         f"(z = {z_value:.3f})"
     )
     figure.savefig(output_directory / "perforated_event_handoff.png", dpi=180)
     plt.close(figure)
+####
 
 
 def _save_final_fields(
@@ -210,12 +219,14 @@ def _save_final_fields(
         axes.set_xlabel("x")
         axes.set_ylabel("y")
         figure.colorbar(image, ax=axes, shrink=0.82)
+    ####
     figure.suptitle(
         "3D finite event response after perforated-block regulation "
         f"(z = {z_value:.3f}, t = {final.time:.4f})"
     )
     figure.savefig(output_directory / "perforated_event_final_fields.png", dpi=180)
     plt.close(figure)
+####
 
 
 def _save_animation(
@@ -245,6 +256,7 @@ def _save_animation(
         upper = max(float(np.max(value)) for value in values)
         if lower == upper:
             upper = lower + 1.0
+        ####
         image = axes.imshow(
             values[0].T,
             origin="lower",
@@ -258,15 +270,18 @@ def _save_animation(
         axes.set_ylabel("y")
         figure.colorbar(image, ax=axes, shrink=0.82)
         images.append(image)
+    ####
 
     def update(index: int) -> tuple[AxesImage, ...]:
         for image, (values, _label) in zip(images, fields, strict=True):
             image.set_data(values[index].T)
+        ####
         figure.suptitle(
             "Localized 3D finite event after regulated perforated-block stage "
             f"| event t = {frames[index].time:.4f}"
         )
         return tuple(images)
+    ####
 
     animation = FuncAnimation(
         figure,
@@ -281,6 +296,7 @@ def _save_animation(
         dpi=120,
     )
     plt.close(figure)
+####
 
 
 def _save_stage_history(
@@ -351,6 +367,7 @@ def _save_stage_history(
     figure.tight_layout()
     figure.savefig(output_directory / "perforated_event_stage_history.png", dpi=180)
     plt.close(figure)
+####
 
 
 def _validate(
@@ -421,6 +438,7 @@ def _validate(
         "maximum_phase_fraction": phase_peak,
         "maximum_speed": speed_peak,
     }
+####
 
 
 def run_demo(
@@ -458,10 +476,13 @@ def run_demo(
     fps = parameters.presentation.fps
     if resolution < 24:
         raise ValueError("resolution must be at least 24")
+    ####
     if not 0.0 <= event_start_time < event_final_time:
         raise ValueError("event start time must lie inside the Euler stage")
+    ####
     if frames < 2 or fps < 1:
         raise ValueError("frames must be at least two and fps must be positive")
+    ####
     output_directory.mkdir(parents=True, exist_ok=True)
 
     precursor = run_radiant_wave(
@@ -476,6 +497,7 @@ def run_demo(
     )
     if float(np.max(permission)) <= 0.0:
         raise RuntimeError("event footprint does not overlap the active medium")
+    ####
     z_index = _event_plane_index(permission)
     coordinate = precursor.coordinates[0]
     heat_offset = parameters.initial_state.heat_pressure_offset * _normalized(
@@ -528,6 +550,7 @@ def run_demo(
         )
         if time < event_start_time:
             timestep = min(timestep, event_start_time - time)
+        ####
         source = source_permission * activation.fraction_at(time + timestep)
         state = advance_impulsive_phase_euler_split(
             state,
@@ -542,6 +565,8 @@ def run_demo(
         while next_target < frames and time >= target_times[next_target] - 1.0e-14:
             captured.append(_capture_plane_frame(time, state, config, backend, z_index))
             next_target += 1
+        ####
+    ####
     backend.synchronize()
     frame_tuple = tuple(captured)
     validation = _validate(
@@ -552,6 +577,7 @@ def run_demo(
     )
     if not all(value for value in validation.values() if isinstance(value, bool)):
         raise RuntimeError(f"3D perforated event validation failed: {validation}")
+    ####
     final = frame_tuple[-1]
     _save_final_fields(
         coordinate,
@@ -617,6 +643,7 @@ def run_demo(
         ),
     }
     write_summary(output_directory / "perforated_event_summary.json", summary)
+####
 
 
 def main() -> int:
@@ -660,8 +687,11 @@ def main() -> int:
             cast(tuple[float, float, float], tuple(arguments.event_center)),
             arguments.event_width,
         )
+    ####
     return 0
+####
 
 
 if __name__ == "__main__":
     raise SystemExit(main())
+####
