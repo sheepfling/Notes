@@ -1,8 +1,9 @@
 # PC-building and upgrade checklist
 
-> Type: reference  
-> Status: needs-review  
+> Type: reference
+> Status: needs-review
 > Updated: 2026-08-01
+> Tags: hardware, pc-building, windows
 
 This is a distilled version of a miscellaneous hardware bookmark list. It keeps the durable questions to ask during a
 build or upgrade and drops the original short-video URLs, which were not a stable or validated source of record.

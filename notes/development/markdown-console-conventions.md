@@ -9,16 +9,19 @@ shells and PowerShell whenever the command itself is portable.
 
 ## Default style
 
-Use an unlabeled fence for portable commands, keep each command on one line,
-and prefer tools that exist on both platforms:
+Use a `shell` fence for portable commands when a language label helps identify
+the example, keep each command on one line, and prefer tools that exist on
+both platforms:
 
-```
+```shell
 python -m pytest
 python -m pip install -e ".[dev]"
 git status --short
 ```
 
-An unlabeled fence describes the command, not a particular console. Avoid Bash
+A `shell` label describes a command, not a guarantee of compatibility with a
+particular console. Existing unlabeled portable examples are also acceptable.
+Avoid Bash
 line continuations (`\`) and PowerShell backticks in these examples. They make
 otherwise portable commands fail when pasted into the other shell.
 

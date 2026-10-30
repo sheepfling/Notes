@@ -12,7 +12,7 @@ platform’s build directory separate and use an out-of-source configure.
 
 Use a fresh build directory and pass the source and build locations explicitly:
 
-```
+```shell
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH=/path/to/dependency/prefix
 ```
 

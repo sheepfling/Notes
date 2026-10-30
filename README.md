@@ -34,8 +34,8 @@ Prefer Markdown. Start each note with:
 
 Then capture the purpose, prerequisites, procedure or findings, verification, and recovery/rollback details as relevant. Record environment-specific values explicitly, and separate them from reusable instructions. Link related notes instead of duplicating them.
 
-Keep general command examples console-neutral when possible. Use unlabeled,
-one-line fences for commands that work in both Bash-like shells and PowerShell;
+Keep general command examples console-neutral when possible. Use `shell` or
+unlabeled one-line fences for commands that work in both Bash-like shells and PowerShell;
 reserve `bash`, `powershell`, and similar labels for shell-specific syntax.
 See [console-neutral command examples](notes/development/markdown-console-conventions.md).
 

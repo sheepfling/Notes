@@ -84,11 +84,6 @@ $RECYCLE.BIN/
 
 # Editor and IDE state
 .idea/
-!.idea/
-.idea/*
-!.idea/dictionaries/
-.idea/dictionaries/*
-!.idea/dictionaries/notes.dic
 .vscode/
 *.code-workspace
 *.sublime-workspace
