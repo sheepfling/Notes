@@ -20,7 +20,8 @@ and branding.
 ### Illustrative color-family examples
 
 These CSS named-color values are examples, not unique definitions of broad
-color families. Actual shades, mixtures, and appearances depend on context.
+color families. Chips throughout this guide are illustrative examples, not
+unique definitions; actual shades, mixtures, and appearances depend on context.
 
 | Color family   | CSS color       | Hex value |
 | -------------- | --------------- | --------- |
@@ -50,16 +51,16 @@ color families. Actual shades, mixtures, and appearances depend on context.
 | Term              | Definition                                                                                                 |
 | ----------------- | ---------------------------------------------------------------------------------------------------------- |
 | **Color**         | A visual perception produced by light and the human visual system.                                         |
-| **Hue**           | The attribute identifying a color as red, orange, yellow, green, blue, etc.                                |
+| **Hue**           | The attribute identifying a color as red ![#FF0000](https://placehold.co/15x15/FF0000/FF0000.png) `#FF0000`, orange ![#FFA500](https://placehold.co/15x15/FFA500/FFA500.png) `#FFA500`, yellow ![#FFFF00](https://placehold.co/15x15/FFFF00/FFFF00.png) `#FFFF00`, green ![#008000](https://placehold.co/15x15/008000/008000.png) `#008000`, blue ![#0000FF](https://placehold.co/15x15/0000FF/0000FF.png) `#0000FF`, etc.                                |
 | **Saturation**    | The degree of colorfulness relative to a reference, with its precise meaning depending on the color model. |
 | **Chroma**        | The colorfulness of a color relative to a similarly illuminated neutral reference.                         |
-| **Lightness**     | How light or dark a color appears relative to a reference white.                                           |
+| **Lightness**     | How light or dark a color appears relative to a reference white ![#FFFFFF](https://placehold.co/15x15/FFFFFF/FFFFFF.png) `#FFFFFF`.                                           |
 | **Value**         | A traditional art term describing the relative lightness or darkness of a color.                           |
 | **Brightness**    | The perceived intensity of light; also used differently in various digital color models.                   |
 | **Luminance**     | A physical, photometrically weighted measure of light intensity per unit area in a given direction.        |
-| **Tint**          | A color mixed with white, in traditional color terminology.                                                |
-| **Shade**         | A color mixed with black.                                                                                  |
-| **Tone**          | A color modified with gray or otherwise reduced in purity.                                                 |
+| **Tint**          | A color mixed with white ![#FFFFFF](https://placehold.co/15x15/FFFFFF/FFFFFF.png) `#FFFFFF`, in traditional color terminology.                                                |
+| **Shade**         | A color mixed with black ![#000000](https://placehold.co/15x15/000000/000000.png) `#000000`.                                                                                  |
+| **Tone**          | A color modified with gray ![#808080](https://placehold.co/15x15/808080/808080.png) `#808080` or otherwise reduced in purity.                                                 |
 | **Contrast**      | A perceptible difference between colors or visual elements.                                                |
 | **Palette**       | A selected collection of colors used together.                                                             |
 | **Color Harmony** | A relationship between colors perceived as visually coherent or pleasing.                                  |
@@ -77,12 +78,17 @@ These properties interact, but they are not interchangeable.
 
 ## 2. Hue, Saturation, Chroma, and Lightness
 
-Consider several versions of orange:
+Consider several versions of orange
+![#FFA500](https://placehold.co/15x15/FFA500/FFA500.png) `#FFA500`:
 
-- Bright, vivid orange.
-- Dark, muted orange.
-- Pale, pastel orange.
-- Deep, saturated orange.
+- Bright, vivid orange ![#FF4500](https://placehold.co/15x15/FF4500/FF4500.png)
+  `#FF4500`.
+- Dark, muted orange ![#8B5A2B](https://placehold.co/15x15/8B5A2B/8B5A2B.png)
+  `#8B5A2B`.
+- Pale, pastel orange ![#FFDAB9](https://placehold.co/15x15/FFDAB9/FFDAB9.png)
+  `#FFDAB9`.
+- Deep, saturated orange
+  ![#CC3300](https://placehold.co/15x15/CC3300/CC3300.png) `#CC3300`.
 
 All may belong to the same general hue family, yet have
 substantially different visual characteristics.
@@ -97,6 +103,16 @@ Common hue families include:
 Red → Orange → Yellow → Green → Cyan → Blue → Violet → Magenta
 ```
 
+Illustrative chips: Red ![#FF0000](https://placehold.co/15x15/FF0000/FF0000.png)
+`#FF0000`, Orange ![#FFA500](https://placehold.co/15x15/FFA500/FFA500.png)
+`#FFA500`, Yellow ![#FFFF00](https://placehold.co/15x15/FFFF00/FFFF00.png)
+`#FFFF00`, Green ![#008000](https://placehold.co/15x15/008000/008000.png)
+`#008000`, Cyan ![#00FFFF](https://placehold.co/15x15/00FFFF/00FFFF.png)
+`#00FFFF`, Blue ![#0000FF](https://placehold.co/15x15/0000FF/0000FF.png)
+`#0000FF`, Violet ![#EE82EE](https://placehold.co/15x15/EE82EE/EE82EE.png)
+`#EE82EE`, Magenta ![#FF00FF](https://placehold.co/15x15/FF00FF/FF00FF.png)
+`#FF00FF`.
+
 The exact positions of these colors depend on the color model.
 
 ### Saturation
@@ -105,7 +121,8 @@ Saturation describes the strength or purity of a color
 within a particular color model.
 
 A highly saturated color generally appears more colorful,
-while a desaturated color appears closer to gray.
+while a desaturated color appears closer to gray
+![#808080](https://placehold.co/15x15/808080/808080.png) `#808080`.
 
 However, saturation is not an absolute perceptual measurement.
 
@@ -145,8 +162,10 @@ It strongly influences:
 **Important:** A color can be highly saturated without appearing
 particularly bright.
 
-A deep, saturated blue may appear considerably darker than
-a vivid yellow.
+A deep, saturated blue ![#00008B](https://placehold.co/15x15/00008B/00008B.png)
+`#00008B` may appear considerably darker than
+a vivid yellow ![#FFFF00](https://placehold.co/15x15/FFFF00/FFFF00.png)
+`#FFFF00`.
 
 ---
 
@@ -159,9 +178,9 @@ or representing color.
 
 RGB describes color through combinations of:
 
-- Red
-- Green
-- Blue
+- Red ![#FF0000](https://placehold.co/15x15/FF0000/FF0000.png) `#FF0000`
+- Green ![#00FF00](https://placehold.co/15x15/00FF00/00FF00.png) `#00FF00`
+- Blue ![#0000FF](https://placehold.co/15x15/0000FF/0000FF.png) `#0000FF`
 
 It is an additive model associated with light-emitting displays.
 
@@ -174,6 +193,15 @@ Blue + Red = Magenta
 
 Red + Green + Blue = White
 ```
+
+Illustrative chips: Red ![#FF0000](https://placehold.co/15x15/FF0000/FF0000.png)
+`#FF0000`, Green ![#00FF00](https://placehold.co/15x15/00FF00/00FF00.png)
+`#00FF00`, Yellow ![#FFFF00](https://placehold.co/15x15/FFFF00/FFFF00.png)
+`#FFFF00`, Blue ![#0000FF](https://placehold.co/15x15/0000FF/0000FF.png)
+`#0000FF`, Cyan ![#00FFFF](https://placehold.co/15x15/00FFFF/00FFFF.png)
+`#00FFFF`, Magenta ![#FF00FF](https://placehold.co/15x15/FF00FF/FF00FF.png)
+`#FF00FF`, White ![#FFFFFF](https://placehold.co/15x15/FFFFFF/FFFFFF.png)
+`#FFFFFF`.
 
 These relationships assume suitable additive primaries.
 
@@ -194,10 +222,10 @@ and represent different ranges of colors.
 
 CMYK describes color through combinations of printing colorants:
 
-- Cyan
-- Magenta
-- Yellow
-- Key (Black)
+- Cyan ![#00FFFF](https://placehold.co/15x15/00FFFF/00FFFF.png) `#00FFFF`
+- Magenta ![#FF00FF](https://placehold.co/15x15/FF00FF/FF00FF.png) `#FF00FF`
+- Yellow ![#FFFF00](https://placehold.co/15x15/FFFF00/FFFF00.png) `#FFFF00`
+- Key (Black ![#000000](https://placehold.co/15x15/000000/000000.png) `#000000`)
 
 It is primarily associated with process printing.
 
@@ -219,9 +247,9 @@ produce the same appearance on every printing system.
 
 RYB uses:
 
-- Red
-- Yellow
-- Blue
+- Red ![#FF0000](https://placehold.co/15x15/FF0000/FF0000.png) `#FF0000`
+- Yellow ![#FFFF00](https://placehold.co/15x15/FFFF00/FFFF00.png) `#FFFF00`
+- Blue ![#0000FF](https://placehold.co/15x15/0000FF/0000FF.png) `#0000FF`
 
 This model is common in traditional art education and painting.
 
@@ -264,15 +292,15 @@ In traditional RYB terminology:
 
 **Primary:**
 
-- Red
-- Yellow
-- Blue
+- Red ![#FF0000](https://placehold.co/15x15/FF0000/FF0000.png) `#FF0000`
+- Yellow ![#FFFF00](https://placehold.co/15x15/FFFF00/FFFF00.png) `#FFFF00`
+- Blue ![#0000FF](https://placehold.co/15x15/0000FF/0000FF.png) `#0000FF`
 
 **Secondary:**
 
-- Orange
-- Green
-- Violet
+- Orange ![#FFA500](https://placehold.co/15x15/FFA500/FFA500.png) `#FFA500`
+- Green ![#008000](https://placehold.co/15x15/008000/008000.png) `#008000`
+- Violet ![#EE82EE](https://placehold.co/15x15/EE82EE/EE82EE.png) `#EE82EE`
 
 **Tertiary:**
 
@@ -328,6 +356,11 @@ Example:
 Blue → Cyan → Teal
 ```
 
+Illustrative chips: Blue
+![#0000FF](https://placehold.co/15x15/0000FF/0000FF.png) `#0000FF`, Cyan
+![#00FFFF](https://placehold.co/15x15/00FFFF/00FFFF.png) `#00FFFF`, Teal
+![#008080](https://placehold.co/15x15/008080/008080.png) `#008080`.
+
 **Advantages:**
 
 - Natural visual continuity.
@@ -349,6 +382,10 @@ Example in a traditional artist's wheel:
 ```text
 Blue ↔ Orange
 ```
+
+Illustrative chips: Blue
+![#0000FF](https://placehold.co/15x15/0000FF/0000FF.png) `#0000FF`, Orange
+![#FFA500](https://placehold.co/15x15/FFA500/FFA500.png) `#FFA500`.
 
 **Advantages:**
 
@@ -439,8 +476,12 @@ Mathematically, the hues may be separated by equal angles.
 
 Perceptually, however:
 
-- Yellow may appear much brighter than blue.
-- Orange may attract more attention than violet.
+- Yellow ![#FFFF00](https://placehold.co/15x15/FFFF00/FFFF00.png) `#FFFF00` may
+  appear much brighter than blue
+  ![#0000FF](https://placehold.co/15x15/0000FF/0000FF.png) `#0000FF`.
+- Orange ![#FFA500](https://placehold.co/15x15/FFA500/FFA500.png) `#FFA500` may
+  attract more attention than violet
+  ![#EE82EE](https://placehold.co/15x15/EE82EE/EE82EE.png) `#EE82EE`.
 - Some hues may tolerate greater chroma than others.
 - Different colors may have substantially different contrast.
 
@@ -476,23 +517,27 @@ Colors are often described as warm or cool.
 
 Commonly associated with:
 
-- Red.
-- Orange.
-- Yellow.
+- Red ![#FF0000](https://placehold.co/15x15/FF0000/FF0000.png) `#FF0000`.
+- Orange ![#FFA500](https://placehold.co/15x15/FFA500/FFA500.png) `#FFA500`.
+- Yellow ![#FFFF00](https://placehold.co/15x15/FFFF00/FFFF00.png) `#FFFF00`.
 
 ### Cool Colors
 
 Commonly associated with:
 
-- Blue.
-- Cyan.
-- Blue-green.
+- Blue ![#0000FF](https://placehold.co/15x15/0000FF/0000FF.png) `#0000FF`.
+- Cyan ![#00FFFF](https://placehold.co/15x15/00FFFF/00FFFF.png) `#00FFFF`.
+- Blue-green ![#008B8B](https://placehold.co/15x15/008B8B/008B8B.png) `#008B8B`.
 
 However, perceived warmth is contextual.
 
-A reddish violet may appear warmer than a bluish violet.
+A reddish violet ![#C71585](https://placehold.co/15x15/C71585/C71585.png)
+`#C71585` may appear warmer than a bluish violet
+![#8A2BE2](https://placehold.co/15x15/8A2BE2/8A2BE2.png) `#8A2BE2`.
 
-A yellow-green may appear warmer than a blue-green.
+A yellow-green ![#9ACD32](https://placehold.co/15x15/9ACD32/9ACD32.png)
+`#9ACD32` may appear warmer than a blue-green
+![#008B8B](https://placehold.co/15x15/008B8B/008B8B.png) `#008B8B`.
 
 Color temperature in graphic design is a relative visual
 description, not necessarily a literal measurement
@@ -543,6 +588,10 @@ For example:
 Orange vs. Blue
 ```
 
+Illustrative chips: Orange
+![#FFA500](https://placehold.co/15x15/FFA500/FFA500.png) `#FFA500`, Blue
+![#0000FF](https://placehold.co/15x15/0000FF/0000FF.png) `#0000FF`.
+
 Strong hue contrast does not guarantee sufficient
 text readability.
 
@@ -556,12 +605,19 @@ For example:
 Vivid Orange vs. Muted Orange
 ```
 
+Illustrative chips: vivid orange
+![#FF4500](https://placehold.co/15x15/FF4500/FF4500.png) `#FF4500`; muted orange
+![#C78A62](https://placehold.co/15x15/C78A62/C78A62.png) `#C78A62`.
+
 ### Simultaneous Contrast
 
 A color can appear different depending on its surroundings.
 
-The same gray may appear lighter against black
-and darker against white.
+The same gray ![#808080](https://placehold.co/15x15/808080/808080.png) `#808080`
+may appear lighter against black
+![#000000](https://placehold.co/15x15/000000/000000.png) `#000000`
+and darker against white
+![#FFFFFF](https://placehold.co/15x15/FFFFFF/FFFFFF.png) `#FFFFFF`.
 
 Nearby colors can also influence perceived hue
 and saturation.
@@ -617,8 +673,10 @@ A color is not inherently accessible.
 Accessibility depends on the relationship between
 the foreground and background colors.
 
-For example, an orange suitable for a large icon
-on a dark background may fail as small text on white.
+For example, an orange ![#FFA500](https://placehold.co/15x15/FFA500/FFA500.png)
+`#FFA500` suitable for a large icon
+on a dark background may fail as small text on white
+![#FFFFFF](https://placehold.co/15x15/FFFFFF/FFFFFF.png) `#FFFFFF`.
 
 ### Color Vision Deficiency
 
@@ -647,6 +705,10 @@ Red + Error Icon + "Failed"
 Green + Checkmark + "Passed"
 ```
 
+Illustrative chips: Red ![#FF0000](https://placehold.co/15x15/FF0000/FF0000.png)
+`#FF0000`, Green ![#008000](https://placehold.co/15x15/008000/008000.png)
+`#008000`.
+
 Accessibility should be evaluated in the actual design,
 not merely by inspecting the palette.
 
@@ -661,17 +723,17 @@ Common branding associations include:
 
 | Color       | Common Associations               |
 | ----------- | --------------------------------- |
-| Red         | Energy, urgency, intensity        |
-| Orange      | Activity, warmth, enthusiasm      |
-| Yellow      | Optimism, attention, brightness   |
-| Green       | Nature, growth, health            |
-| Cyan / Teal | Technology, clarity, freshness    |
-| Blue        | Stability, trust, professionalism |
-| Violet      | Imagination, distinction, luxury  |
-| Magenta     | Creativity, expressiveness        |
-| Black       | Authority, sophistication         |
-| White       | Simplicity, cleanliness           |
-| Gray        | Neutrality, restraint             |
+| Red ![#FF0000](https://placehold.co/15x15/FF0000/FF0000.png) `#FF0000`         | Energy, urgency, intensity        |
+| Orange ![#FFA500](https://placehold.co/15x15/FFA500/FFA500.png) `#FFA500`      | Activity, warmth, enthusiasm      |
+| Yellow ![#FFFF00](https://placehold.co/15x15/FFFF00/FFFF00.png) `#FFFF00`      | Optimism, attention, brightness   |
+| Green ![#008000](https://placehold.co/15x15/008000/008000.png) `#008000`       | Nature, growth, health            |
+| Cyan ![#00FFFF](https://placehold.co/15x15/00FFFF/00FFFF.png) `#00FFFF` / Teal ![#008080](https://placehold.co/15x15/008080/008080.png) `#008080` | Technology, clarity, freshness    |
+| Blue ![#0000FF](https://placehold.co/15x15/0000FF/0000FF.png) `#0000FF`        | Stability, trust, professionalism |
+| Violet ![#EE82EE](https://placehold.co/15x15/EE82EE/EE82EE.png) `#EE82EE`      | Imagination, distinction, luxury  |
+| Magenta ![#FF00FF](https://placehold.co/15x15/FF00FF/FF00FF.png) `#FF00FF`     | Creativity, expressiveness        |
+| Black ![#000000](https://placehold.co/15x15/000000/000000.png) `#000000`       | Authority, sophistication         |
+| White ![#FFFFFF](https://placehold.co/15x15/FFFFFF/FFFFFF.png) `#FFFFFF`       | Simplicity, cleanliness           |
+| Gray ![#808080](https://placehold.co/15x15/808080/808080.png) `#808080`        | Neutrality, restraint             |
 
 These are common conventions, not scientific guarantees.
 
@@ -732,11 +794,13 @@ Colors used for structure rather than strong brand expression.
 
 Common examples:
 
-- White.
-- Black.
-- Gray.
-- Warm off-white.
-- Cool charcoal.
+- White ![#FFFFFF](https://placehold.co/15x15/FFFFFF/FFFFFF.png) `#FFFFFF`.
+- Black ![#000000](https://placehold.co/15x15/000000/000000.png) `#000000`.
+- Gray ![#808080](https://placehold.co/15x15/808080/808080.png) `#808080`.
+- Warm off-white ![#FFFAF0](https://placehold.co/15x15/FFFAF0/FFFAF0.png)
+  `#FFFAF0`.
+- Cool charcoal ![#2F4F4F](https://placehold.co/15x15/2F4F4F/2F4F4F.png)
+  `#2F4F4F`.
 
 Neutrals are especially important for typography,
 backgrounds, separators, and layout hierarchy.
@@ -815,8 +879,11 @@ Visual weight is affected by:
 - Placement.
 - Surrounding colors.
 
-For example, a small vivid orange element may compete
-with a much larger muted blue element.
+For example, a small vivid orange
+![#FF4500](https://placehold.co/15x15/FF4500/FF4500.png) `#FF4500` element may
+compete
+with a much larger muted blue
+![#708090](https://placehold.co/15x15/708090/708090.png) `#708090` element.
 
 This means that color proportions should be adjusted
 according to perceived emphasis, not merely numerical area.
@@ -832,17 +899,20 @@ A single brand color often needs multiple variations.
 ### Tint
 
 A lighter version of a color, traditionally produced
-by mixing it with white.
+by mixing it with white ![#FFFFFF](https://placehold.co/15x15/FFFFFF/FFFFFF.png)
+`#FFFFFF`.
 
 ### Shade
 
 A darker version, traditionally produced
-by mixing it with black.
+by mixing it with black ![#000000](https://placehold.co/15x15/000000/000000.png)
+`#000000`.
 
 ### Tone
 
 A modified or muted version of a color,
-traditionally produced by adding gray.
+traditionally produced by adding gray
+![#808080](https://placehold.co/15x15/808080/808080.png) `#808080`.
 
 In digital color systems, these effects may instead
 be constructed using controlled changes in lightness
@@ -869,13 +939,18 @@ Orange
 └── 900   Very Dark
 ```
 
+Illustrative chips: Orange
+![#FFA500](https://placehold.co/15x15/FFA500/FFA500.png) `#FFA500`.
+
 The numerical labels are conventions,
 not universal measurements of lightness.
 
 A carefully constructed scale should be evaluated
 for perceptual consistency and contrast.
 
-Simply interpolating between a color and white or black
+Simply interpolating between a color and white
+![#FFFFFF](https://placehold.co/15x15/FFFFFF/FFFFFF.png) `#FFFFFF` or black
+![#000000](https://placehold.co/15x15/000000/000000.png) `#000000`
 in ordinary RGB may produce undesirable shifts.
 
 ---
@@ -897,7 +972,8 @@ Common characteristics:
 - Strong control of lightness contrast.
 
 Highly saturated colors can feel visually intense
-against white backgrounds.
+against white ![#FFFFFF](https://placehold.co/15x15/FFFFFF/FFFFFF.png) `#FFFFFF`
+backgrounds.
 
 ### Dark Mode
 
@@ -930,6 +1006,9 @@ Brand Orange
     └── Adjusted lightness / chroma
 ```
 
+Illustrative chips: Orange
+![#FFA500](https://placehold.co/15x15/FFA500/FFA500.png) `#FFA500`.
+
 These variants need not have identical numerical color values.
 
 The goal is consistent perceived identity,
@@ -949,7 +1028,8 @@ Example:
 #FF8000
 ```
 
-Orange example: ![#FF8000](https://placehold.co/15x15/FF8000/FF8000.png) `#FF8000`.
+Orange example: ![#FF8000](https://placehold.co/15x15/FF8000/FF8000.png)
+`#FF8000`.
 
 This represents:
 
@@ -958,6 +1038,11 @@ Red   = 255
 Green = 128
 Blue  = 0
 ```
+
+Illustrative chips: Red ![#FF0000](https://placehold.co/15x15/FF0000/FF0000.png)
+`#FF0000`, Green ![#008000](https://placehold.co/15x15/008000/008000.png)
+`#008000`, Blue ![#0000FF](https://placehold.co/15x15/0000FF/0000FF.png)
+`#0000FF`.
 
 Six-digit hexadecimal color notation ordinarily expresses
 sRGB channel values in web contexts.
@@ -1009,8 +1094,12 @@ with standardized perceptual lightness.
 CIELAB describes colors through:
 
 - L*: Lightness.
-- a*: Green–red opponent dimension.
-- b*: Blue–yellow opponent dimension.
+- a*: Green ![#008000](https://placehold.co/15x15/008000/008000.png)
+  `#008000`–red ![#FF0000](https://placehold.co/15x15/FF0000/FF0000.png)
+  `#FF0000` opponent dimension.
+- b*: Blue ![#0000FF](https://placehold.co/15x15/0000FF/0000FF.png)
+  `#0000FF`–yellow ![#FFFF00](https://placehold.co/15x15/FFFF00/FFFF00.png)
+  `#FFFF00` opponent dimension.
 
 It was developed to provide a more perceptually meaningful
 representation of color differences.
@@ -1218,6 +1307,12 @@ Product C = Green
 Product D = Violet
 ```
 
+Illustrative chips: Orange
+![#FFA500](https://placehold.co/15x15/FFA500/FFA500.png) `#FFA500`, Blue
+![#0000FF](https://placehold.co/15x15/0000FF/0000FF.png) `#0000FF`, Green
+![#008000](https://placehold.co/15x15/008000/008000.png) `#008000`, Violet
+![#EE82EE](https://placehold.co/15x15/EE82EE/EE82EE.png) `#EE82EE`.
+
 Each color should be reasonably distinguishable
 from the others in the intended context.
 
@@ -1338,9 +1433,11 @@ For example:
 }
 ```
 
-Example palette colors: orange ![#E87524](https://placehold.co/15x15/E87524/E87524.png)
+Example palette colors: orange
+![#E87524](https://placehold.co/15x15/E87524/E87524.png)
 `#E87524`, dark neutral ![#141414](https://placehold.co/15x15/141414/141414.png)
-`#141414`, and white surface ![#FFFFFF](https://placehold.co/15x15/FFFFFF/FFFFFF.png)
+`#141414`, and white surface
+![#FFFFFF](https://placehold.co/15x15/FFFFFF/FFFFFF.png)
 `#FFFFFF`.
 
 The example values are illustrative,
