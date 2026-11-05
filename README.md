@@ -63,6 +63,11 @@ of maintaining a single undifferentiated list.
 
 ## Browse by subject
 
+### Development
+
+- [A small branch-protection baseline for my GitHub projects](notes/development/github-default-branch-protection.md)
+  — setup, verification, and the remaining CI work
+
 ### Graphic design
 
 - [Graphic design terminology](notes/graphic-design/graphic-design-terminology.md)
