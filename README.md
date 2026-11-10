@@ -63,6 +63,11 @@ of maintaining a single undifferentiated list.
 
 ## Browse by subject
 
+### Development
+
+- [Diagnosing a Codex GitHub network policy denial](notes/development/codex-github-network-policy-denial.md)
+  — execution-path diagnosis, effective policy controls, and repair verification
+
 ### Graphic design
 
 - [Graphic design terminology](notes/graphic-design/graphic-design-terminology.md)
