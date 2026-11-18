@@ -68,6 +68,16 @@ of maintaining a single undifferentiated list.
 - [Graphic design terminology](notes/graphic-design/graphic-design-terminology.md)
   — logo, typography, and color guides
 
+### Python packaging
+
+- [Why README links break on PyPI](notes/python/pypi-readme-relative-links.md)
+  — preserve useful repository links and verify built package metadata
+
+### Research workflow
+
+- [Keeping useful research in Notes](notes/research/public-research-workflow.md)
+  — capture, privacy, and publication checks
+
 ### Quaternions
 
 - [Quaternion performance in Python](notes/quaternions/quaternion-performance.md)
